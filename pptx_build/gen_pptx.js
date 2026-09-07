@@ -56,6 +56,23 @@ function bullets(s, items, x, y, w, h, size = 9.5, o = {}) {
 function label(s, t, x, y, w, h = 0.28, size = 11) {
   s.addText(t, { x, y, w, h, fontFace: F, fontSize: size, bold: true, color: NAVY, margin: 0, isTextBox: true, valign: "middle" });
 }
+// 照片卡片：等比放图，图上叠半透明色带写字，下方标签
+function photoCard(s, name, x, y, w, h, over, label, col = NAVY, o = {}) {
+  const r = img(s, name, x, y, w, h);
+  const bh = o.bandH || Math.min(0.9, r.h * 0.42), by = r.y + (o.bandPos === "bottom" ? r.h - bh : r.h * 0.36);
+  rect(s, r.x, by, r.w, bh, col, { fill: { color: col, transparency: o.alpha || 30 } });
+  s.addText(over, { x: r.x + 0.06, y: by, w: r.w - 0.12, h: bh, fontFace: F, fontSize: o.fontSize || 7.5, color: WHITE, bold: !!o.bold, margin: 0, isTextBox: true, valign: "middle", align: o.align || "left" });
+  if (label) s.addText(label, { x, y: y + h + 0.03, w, h: 0.3, fontFace: F, fontSize: o.labelSize || 11, bold: true, color: GRAY, align: "center", margin: 0, isTextBox: true });
+  return r;
+}
+// 照片角标：等比放图，左上角小色块标签
+function photoTag(s, name, x, y, w, h, tag, col = NAVY) {
+  const r = img(s, name, x, y, w, h);
+  const tw = Math.min(r.w, 0.22 + tag.length * 0.16);
+  rect(s, r.x, r.y, tw, 0.26, col, { fill: { color: col, transparency: 10 } });
+  s.addText(tag, { x: r.x, y: r.y, w: tw, h: 0.26, fontFace: F, fontSize: 8, bold: true, color: WHITE, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  return r;
+}
 const SEC1 = ["01 课题研究背景", "Background of the Research Topic"];
 const SEC2 = ["02 项目研究概述", "Overview of Project Research"];
 const SEC3 = ["03 场地规划分析", "Site Planning Analysis"];
@@ -205,17 +222,17 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
   const s = pres.addSlide();
   header(s, SEC1[0], "Research Purpose", "1.2 研究目的");
   const items = [
-    ["ms_4", "营造适配全龄人群的多元运动游憩空间", "立足全民健康发展背景，针对仁寿城北新城居住区户外健身场地不足的现实问题，结合场地现状条件，打造融合生态缓冲、运动健身、亲子游乐、邻里社交、乡土科普功能的公园空间，满足周边不同年龄居民日常健身休闲与社交活动需求。"],
-    ["tf_4", "形成多目标统筹的可落地综合规划方案", "统筹城市主干道噪声防护、全龄活动场地布置、海绵雨水调蓄、乡土植物群落营造四大核心功能，形成兼顾生态效益、民生需求、建设成本的可落地方案；以城北新城8.6公顷闲置绿地为实践载体，为川南同类新建居住区集中绿地、体育公园建设提供参考案例。"],
-    ["tf_3", "探索适用于西南城市的体育公园景观营造方法", "结合西南地区丘陵地貌、亚热带气候特征以及山地城市建设特点，充分运用乡土植物、海绵设施与低维护景观材料，构建适应性强、易管理、生态效益显著的运动景观环境，探索适合西南山地城市体育公园建设的景观营造思路。"],
+    ["ms_4", "营造适配全龄人群的多元运动游憩空间", "全龄游憩", "立足全民健康发展背景，针对仁寿城北新城居住区户外健身场地不足的现实问题，结合场地现状条件，打造融合生态缓冲、运动健身、亲子游乐、邻里社交、乡土科普功能的公园空间，满足周边不同年龄居民日常健身休闲与社交活动需求。"],
+    ["tf_4", "形成多目标统筹的可落地综合规划方案", "综合规划", "统筹城市主干道噪声防护、全龄活动场地布置、海绵雨水调蓄、乡土植物群落营造四大核心功能，形成兼顾生态效益、民生需求、建设成本的可落地方案；以城北新城8.6公顷闲置绿地为实践载体，为川南同类新建居住区集中绿地、体育公园建设提供参考案例。"],
+    ["tf_3", "探索适用于西南城市的体育公园景观营造方法", "地域营造", "结合西南地区丘陵地貌、亚热带气候特征以及山地城市建设特点，充分运用乡土植物、海绵设施与低维护景观材料，构建适应性强、易管理、生态效益显著的运动景观环境，探索适合西南山地城市体育公园建设的景观营造思路。"],
   ];
   items.forEach((it, i) => {
     const x = 0.5 + i * 3.1;
-    img(s, it[0], x, 1.02, 2.95, 1.55);
-    rect(s, x, 2.57, 2.95, 2.55, LIGHT);
-    circleNum(s, i + 1, x + 0.12, 2.68, 0.38);
-    s.addText(it[1], { x: x + 0.58, y: 2.66, w: 2.3, h: 0.42, fontFace: F, fontSize: 9.5, bold: true, color: NAVY, margin: 0, isTextBox: true, valign: "middle" });
-    txt(s, it[2], x + 0.08, 3.15, 2.8, 1.95, { fontSize: 8.5 });
+    photoCard(s, it[0], x, 1.02, 2.95, 2.0, it[1], null, [NAVY, ORANGE, GREEN][i], { bold: true, fontSize: 9, bandPos: "bottom", bandH: 0.6, alpha: 25 });
+    circleNum(s, i + 1, x + 0.1, 3.15, 0.36);
+    s.addText(it[2], { x: x + 0.55, y: 3.15, w: 2.3, h: 0.36, fontFace: F, fontSize: 11, bold: true, color: NAVY, margin: 0, isTextBox: true, valign: "middle" });
+    rect(s, x, 3.6, 2.95, 1.6, LIGHT);
+    txt(s, it[3], x + 0.08, 3.65, 2.8, 1.5, { fontSize: 8.5 });
   });
 }
 
@@ -265,15 +282,17 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Key Concepts", "1.5 相关概念");
-  const c = [["tf_4", "体育公园", "依据七部委《关于推进体育公园建设的指导意见》：以体育健身为核心要素、与自然生态融合的城市绿色公共空间，兼具生态美化、全民健身、休闲游憩、防灾避险等功能，绿化用地占比不低于65%。社区型综合体育公园依托城市集中绿地建设，面向周边成片居住区开放，区别于小区健身角和单一竞技场馆。"],
-    ["ms_4", "全民健康视角", "以全民健康为核心导向，将全民健身理念融入公园整体空间设计，兼顾婴幼儿、学龄儿童、中青年、老年人、残障群体的生理运动需求；在场地尺度、运动设施、无障碍通行、休憩配套上分层适配，划分动静分区，实现“人人可运动、处处能休憩”。"],
-    ["sz_3", "全龄友好型景观", "在公园空间布局、设施配置、尺度设计上兼顾不同人群生理与行为需求，分区设置适配活动场地，完善无障碍通行、休憩、安全防护配套，实现一座公园满足全年龄段居民日常户外需求。"]];
+  const c = [["tf_4", "体育公园", "Sports Park", ["体育健身为核心", "与自然生态融合", "绿化占比不低于65%"], "依据七部委《关于推进体育公园建设的指导意见》：以体育健身为核心要素、与自然生态融合的城市绿色公共空间，兼具生态美化、全民健身、休闲游憩、防灾避险等功能。社区型综合体育公园依托城市集中绿地建设，面向周边成片居住区开放。", NAVY],
+    ["ms_4", "全民健康视角", "Health for All", ["人人可运动", "处处能休憩", "动静分区"], "以全民健康为核心导向，将全民健身理念融入公园整体空间设计，兼顾婴幼儿、学龄儿童、中青年、老年人、残障群体的生理运动需求；在场地尺度、运动设施、无障碍通行、休憩配套上分层适配。", ORANGE],
+    ["sz_3", "全龄友好型景观", "All-age Friendly", ["分区适配", "无障碍通行", "安全防护"], "在公园空间布局、设施配置、尺度设计上兼顾不同人群生理与行为需求，分区设置适配活动场地，完善无障碍通行、休憩、安全防护配套，实现一座公园满足全年龄段居民日常户外需求。", GREEN]];
   c.forEach((it, i) => {
-    const x = 0.5 + i * 3.1;
-    img(s, it[0], x, 1.02, 2.95, 1.5);
-    tag(s, it[1], x, 2.52, 2.95, 0.42, [NAVY, ORANGE, GREEN][i], 11);
-    rect(s, x, 2.94, 2.95, 2.2, LIGHT);
-    txt(s, it[2], x + 0.08, 3.0, 2.8, 2.1, { fontSize: 8.5 });
+    const x = 0.5 + i * 3.1, w = 2.95;
+    const r = img(s, it[0], x, 1.02, w, 1.7);
+    rect(s, r.x, r.y + r.h - 0.62, r.w, 0.62, it[5], { fill: { color: it[5], transparency: 20 } });
+    s.addText([{ text: it[1], options: { fontSize: 12, bold: true, breakLine: true } }, { text: it[2], options: { fontSize: 7.5, fontFace: FE } }], { x: r.x + 0.1, y: r.y + r.h - 0.62, w: r.w - 0.2, h: 0.62, fontFace: F, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+    it[3].forEach((k, j) => { const kx = x + j * (w / 3); rect(s, kx + 0.03, 2.82, w / 3 - 0.06, 0.4, "E6E8DF"); s.addText(k, { x: kx + 0.03, y: 2.82, w: w / 3 - 0.06, h: 0.4, fontFace: F, fontSize: 7.5, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true }); });
+    rect(s, x, 3.32, w, 1.85, LIGHT);
+    txt(s, it[4], x + 0.08, 3.38, w - 0.16, 1.75, { fontSize: 8.5 });
   });
 }
 
@@ -540,10 +559,10 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   const s = pres.addSlide();
   header(s, SEC2[0], "Site Current Condition Analysis", "2.11 场地现状分析");
   img(s, "siteplan", 0.5, 1.02, 2.25, 3.95, "场地现状平面图");
-  img(s, "site_1", 2.95, 1.02, 2.0, 1.15);
-  img(s, "site_2", 5.05, 1.02, 2.0, 1.15);
-  img(s, "site_3", 2.95, 2.25, 2.0, 1.15);
-  img(s, "site_4", 5.05, 2.25, 2.0, 1.15);
+  photoTag(s, "site_1", 2.95, 1.02, 2.0, 1.15, "裸土空地", ORANGE);
+  photoTag(s, "site_2", 5.05, 1.02, 2.0, 1.15, "周边住宅", NAVY);
+  photoTag(s, "site_3", 2.95, 2.25, 2.0, 1.15, "原生林地", GREEN);
+  photoTag(s, "site_4", 5.05, 2.25, 2.0, 1.15, "局部土坡", ORANGE);
   txt(s, "场地现状照片（裸土空地、原生林地与周边住宅）", 2.95, 3.42, 4.1, 0.2, { fontSize: 7.5, color: MUTED, align: "center" });
   img(s, "satellite", 2.95, 3.68, 4.1, 1.35, "场地卫星影像", { vcenter: false });
   const c = [["原生林地", "东北部、中部成片原生乡土乔木群落，长势较好，是核心自然资源，可作为公园生态基底保留利用，减少绿化造价。", GREEN], ["裸土空地", "其余大片区域为裸露待开发土地，平整程度一般，局部小土坡，杂草零散；土壤条件一般，需改良后再营造植物景观。", ORANGE], ["水体与构筑", "场地无水体，属旱地型地块，需人工营造海绵水景；无大型建筑遗存，拆迁工程量小，适合公园开发建设。", NAVY]];
@@ -559,16 +578,18 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Population Structure Analysis", "2.12 人群结构分析");
-  img(s, "pie_src", 0.5, 1.0, 2.0, 2.0, "使用人群来源构成");
-  img(s, "pie_age", 2.6, 1.0, 2.0, 2.0, "使用人群年龄构成");
-  img(s, "pie_sex", 4.7, 1.0, 2.0, 2.0, "使用人群性别构成");
-  const rows = [["人群", "主要活动", "空间需求"], ["老年人", "散步、晨练、休憩闲谈、社交", "康养步道、器械、林荫座椅"], ["家庭亲子", "儿童攀爬游乐、家长陪护", "分龄儿童游乐区、看护休憩"], ["青少年/学生", "跑步、球类、骑行", "球类场地、环形跑道"], ["中青年", "跑步、健身", "健身器械区、夜间照明"], ["外来游客", "短途停留、生态休闲", "阳光草坪、景观节点"]];
-  s.addTable(rows.map((r, i) => r.map((c) => ({ text: c, options: { fontFace: F, fontSize: 8, color: i === 0 ? WHITE : GRAY, bold: i === 0, fill: { color: i === 0 ? NAVY : (i % 2 ? LIGHT : PALE) }, valign: "middle", align: "center" } }))),
-    { x: 0.5, y: 3.4, w: 6.2, colW: [1.3, 2.6, 2.3], rowH: 0.27, border: { type: "solid", color: WHITE, pt: 1 } });
-  rect(s, 6.8, 1.0, 2.85, 4.2, LIGHT);
-  label(s, "人群结构特征", 6.9, 1.05, 2.6, 0.3, 10.5);
-  txt(s, "仁寿县60岁及以上人口占26.56%，明显高于全国（18.70%）与四川（21.71%）。片区周边居民中老年占比高，并含家庭亲子群体与文镇小学等学校师生。\n\n年龄结构呈中老年、青少年占比偏高、青壮年通勤人群为辅的特征；性别构成男50.62%、女49.38%，基本均衡。", 6.85, 1.38, 2.75, 3.0, { fontSize: 8.5, lineSpacingMultiple: 1.3 });
-  txt(s, "数据来源：《仁寿县第七次全国人口普查公报（第三号）》；饼图为开题报告调研预测数据。", 6.85, 4.4, 2.75, 0.75, { fontSize: 7, color: MUTED });
+  const groups = [["tf_3", "老年人", "散步、晨练、休憩闲谈、社交 / 康养步道、器械、林荫座椅", NAVY], ["sz_3", "家庭亲子", "儿童攀爬游乐、家长陪护 / 分龄儿童游乐区、看护休憩", ORANGE], ["sz_1", "青少年/学生", "跑步、球类、骑行 / 球类场地、环形跑道", GREEN], ["wh_1", "中青年", "跑步、健身 / 健身器械区、夜间照明", "5B7DB1"], ["ms_4", "外来游客", "短途停留、生态休闲 / 阳光草坪、景观节点", "8A8F9C"]];
+  groups.forEach((g, i) => {
+    const x = 0.5 + i * 1.85, w = 1.75;
+    photoCard(s, g[0], x, 1.02, w, 1.55, g[2], g[1], g[3], { fontSize: 6.5, bandPos: "bottom", bandH: 0.62, alpha: 25, labelSize: 10 });
+  });
+  img(s, "pie_src", 0.5, 3.0, 1.9, 1.9, "使用人群来源构成");
+  img(s, "pie_age", 2.5, 3.0, 1.9, 1.9, "使用人群年龄构成");
+  img(s, "pie_sex", 4.5, 3.0, 1.9, 1.9, "使用人群性别构成");
+  rect(s, 6.6, 3.0, 3.05, 2.15, LIGHT);
+  label(s, "人群结构特征", 6.7, 3.03, 2.8, 0.3, 10);
+  txt(s, "仁寿县60岁及以上人口占26.56%，明显高于全国（18.70%）与四川（21.71%）。片区周边居民中老年占比高，并含家庭亲子群体与文镇小学等学校师生。年龄结构呈中老年、青少年占比偏高、青壮年通勤人群为辅的特征；性别构成男50.62%、女49.38%。", 6.65, 3.33, 2.95, 1.5, { fontSize: 8 });
+  txt(s, "数据来源：《仁寿县第七次全国人口普查公报（第三号）》；饼图为开题报告调研预测数据。", 6.65, 4.8, 2.95, 0.35, { fontSize: 6.5, color: MUTED });
 }
 
 // ---------- 2.13 需求分析（分析图） ----------
@@ -642,19 +663,20 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "SWOT Analysis", "2.15 SWOT分析");
-  const q = [["S 优势", NAVY, ["规模8.6公顷，满足15分钟生活圈综合公园标准", "四面临路，四面可设入口，可达性极强", "场地平整无拆迁，建设成本低", "周边居住人口密集，使用需求充足"]],
-    ["W 劣势", ORANGE, ["北侧主干道车流大，噪声粉尘干扰严重", "现状成型乔木有限，初期需大量苗木栽植", "场地缺少天然水系，需人工营造海绵水景"]],
-    ["O 机遇", GREEN, ["仁寿城北新城公园城市规划政策支持", "片区缺少综合绿地，项目民生价值高", "海绵城市、15分钟生活圈政策提供设计导向", "周边小区入住率持续提升，远期人流增长"]],
-    ["T 威胁", "8A8F9C", ["县城建设预算有限，不宜采用高端硬质景观", "夏季多雨，需重点做好场地排水防涝设计", "周边小区内部小型绿地分流部分休闲人群"]]];
+  const q = [["S", "优势", NAVY, "satellite", ["规模8.6公顷，满足15分钟生活圈综合公园标准", "四面临路，四面可设入口，可达性极强", "场地平整无拆迁，建设成本低", "周边居住人口密集，使用需求充足"]],
+    ["W", "劣势", ORANGE, "site_1", ["北侧主干道车流大，噪声粉尘干扰严重", "现状成型乔木有限，初期需大量苗木栽植", "场地缺少天然水系，需人工营造海绵水景"]],
+    ["O", "机遇", GREEN, "map", ["仁寿城北新城公园城市规划政策支持", "片区缺少综合绿地，项目民生价值高", "海绵城市、15分钟生活圈政策提供设计导向", "周边小区入住率持续提升，远期人流增长"]],
+    ["T", "威胁", "8A8F9C", "site_4", ["县城建设预算有限，不宜采用高端硬质景观", "夏季多雨，需重点做好场地排水防涝设计", "周边小区内部小型绿地分流部分休闲人群"]]];
   q.forEach((it, i) => {
-    const x = 0.5 + (i % 2) * 3.2, y = 1.02 + Math.floor(i / 2) * 2.05;
-    rect(s, x, y, 3.1, 1.95, LIGHT);
-    tag(s, it[0], x, y, 0.85, 0.36, it[1], 10);
-    bullets(s, it[2], x + 0.05, y + 0.42, 3.0, 1.5, 8.5);
+    const x = 0.5 + (i % 2) * 4.65, y = 1.02 + Math.floor(i / 2) * 2.1, w = 4.5, h = 2.0;
+    rect(s, x, y, w, h, LIGHT);
+    const r = img(s, it[3], x + 0.08, y + 0.08, 1.75, h - 0.16, null, { vcenter: true });
+    rect(s, r.x, r.y, 0.5, 0.5, it[2]);
+    s.addText(it[0], { x: r.x, y: r.y, w: 0.5, h: 0.5, fontFace: FE, fontSize: 20, bold: true, color: WHITE, align: "center", valign: "middle", margin: 0, isTextBox: true });
+    s.addText(it[1], { x: x + 1.95, y: y + 0.08, w: 2.4, h: 0.32, fontFace: F, fontSize: 11, bold: true, color: it[2], margin: 0, isTextBox: true, valign: "middle" });
+    bullets(s, it[4], x + 1.9, y + 0.42, w - 1.95, h - 0.48, 8);
   });
-  img(s, "site_1", 6.95, 1.02, 2.7, 1.55, "场地现状：裸土空地");
-  img(s, "satellite", 6.95, 2.85, 2.7, 1.55, "场地卫星影像");
-  txt(s, "注：开题报告SWOT中“现状无成型乔木”与2.11“保留原生乔木群落”矛盾，此处按现状分析口径修正为“成型乔木有限”，请确认。", 0.5, 5.1, 9.1, 0.25, { fontSize: 7, color: MUTED });
+  txt(s, "注：开题报告SWOT中“现状无成型乔木”与2.11“保留原生乔木群落”矛盾，此处按现状分析口径修正为“成型乔木有限”，请确认。", 0.5, 5.22, 9.1, 0.22, { fontSize: 6.5, color: MUTED });
 }
 
 // ---------- 2.16 问题梳理 ----------
@@ -666,10 +688,9 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
     ["人群需求问题", GREEN, ["中老年占比高，康养、社交空间缺失", "亲子群体缺少安全分龄游乐场地", "青少年、学生缺少球类、跑步场地", "夏季高温多雨，缺少遮阳与全天候活动条件"], "site_4"]];
   c.forEach((it, i) => {
     const x = 0.5 + i * 3.1;
-    img(s, it[3], x, 1.02, 2.95, 1.2);
-    tag(s, it[0], x, 2.22, 2.95, 0.36, it[1], 10.5);
-    rect(s, x, 2.58, 2.95, 2.0, LIGHT);
-    bullets(s, it[2], x + 0.05, 2.65, 2.85, 1.9, 8.5);
+    photoCard(s, it[3], x, 1.02, 2.95, 1.5, it[0], null, it[1], { bold: true, fontSize: 11, bandPos: "bottom", bandH: 0.42, alpha: 15, align: "center" });
+    rect(s, x, 2.6, 2.95, 2.0, LIGHT);
+    bullets(s, it[2], x + 0.05, 2.67, 2.85, 1.9, 8.5);
   });
   s.addText("以上问题对应第三部分设计目标（3.1）与设计策略（3.4）逐项回应", { x: 0.5, y: 4.75, w: 9.15, h: 0.4, fontFace: F, fontSize: 10, bold: true, color: ORANGE, align: "center", valign: "middle", margin: 0, isTextBox: true });
 }
@@ -681,16 +702,18 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
 {
   const s = pres.addSlide();
   header(s, SEC3[0], "Design Objectives", "3.1 设计目标");
-  const g = [["生态目标", "多层次乡土植物群落 + 主干道生态缓冲带 + 海绵雨水系统，降低径流，削弱噪声粉尘，修复片区微型生态。"], ["功能目标", "婴幼儿游乐、青少年运动、老年康养、邻里大草坪、自然科普五大核心分区，满足日常游憩、健身、社交需求。"], ["空间目标", "优化主次入口与人车流线，打通四向人行通道，公园与居住区步行无缝衔接，形成连贯游览轴线。"], ["落地目标", "低成本、低维护：眉山本土苗木，减少土方开挖，构筑物简约轻量化，适配县城建设标准。"]];
+  const g = [["sz_4", "生态目标", "多层次乡土植物群落 + 主干道生态缓冲带 + 海绵雨水系统，降低径流，削弱噪声粉尘，修复片区微型生态。", GREEN],
+    ["ms_1", "功能目标", "婴幼儿游乐、青少年运动、老年康养、邻里大草坪、自然科普五大核心分区，满足日常游憩、健身、社交需求。", ORANGE],
+    ["tf_3", "空间目标", "优化主次入口与人车流线，打通四向人行通道，公园与居住区步行无缝衔接，形成连贯游览轴线。", NAVY],
+    ["satellite", "落地目标", "低成本、低维护：眉山本土苗木，减少土方开挖，构筑物简约轻量化，适配县城建设标准。", "5B7DB1"]];
   g.forEach((it, i) => {
-    const x = 0.5 + (i % 2) * 3.15, y = 1.02 + Math.floor(i / 2) * 2.05;
-    rect(s, x, y, 3.05, 1.95, LIGHT);
-    circleNum(s, i + 1, x + 0.12, y + 0.12, 0.4, i % 2 ? NAVY : ORANGE);
-    s.addText(it[0], { x: x + 0.62, y: y + 0.12, w: 2.3, h: 0.4, fontFace: F, fontSize: 11, bold: true, color: NAVY, margin: 0, isTextBox: true, valign: "middle" });
-    txt(s, it[1], x + 0.08, y + 0.62, 2.9, 1.3, { fontSize: 9 });
+    const x = 0.5 + i * 2.3, w = 2.2;
+    photoCard(s, it[0], x, 1.02, w, 2.2, it[1], null, it[3], { bold: true, fontSize: 12, bandPos: "bottom", bandH: 0.45, alpha: 15, align: "center" });
+    circleNum(s, i + 1, x, 3.35, 0.34, it[3]);
+    s.addText(it[1], { x: x + 0.42, y: 3.35, w: w - 0.42, h: 0.34, fontFace: F, fontSize: 10.5, bold: true, color: it[3], margin: 0, isTextBox: true, valign: "middle" });
+    rect(s, x, 3.78, w, 1.4, LIGHT);
+    txt(s, it[2], x + 0.06, 3.83, w - 0.12, 1.3, { fontSize: 8.5 });
   });
-  img(s, "ms_1", 6.95, 1.02, 2.7, 1.95, "球类集中区（案例效果图）");
-  img(s, "sz_4", 6.95, 3.25, 2.7, 1.72, "林下休憩空间（案例照片）");
 }
 
 // ---------- 3.2 设计原则 ----------
@@ -703,10 +726,9 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
     ["sz_4", "生态节约·海绵低碳", "保留平整原始地形，土方场内平衡；桢楠、香樟、桂花、紫薇等乡土树种；雨水花园、植草沟就地净化利用。", "5B7DB1"]];
   p.forEach((it, i) => {
     const x = 0.5 + i * 2.3, w = 2.2;
-    img(s, it[0], x, 1.02, w, 1.55);
-    tag(s, it[1], x, 2.57, w, 0.45, it[3], 9.5);
-    rect(s, x, 3.02, w, 1.85, LIGHT);
-    txt(s, it[2], x + 0.08, 3.1, w - 0.16, 1.75, { fontSize: 9.5, lineSpacingMultiple: 1.3 });
+    photoCard(s, it[0], x, 1.02, w, 2.2, it[1], null, it[3], { bold: true, fontSize: 10.5, bandPos: "bottom", bandH: 0.45, alpha: 15, align: "center" });
+    rect(s, x, 3.35, w, 1.8, LIGHT);
+    txt(s, it[2], x + 0.08, 3.42, w - 0.16, 1.7, { fontSize: 9.5, lineSpacingMultiple: 1.3 });
   });
 }
 
@@ -714,20 +736,24 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
 {
   const s = pres.addSlide();
   header(s, SEC3[0], "Design Concept", "3.3 设计构思");
-  s.addText("跃动·栖园", { x: 0.5, y: 1.0, w: 3, h: 0.5, fontFace: F, fontSize: 22, bold: true, color: NAVY, margin: 0, isTextBox: true });
-  txt(s, "“跃动”对应全民健康——全龄运动、活力健身；“栖园”对应生态栖居——林下休憩、海绵生态、乡土记忆。以“一环”健康步道串联“动”“静”两类组团，主干道一侧以“一带”防护林承担生态缓冲。", 0.5, 1.55, 5.3, 0.9, { fontSize: 9 });
-  const g = [["跃动组团（动）", "青少年球类运动区、中青年健身器械区、环形健康步道", ORANGE], ["栖居组团（静）", "老年康养林荫区、邻里阳光草坪、海绵雨水花园、文化记忆节点", NAVY], ["亲子组团（动静结合）", "分龄儿童游乐区、家长看护休憩、自然科普种植", GREEN]];
+  const r = img(s, "satellite", 0.5, 1.0, 4.6, 3.65);
+  rect(s, r.x, r.y, r.w, 0.75, "000000", { fill: { color: "000000", transparency: 45 } });
+  s.addText("跃动·栖园", { x: r.x + 0.15, y: r.y + 0.05, w: 2.5, h: 0.65, fontFace: F, fontSize: 26, bold: true, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+  s.addText("一环 · 一带 · 三组团", { x: r.x + r.w - 2.2, y: r.y + 0.2, w: 2.05, h: 0.4, fontFace: F, fontSize: 11, bold: true, color: WHITE, align: "right", margin: 0, isTextBox: true, valign: "middle" });
+  rect(s, r.x, r.y + r.h - 0.85, r.w, 0.85, NAVY, { fill: { color: NAVY, transparency: 25 } });
+  s.addText("“跃动”对应全民健康——全龄运动、活力健身；“栖园”对应生态栖居——林下休憩、海绵生态、乡土记忆。以“一环”健康步道串联“动”“静”两类组团，主干道一侧以“一带”防护林承担生态缓冲。", { x: r.x + 0.1, y: r.y + r.h - 0.83, w: r.w - 0.2, h: 0.8, fontFace: F, fontSize: 8, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+  const g = [["ms_2", "跃动组团（动）", "青少年球类运动区、中青年健身器械区、环形健康步道", ORANGE], ["sz_4", "栖居组团（静）", "老年康养林荫区、邻里阳光草坪、海绵雨水花园、文化记忆节点", NAVY], ["sz_3", "亲子组团（动静结合）", "分龄儿童游乐区、家长看护休憩、自然科普种植", GREEN]];
   g.forEach((it, i) => {
-    const y = 2.55 + i * 0.85;
-    rect(s, 0.5, y, 5.3, 0.75, LIGHT);
-    rect(s, 0.5, y, 0.08, 0.75, it[2]);
-    s.addText(it[0], { x: 0.7, y: y + 0.04, w: 5.0, h: 0.28, fontFace: F, fontSize: 10, bold: true, color: it[2], margin: 0, isTextBox: true, valign: "middle" });
-    txt(s, it[1], 0.65, y + 0.32, 5.1, 0.4, { fontSize: 8.5 });
+    const y = 1.0 + i * 1.25;
+    rect(s, 5.35, y, 4.3, 1.15, LIGHT);
+    const pr = img(s, it[0], 5.42, y + 0.07, 1.45, 1.01, null, { vcenter: true });
+    rect(s, 6.95, y + 0.1, 0.07, 0.95, it[3]);
+    s.addText(it[1], { x: 7.1, y: y + 0.1, w: 2.5, h: 0.3, fontFace: F, fontSize: 10.5, bold: true, color: it[3], margin: 0, isTextBox: true, valign: "middle" });
+    txt(s, it[2], 7.05, y + 0.42, 2.55, 0.7, { fontSize: 8.5 });
   });
-  img(s, "satellite", 6.05, 1.02, 3.6, 2.85, "场地卫星影像（设计基底）");
-  img(s, "ms_2", 6.05, 4.12, 1.75, 1.0, "跃动组团参考");
-  img(s, "sz_4", 7.9, 4.12, 1.75, 1.0, "栖居组团参考");
-  txt(s, "注：本页构思为依据开题报告目标与案例借鉴整理的初步框架，需确认或替换。", 0.5, 5.15, 5.3, 0.22, { fontSize: 7, color: MUTED });
+  rect(s, 5.35, 4.75, 4.3, 0.45, "3E5A3A");
+  ["全龄运动", "林下栖居", "海绵生态", "乡土记忆"].forEach((k, i) => s.addText(k, { x: 5.35 + i * 1.075, y: 4.75, w: 1.075, h: 0.45, fontFace: F, fontSize: 10, bold: true, color: WHITE, align: "center", valign: "middle", margin: 0, isTextBox: true }));
+  txt(s, "注：本页构思为依据开题报告目标与案例借鉴整理的初步框架，需确认或替换。", 0.5, 4.85, 4.6, 0.3, { fontSize: 7, color: MUTED });
 }
 
 // ---------- 3.4 设计策略框架图 ----------
@@ -751,12 +777,13 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
   st.forEach((it, i) => {
     const y = 1.02 + i * 1.05;
     rect(s, 0.5, y, 9.15, 0.95, i % 2 ? PALE : LIGHT);
+    img(s, ["ms_2", "ms_4", "ms_1", "sz_4"][i], 8.3, y + 0.05, 1.3, 0.85, null, { vcenter: true });
     rect(s, 0.5, y, 1.75, 0.95, it[2]);
     s.addText([{ text: it[0], options: { fontSize: 8.5, breakLine: true } }, { text: it[1], options: { fontSize: 10.5, bold: true } }], { x: 0.55, y, w: 1.65, h: 0.95, fontFace: F, color: WHITE, align: "center", valign: "middle", margin: 0, isTextBox: true });
     it[3].forEach((sub, j) => {
-      const x = 2.4 + j * 2.45;
-      s.addText(sub[0], { x, y: y + 0.1, w: 2.35, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: it[2], margin: 0, isTextBox: true, valign: "middle" });
-      txt(s, sub[1], x - 0.02, y + 0.4, 2.4, 0.5, { fontSize: 8 });
+      const x = 2.35 + j * 1.98;
+      s.addText(sub[0], { x, y: y + 0.1, w: 1.92, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: it[2], margin: 0, isTextBox: true, valign: "middle" });
+      txt(s, sub[1], x - 0.02, y + 0.38, 1.95, 0.55, { fontSize: 7.5 });
     });
   });
   txt(s, "策略框架来源：开题报告4.9设计策略图（宏观—中观—微观—后置四层级）。", 0.5, 5.25, 8, 0.22, { fontSize: 7, color: MUTED });
@@ -766,11 +793,15 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
 {
   const s = pres.addSlide();
   header(s, SEC3[0], "Design Deliverables", "3.5 设计成果");
-  const rows = [["类别", "主要内容"], ["现状分析", "区位分析、自然条件（地形、气候）、社会条件（城市风貌、历史文化、道路、交通、用地、使用者构成及行为）"], ["设计分析", "场地道路分析、视线分析、建筑分析、入口分析、人流分析、景观序列"], ["设计图纸", "总平面图（景点、建筑、植物、交通布局，图名图例比例风玫瑰）、节点详图（平面、立面、细节）、植物配置图（树林、树丛、孤植、草坪、花境、植物列表）"], ["效果图", "场地鸟瞰图、节点效果图"], ["专项设计", "建筑外立面、照明设计、平面图、立面图、效果图"], ["文本", "设计目的、设计依据与相关政策、设计思想与原则、现状分析、设计分析、设计说明"]];
-  s.addTable(rows.map((r, i) => r.map((c, j) => ({ text: c, options: { fontFace: F, fontSize: 9, color: i === 0 ? WHITE : GRAY, bold: i === 0 || j === 0, fill: { color: i === 0 ? NAVY : (i % 2 ? LIGHT : PALE) }, valign: "middle", align: j === 0 ? "center" : "left" } }))),
-    { x: 0.5, y: 1.02, w: 6.2, colW: [1.1, 5.1], rowH: 0.5, border: { type: "solid", color: WHITE, pt: 1 } });
-  img(s, "ms_1", 6.95, 1.02, 2.7, 1.55, "节点效果图参考");
-  img(s, "tf_5", 6.95, 2.8, 2.7, 1.55, "场地鸟瞰图参考");
+  const rows = [["类别", "主要内容"], ["现状分析", "区位、自然条件（地形、气候）、社会条件（风貌、文化、道路、交通、用地、人群行为）"], ["设计分析", "场地道路、视线、建筑、入口、人流分析、景观序列"], ["设计图纸", "总平面图（图名图例比例风玫瑰）、节点详图（平面、立面、细节）、植物配置图"], ["效果图", "场地鸟瞰图、节点效果图"], ["专项设计", "建筑外立面、照明设计、平面图、立面图、效果图"], ["文本", "设计目的、依据与政策、思想与原则、现状分析、设计分析、设计说明"]];
+  s.addTable(rows.map((r, i) => r.map((c, j) => ({ text: c, options: { fontFace: F, fontSize: 8, color: i === 0 ? WHITE : GRAY, bold: i === 0 || j === 0, fill: { color: i === 0 ? NAVY : (i % 2 ? LIGHT : PALE) }, valign: "middle", align: j === 0 ? "center" : "left" } }))),
+    { x: 0.5, y: 1.02, w: 4.6, colW: [0.9, 3.7], rowH: 0.42, border: { type: "solid", color: WHITE, pt: 1 } });
+  const tiles = [["tf_5", "场地鸟瞰图"], ["ms_1", "节点效果图"], ["plants", "植物配置图"], ["siteplan", "总平面图"], ["ms_3", "建筑专项"], ["sz_4", "照明与小品"]];
+  tiles.forEach((t, i) => {
+    const x = 5.35 + (i % 2) * 2.2, y = 1.02 + Math.floor(i / 2) * 1.4;
+    photoCard(s, t[0], x, y, 2.1, 1.3, t[1], null, NAVY, { bold: true, fontSize: 8.5, bandPos: "bottom", bandH: 0.3, alpha: 15, align: "center" });
+  });
+  txt(s, "成果类型示意（案例图片）", 5.35, 5.22, 4.3, 0.2, { fontSize: 7, color: MUTED, align: "center" });
 }
 
 // ---------- 3.6 进度安排 ----------
