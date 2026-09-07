@@ -301,41 +301,37 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Historical Development", "1.6 国内外研究现状——发展脉络");
-  const P0 = [0.6, 4.0], P1 = [9.4, 1.8];
+  const P0 = [0.6, 4.0], P1 = [9.4, 2.3];
   const dx = P1[0] - P0[0], dy = P1[1] - P0[1];
-  const len = Math.sqrt(dx * dx + dy * dy), ang = Math.atan2(dy, dx) * 180 / Math.PI; // 负角 = 逆时针
+  const len = Math.sqrt(dx * dx + dy * dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
   const cx = (P0[0] + P1[0]) / 2, cy = (P0[1] + P1[1]) / 2;
   rect(s, cx - len / 2, cy - 0.11, len, 0.22, "C9D6C1", { rotate: 360 + ang });
   rect(s, cx - len / 2, cy - 0.03, len, 0.06, "4E6B3A", { rotate: 360 + ang });
   const pt = (t) => [P0[0] + dx * t, P0[1] + dy * t];
-  [["萌芽期", 0.11], ["发展期", 0.5], ["创新成熟期", 0.88]].forEach((pl) => { const [x, y] = pt(pl[1]); s.addText(pl[0], { x: x - 0.7, y: y - 0.5, w: 1.4, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: "4E6B3A", align: "center", rotate: 360 + ang, margin: 0, isTextBox: true }); });
+  [["萌芽期", 0.11], ["发展期", 0.5], ["创新成熟期", 0.88]].forEach((pl) => { const [x, y] = pt(pl[1]); s.addText(pl[0], { x: x - 0.7, y: y - 0.48, w: 1.4, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: "4E6B3A", align: "center", rotate: 360 + ang, margin: 0, isTextBox: true }); });
   const nodes = [
-    { t: 0.04, yr: "1858", place: "美国", txt: "奥姆斯特德中央公园：城市公园体系提出“绿地+运动”融合", up: true },
-    { t: 0.17, yr: "1961", place: "美国", txt: "简·雅各布斯《美国大城市的死与生》：高密度社区分散布局中小型运动场地", up: false },
-    { t: 0.30, yr: "1995", place: "中国", txt: "《全民健身计划纲要》颁布，全民健身上升为国家计划", up: true },
-    { t: 0.43, yr: "2014", place: "新加坡", txt: "ActiveSG计划：社区体育公园模块化球场、全天候遮阳健身区", up: false },
+    { t: 0.04, yr: "1858", place: "美国", txt: "奥姆斯特德中央公园，提出“绿地+运动”融合模式", up: true, ph: "tf_1" },
+    { t: 0.17, yr: "1961", place: "美国", txt: "简·雅各布斯：高密度社区分散布局中小型运动场地", up: false, ph: "sz_2" },
+    { t: 0.30, yr: "1995", place: "中国", txt: "《全民健身计划纲要》颁布，全民健身上升为国家计划", up: true, ph: "ms_4" },
+    { t: 0.43, yr: "2014", place: "新加坡", txt: "ActiveSG计划：模块化球场、全天候遮阳健身区", up: false, ph: "ms_1" },
     { t: 0.56, yr: "2016", place: "中国", txt: "《“健康中国2030”规划纲要》；《公园设计规范》GB 51192-2016", up: true, ph: "ms_2" },
-    { t: 0.69, yr: "2018", place: "中国", txt: "《城市居住区规划设计标准》GB 50180-2018：15分钟生活圈绿地系统", up: false, ph: "sz_2" },
-    { t: 0.82, yr: "2021", place: "中国", txt: "七部委《关于推进体育公园建设的指导意见》；《社区体育公园规划建设指南》T/CSUS 18-2021", up: true },
-    { t: 0.95, yr: "2021", place: "仁寿", txt: "《仁寿县国土空间总体规划(2021-2035)》：城北新城公园城市目标", up: false, ph: "satellite" },
+    { t: 0.69, yr: "2018", place: "中国", txt: "《城市居住区规划设计标准》GB 50180-2018：15分钟生活圈", up: false, ph: "sz_4" },
+    { t: 0.82, yr: "2021", place: "中国", txt: "七部委《关于推进体育公园建设的指导意见》；T/CSUS 18-2021", up: true, ph: "wh_2" },
+    { t: 0.95, yr: "2021", place: "仁寿", txt: "《仁寿县国土空间总体规划(2021-2035)》：城北新城公园城市", up: false, ph: "satellite" },
   ];
   nodes.forEach((n) => {
     const [x, y] = pt(n.t);
     const foreign = n.place === "美国" || n.place === "新加坡", col = foreign ? NAVY : ORANGE;
     s.addShape(pres.shapes.OVAL, { x: x - 0.08, y: y - 0.08, w: 0.16, h: 0.16, fill: { color: col }, line: { color: WHITE, width: 1 } });
-    s.addText(n.yr, { x: x - 0.5, y: n.up ? y + 0.12 : y - 0.38, w: 1.0, h: 0.26, fontFace: FE, fontSize: 9, bold: true, color: col, align: "center", margin: 0, isTextBox: true });
-    const cw = 1.72, x0 = Math.min(Math.max(x - cw / 2, 0.45), 9.65 - cw);
-    const avail = n.up ? y - 0.3 - 1.0 : 5.2 - (y + 0.3);
-    const withPhoto = !!n.ph && avail >= 1.3;
-    const ch = withPhoto ? 1.35 : 0.72;
-    const y0 = n.up ? y - 0.3 - ch : y + 0.3;
-    s.addShape(pres.shapes.LINE, { x, y: n.up ? y0 + ch : y, w: 0, h: 0.3, line: { color: col, width: 1, dashType: "dash" } });
+    s.addText(n.yr, { x: x - 0.5, y: n.up ? y + 0.1 : y - 0.36, w: 1.0, h: 0.26, fontFace: FE, fontSize: 9, bold: true, color: col, align: "center", margin: 0, isTextBox: true });
+    const cw = n.t > 0.9 ? 1.5 : 1.78, ch = 1.2, x0 = Math.min(Math.max(x - cw / 2, 0.45), 9.65 - cw);
+    const y0 = n.up ? y - 0.28 - ch : y + 0.28;
+    s.addShape(pres.shapes.LINE, { x, y: n.up ? y0 + ch : y, w: 0, h: 0.28, line: { color: col, width: 1, dashType: "dash" } });
     rect(s, x0, y0, cw, ch, LIGHT);
-    let ty = y0 + 0.04;
-    if (withPhoto) { img(s, n.ph, x0 + 0.05, y0 + 0.05, cw - 0.1, 0.62); ty = y0 + 0.69; }
-    s.addText([{ text: n.place + " ", options: { bold: true, color: col } }, { text: n.txt, options: { color: GRAY } }], { x: x0 + 0.05, y: ty, w: cw - 0.1, h: ch - (ty - y0) - 0.03, fontFace: F, fontSize: 6.5, margin: 0, isTextBox: true, valign: "top", lineSpacingMultiple: 1.05 });
+    img(s, n.ph, x0 + 0.05, y0 + 0.05, cw - 0.1, 0.62);
+    s.addText([{ text: n.place + " ", options: { bold: true, color: col } }, { text: n.txt, options: { color: GRAY } }], { x: x0 + 0.05, y: y0 + 0.69, w: cw - 0.1, h: 0.5, fontFace: F, fontSize: 6.5, margin: 0, isTextBox: true, valign: "top", lineSpacingMultiple: 1.05 });
   });
-  txt(s, "蓝色：国外；橙色：国内与地方。配图为本文案例照片及场地卫星影像。", 0.5, 5.28, 6, 0.25, { fontSize: 7.5, color: MUTED });
+  txt(s, "蓝色：国外；橙色：国内与地方。国外节点配图为本文案例示意照片，国内节点为案例照片及场地卫星影像。", 0.5, 5.3, 7, 0.25, { fontSize: 7, color: MUTED });
 }
 
 // ---------- 1.7 案例参考（4页） ----------
