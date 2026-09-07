@@ -24,9 +24,16 @@ function header(s, sec, en, sub) {
   if (sub) s.addText(sub, { x: 0.5, y: 0.63, w: 8.5, h: 0.32, fontFace: F, fontSize: 12, bold: true, color: BLUE, margin: 0, isTextBox: true });
   s.addText(String(page).padStart(2, "0"), { x: 9.0, y: 5.28, w: 0.65, h: 0.25, fontFace: FE, fontSize: 9, color: "999999", align: "right", margin: 0, isTextBox: true });
 }
-function img(s, name, x, y, w, h, cap) {
-  s.addImage({ path: FIG(name), x, y, w, h, sizing: { type: "cover", w, h } });
-  if (cap) s.addText(cap, { x, y: y + h + 0.02, w, h: 0.22, fontFace: F, fontSize: 8, color: MUTED, align: "center", margin: 0, isTextBox: true });
+const DIMS = require(path.join(__dirname, "figs", "dims.json"));
+// 按原图宽高比等比缩放放入 (x,y,w,h) 框内，不裁切不拉伸；水平居中，默认顶部对齐
+function img(s, name, x, y, w, h, cap, o = {}) {
+  const [iw, ih] = DIMS[name];
+  const sc = Math.min(w / iw, h / ih);
+  const dw = iw * sc, dh = ih * sc;
+  const dx = x + (w - dw) / 2, dy = o.vcenter ? y + (h - dh) / 2 : y;
+  s.addImage({ path: FIG(name), x: dx, y: dy, w: dw, h: dh });
+  if (cap) s.addText(cap, { x, y: dy + dh + 0.02, w, h: 0.22, fontFace: F, fontSize: 8, color: MUTED, align: "center", margin: 0, isTextBox: true });
+  return { x: dx, y: dy, w: dw, h: dh };
 }
 function txt(s, t, x, y, w, h, o = {}) {
   s.addText(t, Object.assign({ x, y, w, h, fontFace: F, fontSize: 10, color: GRAY, valign: "top", margin: 2, isTextBox: true, lineSpacingMultiple: 1.15 }, o));
@@ -58,7 +65,10 @@ const SEC3 = ["03 场地规划分析", "Site Planning Analysis"];
   const s = pres.addSlide();
   s.background = { color: WHITE };
   rect(s, 0, 0, 5.4, 5.625, NAVY);
-  img(s, "tf_5", 5.4, 0, 4.6, 5.625);
+  rect(s, 5.4, 0, 4.6, 5.625, LIGHT);
+  img(s, "tf_5", 5.6, 0.35, 4.2, 2.6);
+  img(s, "tf_1", 5.6, 3.05, 2.05, 2.25);
+  img(s, "ms_2", 7.75, 3.05, 2.05, 2.25);
   s.addText("风景园林专业毕业设计  开题报告", { x: 0.5, y: 0.6, w: 4.6, h: 0.3, fontFace: F, fontSize: 11, color: "C9D6F0", margin: 0, isTextBox: true });
   s.addText("跃动·栖园", { x: 0.5, y: 1.15, w: 4.7, h: 0.9, fontFace: F, fontSize: 40, bold: true, color: WHITE, margin: 0, isTextBox: true });
   s.addText("全民健康视角下的眉山市仁寿县体育公园景观设计", { x: 0.5, y: 2.1, w: 4.7, h: 0.75, fontFace: F, fontSize: 15, bold: true, color: WHITE, margin: 0, isTextBox: true, valign: "top" });
@@ -71,7 +81,9 @@ const SEC3 = ["03 场地规划分析", "Site Planning Analysis"];
 {
   const s = pres.addSlide();
   s.background = { color: WHITE };
-  img(s, "ms_2", 0, 0, 3.3, 5.625);
+  img(s, "ms_2", 0.4, 0.4, 2.6, 1.5);
+  img(s, "tf_5", 0.4, 2.0, 2.6, 1.9);
+  img(s, "sz_4", 0.4, 4.0, 2.6, 1.4);
   s.addText("目  录", { x: 3.7, y: 0.45, w: 3, h: 0.55, fontFace: F, fontSize: 26, bold: true, color: NAVY, margin: 0, isTextBox: true });
   s.addText("CONTENT", { x: 3.7, y: 1.0, w: 3, h: 0.3, fontFace: FE, fontSize: 10, color: ORANGE, charSpacing: 3, margin: 0, isTextBox: true });
   const cols = [
@@ -87,10 +99,12 @@ const SEC3 = ["03 场地规划分析", "Site Planning Analysis"];
 }
 
 // ---------- 章节页 ----------
-function sectionSlide(num, title, en, items, photo) {
+function sectionSlide(num, title, en, items, photos) {
   const s = pres.addSlide();
   header(s, `${num} ${title}`, en, null);
-  img(s, photo, 5.4, 0.85, 4.25, 4.2);
+  img(s, photos[0], 5.3, 0.9, 4.35, 2.3);
+  img(s, photos[1], 5.3, 3.3, 2.1, 1.85);
+  img(s, photos[2], 7.55, 3.3, 2.1, 1.85);
   s.addText(num, { x: 0.6, y: 1.0, w: 3, h: 1.0, fontFace: FE, fontSize: 60, bold: true, color: NAVY, margin: 0, isTextBox: true });
   s.addText(title, { x: 0.6, y: 2.0, w: 4.5, h: 0.5, fontFace: F, fontSize: 22, bold: true, color: GRAY, margin: 0, isTextBox: true });
   const half = Math.ceil(items.length / 2);
@@ -101,7 +115,7 @@ function sectionSlide(num, title, en, items, photo) {
     s.addText(items.join("\n"), { x: 0.6, y: 2.65, w: 4.5, h: 2.4, fontFace: F, fontSize: 10, color: GRAY, margin: 0, isTextBox: true, valign: "top", lineSpacingMultiple: 1.4 });
   }
 }
-sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研究目的", "1.3 研究意义", "1.4 技术路线与研究方法", "1.5 相关概念", "1.6 国内外研究现状", "1.7 案例参考"], "tf_1");
+sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研究目的", "1.3 研究意义", "1.4 技术路线与研究方法", "1.5 相关概念", "1.6 国内外研究现状", "1.7 案例参考"], ["tf_1", "tf_3", "sz_1"]);
 
 // ---------- 1.1 时代需求 ----------
 {
@@ -136,7 +150,9 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     s.addText(r[1], { x: 1.6, y, w: 4.7, h: 0.32, fontFace: F, fontSize: 10.5, bold: true, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
     s.addText(r[2], { x: 1.6, y: y + 0.32, w: 4.7, h: 0.4, fontFace: F, fontSize: 9, color: MUTED, margin: 0, isTextBox: true, valign: "top" });
   });
-  img(s, "tf_2", 6.6, 1.02, 3.05, 3.85, "成都天府公园西区（案例照片）");
+  img(s, "tf_2", 6.6, 1.02, 1.45, 1.85);
+  img(s, "tf_3", 8.2, 1.02, 1.45, 1.85);
+  img(s, "ms_4", 6.6, 3.05, 3.05, 1.75, "成都天府公园西区 / 牧山体育公园（案例照片）");
 }
 
 // ---------- 1.1 人口结构 ----------
@@ -148,13 +164,16 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     { name: "15-59岁", labels: ["全国", "四川省", "仁寿县"], values: [63.35, 62.19, 58.13] },
     { name: "60岁及以上", labels: ["全国", "四川省", "仁寿县"], values: [18.7, 21.71, 26.56] },
   ], { x: 0.45, y: 1.0, w: 5.4, h: 3.5, barDir: "col", barGrouping: "clustered", chartColors: [GREEN, NAVY, ORANGE], showTitle: true, title: "第七次全国人口普查年龄构成对比（%）", titleFontFace: F, titleFontSize: 10, titleColor: GRAY, showValue: true, dataLabelPosition: "outEnd", dataLabelFormatCode: "0.0", dataLabelFontSize: 8, dataLabelFontFace: FE, catAxisLabelFontFace: F, catAxisLabelFontSize: 9, valAxisLabelFontSize: 8, valAxisLabelFontFace: FE, valGridLine: { color: "DDDDDD", size: 0.5 }, catGridLine: { style: "none" }, showLegend: true, legendPos: "b", legendFontFace: F, legendFontSize: 8, valAxisMaxVal: 70 });
-  rect(s, 6.1, 1.0, 3.55, 1.7, LIGHT);
-  label(s, "仁寿县人口特征（2020年七普）", 6.25, 1.05, 3.3);
-  txt(s, "常住人口111.0万人。60岁及以上占26.56%，65岁及以上占21.94%，分别高于全国7.86和8.44个百分点，已进入深度老龄化；0-14岁占15.31%。老年康养与亲子游憩需求突出。", 6.2, 1.35, 3.4, 1.3, { fontSize: 8.5 });
-  rect(s, 6.1, 2.85, 3.55, 1.65, LIGHT);
-  label(s, "城北新城现状问题", 6.25, 2.9, 3.3);
-  txt(s, "成德眉资同城化片区，仁寿向北拓展核心宜居板块；大量商品住宅集中落地，居住密度持续提升。配套逐步完善，但集中型公共休闲绿地供给严重不足，现有绿地多为小区内部零散附属绿化，缺少服务全龄、兼具生态运动休闲社交功能的综合公园。", 6.2, 3.2, 3.4, 1.3, { fontSize: 8.5 });
-  txt(s, "数据来源：国家统计局《第七次全国人口普查公报（第五号）》；四川省统计局《四川省第七次全国人口普查公报（第四号）》；仁寿县人民政府《仁寿县第七次全国人口普查公报（第三号）》。", 0.5, 4.7, 9.15, 0.4, { fontSize: 7.5, color: MUTED });
+  rect(s, 6.1, 1.0, 3.55, 1.25, LIGHT);
+  label(s, "仁寿县人口特征（2020年七普）", 6.25, 1.03, 3.3, 0.26, 10);
+  txt(s, "常住人口111.0万人。60岁及以上占26.56%，65岁及以上占21.94%，分别高于全国7.86和8.44个百分点，已进入深度老龄化；0-14岁占15.31%。老年康养与亲子游憩需求突出。", 6.2, 1.28, 3.4, 0.95, { fontSize: 8 });
+  rect(s, 6.1, 2.35, 3.55, 1.25, LIGHT);
+  label(s, "城北新城现状问题", 6.25, 2.38, 3.3, 0.26, 10);
+  txt(s, "成德眉资同城化片区，仁寿向北拓展核心宜居板块；大量商品住宅集中落地，居住密度持续提升。配套逐步完善，但集中型公共休闲绿地供给严重不足，缺少服务全龄、兼具生态运动休闲社交功能的综合公园。", 6.2, 2.63, 3.4, 0.95, { fontSize: 8 });
+  img(s, "site_1", 6.1, 3.7, 1.72, 1.1);
+  img(s, "site_3", 7.93, 3.7, 1.72, 1.1, "");
+  txt(s, "城北新城场地周边现状", 6.1, 4.72, 3.55, 0.2, { fontSize: 7.5, color: MUTED, align: "center" });
+  txt(s, "数据来源：国家统计局《第七次全国人口普查公报（第五号）》；四川省统计局《四川省第七次全国人口普查公报（第四号）》；仁寿县人民政府《仁寿县第七次全国人口普查公报（第三号）》。", 0.5, 4.6, 5.4, 0.55, { fontSize: 7, color: MUTED });
 }
 
 // ---------- 1.2 研究目的 ----------
@@ -247,9 +266,10 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     "规范出台：《公园设计规范》GB 51192-2016、《社区体育公园规划建设指南》T/CSUS 18-2021",
     "成渝西南片区实践：浅丘地貌土方优化、乡土植物应用、海绵设施整合、动静分区",
     "现有研究多聚焦大中型城市综合体育公园，面向县域新城尺度、服务高密度居住区的中小型体育公园研究薄弱，缺乏适配县域人群结构、建设投资条件的成熟设计范式——本研究的探索空间"], 5.2, 1.38, 4.45, 2.2, 8.5);
-  img(s, "wh_1", 0.5, 3.45, 2.95, 1.55, "全天候遮阳运动空间（芜湖桥下体育公园）");
-  img(s, "sz_1", 3.6, 3.45, 2.95, 1.55, "极限运动场地（苏州相城活力体育公园）");
-  img(s, "ms_2", 6.7, 3.45, 2.95, 1.55, "留白绿地新建体育公园（成都牧山）");
+  img(s, "wh_1", 0.5, 3.45, 2.2, 1.5, "全天候遮阳运动空间（芜湖）");
+  img(s, "sz_1", 2.82, 3.45, 2.2, 1.5, "极限运动场地（苏州相城）");
+  img(s, "ms_2", 5.14, 3.45, 2.2, 1.5, "留白绿地新建公园（成都牧山）");
+  img(s, "tf_3", 7.46, 3.45, 2.2, 1.5, "林荫健身步道（成都天府公园西区）");
 }
 
 // ---------- 1.6 发展脉络 ----------
@@ -279,7 +299,7 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     rect(s, cx0, y0, cw, ch, LIGHT);
     s.addShape(pres.shapes.LINE, { x: cx, y: n.up ? y0 + ch : yLine, w: 0, h: n.up ? yLine - (y0 + ch) : y0 - yLine, line: { color: col, width: 1, dashType: "dash" } });
     let ty = y0 + 0.05;
-    if (n.ph) { s.addImage({ path: FIG(n.ph), x: cx0 + 0.06, y: y0 + 0.06, w: cw - 0.12, h: 0.6, sizing: { type: "cover", w: cw - 0.12, h: 0.6 } }); ty = y0 + 0.68; }
+    if (n.ph) { img(s, n.ph, cx0 + 0.06, y0 + 0.06, cw - 0.12, 0.62); ty = y0 + 0.7; }
     s.addText(n.place, { x: cx0 + 0.08, y: ty, w: cw - 0.16, h: 0.22, fontFace: F, fontSize: 8.5, bold: true, color: col, margin: 0, isTextBox: true });
     txt(s, n.t, cx0 + 0.04, ty + 0.22, cw - 0.08, y0 + ch - ty - 0.24, { fontSize: 7, lineSpacingMultiple: 1.05 });
   });
@@ -312,7 +332,7 @@ caseSlide("四", "芜湖长江三桥桥下体育公园", ["wh_2", "周围交通�
   ["全天候遮阳运动场地设计思路，适配仁寿夏季高温", "模块化球类场地集约布局", "透水铺装+植草沟一体化海绵做法", "全年龄段运动设施均衡配置"]);
 
 // ---------- 02 章节 ----------
-sectionSlide("02", "项目研究概述", SEC2[1], ["2.1 上位规划", "2.2 区位分析", "2.3 气候分析", "2.4 植物分析", "2.5 历史文化分析", "2.6 周边道路分析", "2.7 周边交通分析", "2.8 周边人行流线分析", "2.9 周边用地分析", "2.10 地形地貌分析", "2.11 场地现状分析", "2.12 人群结构分析", "2.13 主要人群需求分析", "2.14 光照分析", "2.15 SWOT分析", "2.16 问题梳理"], "satellite");
+sectionSlide("02", "项目研究概述", SEC2[1], ["2.1 上位规划", "2.2 区位分析", "2.3 气候分析", "2.4 植物分析", "2.5 历史文化分析", "2.6 周边道路分析", "2.7 周边交通分析", "2.8 周边人行流线分析", "2.9 周边用地分析", "2.10 地形地貌分析", "2.11 场地现状分析", "2.12 人群结构分析", "2.13 主要人群需求分析", "2.14 光照分析", "2.15 SWOT分析", "2.16 问题梳理"], ["satellite", "site_2", "site_4"]);
 
 // ---------- 2.1 上位规划 ----------
 {
@@ -327,8 +347,9 @@ sectionSlide("02", "项目研究概述", SEC2[1], ["2.1 上位规划", "2.2 区�
     s.addText(p[0], { x: 3.55, y, w: 2.6, h: 0.28, fontFace: F, fontSize: 10, bold: true, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
     txt(s, p[1], 3.5, y + 0.28, 2.75, 0.6, { fontSize: 8.5 });
   });
-  rect(s, 6.5, 1.02, 3.15, 4.0, LIGHT);
-  txt(s, "《仁寿县国土空间总体规划(2021-2035)》明确城北新城“三生融合辐射周边、公园城市”建设目标，要求完善居住区集中绿地布局，补齐城市绿色公共空间短板。\n\n城北新城是仁寿城市向北拓展的核心宜居板块，位于成德眉资同城化发展片区，大量商品住宅集中落地，居住密度持续提升。本地块为规划预留的集中绿地，承担片区级综合公园功能。", 6.6, 1.12, 2.95, 3.8, { fontSize: 9, lineSpacingMultiple: 1.3 });
+  img(s, "satellite", 6.4, 1.02, 3.25, 2.4, "场地卫星影像（规划预留集中绿地）");
+  rect(s, 6.4, 3.75, 3.25, 1.45, LIGHT);
+  txt(s, "《仁寿县国土空间总体规划(2021-2035)》明确城北新城“三生融合辐射周边、公园城市”建设目标，要求完善居住区集中绿地布局，补齐城市绿色公共空间短板。本地块为规划预留的集中绿地，承担片区级综合公园功能。", 6.45, 3.8, 3.15, 1.38, { fontSize: 8 });
 }
 
 // ---------- 2.2 区位 ----------
@@ -351,13 +372,12 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Climate Analysis", "2.3 气候分析——气温与降水");
-  s.addChart(pres.charts.LINE, [
-    { name: "平均最高气温", labels: MON, values: [10.0, 13.1, 18.2, 23.9, 27.6, 29.3, 31.2, 31.1, 26.5, 21.4, 16.9, 11.3] },
-    { name: "平均气温", labels: MON, values: [7.0, 9.6, 13.9, 18.9, 22.6, 24.9, 26.8, 26.5, 22.7, 18.1, 13.7, 8.5] },
-    { name: "平均最低气温", labels: MON, values: [4.6, 6.9, 10.6, 15.1, 18.8, 21.5, 23.5, 23.1, 19.9, 15.8, 11.3, 6.2] },
-  ], { x: 0.45, y: 1.0, w: 4.55, h: 3.1, chartColors: [ORANGE, NAVY, GREEN], lineSize: 2, lineDataSymbolSize: 5, showTitle: true, title: "仁寿县各月气温（℃，1991—2020年）", titleFontFace: F, titleFontSize: 10, titleColor: GRAY, catAxisTitle: "月份", showCatAxisTitle: true, catAxisTitleFontFace: F, catAxisTitleFontSize: 8, catAxisLabelFontSize: 8, valAxisLabelFontSize: 8, valGridLine: { color: "DDDDDD", size: 0.5 }, catGridLine: { style: "none" }, showLegend: true, legendPos: "b", legendFontFace: F, legendFontSize: 8 });
-  s.addChart(pres.charts.BAR, [{ name: "降水量", labels: MON, values: [10.2, 13.2, 27.6, 56.8, 85.4, 131.7, 182.7, 197.4, 108.8, 43.0, 16.7, 8.3] }],
-    { x: 5.1, y: 1.0, w: 4.55, h: 3.1, barDir: "col", chartColors: [GREEN], showTitle: true, title: "仁寿县各月降水量（mm，1991—2020年）", titleFontFace: F, titleFontSize: 10, titleColor: GRAY, showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 7, catAxisTitle: "月份", showCatAxisTitle: true, catAxisTitleFontFace: F, catAxisTitleFontSize: 8, catAxisLabelFontSize: 8, valAxisLabelFontSize: 8, valGridLine: { color: "DDDDDD", size: 0.5 }, catGridLine: { style: "none" }, showLegend: false });
+  img(s, "clim_temp", 0.5, 1.02, 4.55, 2.5, "仁寿县气温分析（开题报告）");
+  img(s, "clim_rain", 5.1, 1.02, 4.55, 2.5, "仁寿县降水率分析（开题报告）");
+  s.addText([{ text: "年均温 17.8℃", options: { bold: true, color: ORANGE, fontSize: 12, breakLine: true } }, { text: "1月 7.0℃ / 7月 26.8℃", options: { fontSize: 8.5 } }], { x: 0.5, y: 3.62, w: 2.2, h: 0.55, fontFace: F, color: GRAY, margin: 0, isTextBox: true, valign: "middle", align: "center" });
+  s.addText([{ text: "年降水 881.8mm", options: { bold: true, color: NAVY, fontSize: 12, breakLine: true } }, { text: "6—9月占70%以上，8月最多", options: { fontSize: 8.5 } }], { x: 2.8, y: 3.62, w: 2.3, h: 0.55, fontFace: F, color: GRAY, margin: 0, isTextBox: true, valign: "middle", align: "center" });
+  s.addText([{ text: "雨热同季", options: { bold: true, color: GREEN, fontSize: 12, breakLine: true } }, { text: "夏季高温多雨，冬季温和少霜", options: { fontSize: 8.5 } }], { x: 5.2, y: 3.62, w: 2.2, h: 0.55, fontFace: F, color: GRAY, margin: 0, isTextBox: true, valign: "middle", align: "center" });
+  s.addText([{ text: "亚热带湿润季风", options: { bold: true, color: ORANGE, fontSize: 12, breakLine: true } }, { text: "四季分明，雨量充沛", options: { fontSize: 8.5 } }], { x: 7.45, y: 3.62, w: 2.2, h: 0.55, fontFace: F, color: GRAY, margin: 0, isTextBox: true, valign: "middle", align: "center" });
   rect(s, 0.5, 4.2, 9.15, 0.85, LIGHT);
   txt(s, "亚热带湿润季风气候，四季分明，雨热同季。年均温17.8℃，1月最冷（7.0℃），7月最热（26.8℃）；年降水881.8mm，集中于6—9月（占70%以上），8月最多。设计需重点应对夏季高温暴晒（乔木林荫、遮阳构筑）与夏季集中降雨（海绵调蓄、场地排水）。", 0.6, 4.25, 8.95, 0.8, { fontSize: 9 });
   txt(s, "数据来源：中国气象局1991—2020年气候标准值（仁寿站）。开题报告写为年均温17.2℃，与此处17.8℃口径不同，建议统一。", 0.5, 5.08, 8.5, 0.22, { fontSize: 7, color: MUTED });
@@ -447,9 +467,10 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   const s = pres.addSlide();
   header(s, SEC2[0], "Pedestrian Flow Analysis", "2.8 周边人行流线分析");
   img(s, "flow", 0.5, 1.02, 5.7, 2.82, "周边人行流线分析图（蓝：居民聚集点；红：进入聚集点）");
-  bullets(s, ["场地被居住区环绕，紧邻星光幼儿园、文镇小学、文镇幼儿园、仁寿实验中学，人流量大", "主要人流来源：东西两侧小区（最强）、南北两侧小区、四所学校（上下学潮汐）、北侧商务配套", "上学时段学生穿越场地形成通道型流线；晨晚居民从四向就近进入", "设计启示：四向人行入口与小区、学校出入口对应；主流线连续无障碍；通道流线与活动场地分离", "人群构成与行为特征见2.12、2.13"], 6.45, 1.02, 3.2, 3.0, 8.5);
-  rect(s, 0.5, 4.2, 9.15, 0.95, LIGHT);
-  txt(s, "周边居住区常住居民中老年群体占比较高，包含家庭亲子群体、文镇小学师生群体；本地居民以周边小区家庭住户为主。青少年主要开展户外游玩、体育运动；中老年人偏向散步、休闲社交；外来游客多短途停留，偏好生态休闲活动。", 0.6, 4.25, 8.95, 0.85, { fontSize: 9 });
+  bullets(s, ["场地被居住区环绕，紧邻星光幼儿园、文镇小学、文镇幼儿园、仁寿实验中学，人流量大", "主要人流来源：东西两侧小区（最强）、南北两侧小区、四所学校（上下学潮汐）、北侧商务配套", "上学时段学生穿越场地形成通道型流线；晨晚居民从四向就近进入", "设计启示：四向人行入口与小区、学校出入口对应；主流线连续无障碍；通道流线与活动场地分离", "人群构成与行为特征见2.12、2.13"], 6.45, 1.02, 3.2, 2.35, 8.5);
+  img(s, "site_4", 6.45, 3.4, 3.2, 1.6, "场地南侧居住区与现状");
+  rect(s, 0.5, 4.2, 5.7, 0.95, LIGHT);
+  txt(s, "周边居住区常住居民中老年群体占比较高，包含家庭亲子群体、文镇小学师生群体；本地居民以周边小区家庭住户为主。青少年主要开展户外游玩、体育运动；中老年人偏向散步、休闲社交；外来游客多短途停留，偏好生态休闲活动。", 0.58, 4.23, 5.55, 0.9, { fontSize: 8.5 });
 }
 
 // ---------- 2.9 用地 ----------
@@ -461,12 +482,13 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   legend.forEach((l, i) => {
     const y = 1.05 + i * 0.4;
     rect(s, 6.1, y + 0.05, 0.3, 0.22, l[1]);
-    s.addText(l[0], { x: 6.5, y, w: 2.5, h: 0.32, fontFace: F, fontSize: 9.5, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
+    s.addText(l[0], { x: 6.5, y, w: 1.4, h: 0.32, fontFace: F, fontSize: 9.5, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
   });
-  rect(s, 6.1, 3.15, 3.55, 1.15, LIGHT);
-  txt(s, "场地四周以二类居住用地为主，周边配套社区幼儿园、小学、沿街商业、小型社区卫生服务站；北侧普宁大道对面为城市商务配套用地。整体人居环境纯粹，公园服务人群以常住居民为主。", 6.18, 3.2, 3.4, 1.05, { fontSize: 8.5 });
+  img(s, "map", 8.0, 1.05, 1.65, 2.9, "现状地图");
+  rect(s, 6.1, 4.25, 3.55, 0.95, LIGHT);
+  txt(s, "场地四周以二类居住用地为主，周边配套社区幼儿园、小学、沿街商业、小型社区卫生服务站；北侧普宁大道对面为城市商务配套用地。整体人居环境纯粹，公园服务人群以常住居民为主。", 6.15, 4.27, 3.45, 0.9, { fontSize: 8 });
   txt(s, "周边学校：星光幼儿园、文镇小学、文镇幼儿园、仁寿实验中学", 0.5, 4.5, 5.3, 0.3, { fontSize: 8.5, bold: true, color: NAVY });
-  txt(s, "图例颜色为示意，以分析图中标注为准。", 6.1, 4.4, 3.5, 0.25, { fontSize: 7, color: MUTED });
+  txt(s, "图例颜色为示意，以分析图中标注为准。", 6.1, 3.15, 1.9, 0.5, { fontSize: 7, color: MUTED });
 }
 
 // ---------- 2.10 地形地貌 ----------
@@ -474,13 +496,15 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   const s = pres.addSlide();
   header(s, SEC2[0], "Landscape and Landform Analysis", "2.10 地形地貌分析");
   img(s, "satellite", 0.5, 1.02, 4.4, 3.47, "场地卫星影像（红线范围内为设计地块）");
-  img(s, "site_4", 5.15, 1.02, 4.5, 1.8, "场地现状地形照片");
-  rect(s, 5.15, 3.1, 2.2, 2.05, LIGHT);
-  label(s, "区域地貌", 5.25, 3.13, 2.0, 0.28, 10);
-  txt(s, "仁寿地处四川盆地中部，以浅丘、丘陵为主，地势总体平坦。地质稳定，土壤以紫色土为主。", 5.2, 3.42, 2.1, 1.7, { fontSize: 8.5 });
-  rect(s, 7.45, 3.1, 2.2, 2.05, LIGHT);
-  label(s, "场地地形", 7.55, 3.13, 2.0, 0.28, 10);
-  txt(s, "整体平缓，无高差突变；局部有小土坡起伏，无废弃构筑物、无土壤污染。适合土方场内平衡，利用微高差布置线性雨水花园。", 7.5, 3.42, 2.1, 1.7, { fontSize: 8.5 });
+  img(s, "site_4", 5.15, 1.02, 2.2, 1.3);
+  img(s, "site_1", 7.45, 1.02, 2.2, 1.3);
+  txt(s, "场地现状地形照片（局部小土坡、裸土空地）", 5.15, 2.3, 4.5, 0.22, { fontSize: 8, color: MUTED, align: "center" });
+  rect(s, 5.15, 2.65, 2.2, 2.5, LIGHT);
+  label(s, "区域地貌", 5.25, 2.68, 2.0, 0.28, 10);
+  txt(s, "仁寿地处四川盆地中部，以浅丘、丘陵为主，地势总体平坦。地质稳定，土壤以紫色土为主。", 5.2, 2.97, 2.1, 2.1, { fontSize: 8.5 });
+  rect(s, 7.45, 2.65, 2.2, 2.5, LIGHT);
+  label(s, "场地地形", 7.55, 2.68, 2.0, 0.28, 10);
+  txt(s, "整体平缓，无高差突变；局部有小土坡起伏，无废弃构筑物、无土壤污染。适合土方场内平衡，利用微高差布置线性雨水花园。", 7.5, 2.97, 2.1, 2.1, { fontSize: 8.5 });
 }
 
 // ---------- 2.11 场地现状 ----------
@@ -488,15 +512,18 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   const s = pres.addSlide();
   header(s, SEC2[0], "Site Current Condition Analysis", "2.11 场地现状分析");
   img(s, "siteplan", 0.5, 1.02, 2.25, 3.95, "场地现状平面图");
-  img(s, "site_1", 2.95, 1.02, 3.0, 1.22);
-  img(s, "site_2", 2.95, 2.34, 3.0, 1.22);
-  img(s, "site_3", 2.95, 3.66, 3.0, 1.22, "场地现状照片（裸土空地、原生林地与周边住宅）");
+  img(s, "site_1", 2.95, 1.02, 2.0, 1.15);
+  img(s, "site_2", 5.05, 1.02, 2.0, 1.15);
+  img(s, "site_3", 2.95, 2.25, 2.0, 1.15);
+  img(s, "site_4", 5.05, 2.25, 2.0, 1.15);
+  txt(s, "场地现状照片（裸土空地、原生林地与周边住宅）", 2.95, 3.42, 4.1, 0.2, { fontSize: 7.5, color: MUTED, align: "center" });
+  img(s, "satellite", 2.95, 3.68, 4.1, 1.35, "场地卫星影像", { vcenter: false });
   const c = [["原生林地", "东北部、中部成片原生乡土乔木群落，长势较好，是核心自然资源，可作为公园生态基底保留利用，减少绿化造价。", GREEN], ["裸土空地", "其余大片区域为裸露待开发土地，平整程度一般，局部小土坡，杂草零散；土壤条件一般，需改良后再营造植物景观。", ORANGE], ["水体与构筑", "场地无水体，属旱地型地块，需人工营造海绵水景；无大型建筑遗存，拆迁工程量小，适合公园开发建设。", NAVY]];
   c.forEach((it, i) => {
-    const y = 1.02 + i * 1.35;
-    rect(s, 6.2, y, 3.45, 1.25, LIGHT);
-    tag(s, it[0], 6.3, y + 0.1, 1.0, 0.3, it[2], 9);
-    txt(s, it[1], 6.25, y + 0.42, 3.35, 0.82, { fontSize: 8.5 });
+    const y = 1.02 + i * 1.38;
+    rect(s, 7.25, y, 2.4, 1.3, LIGHT);
+    tag(s, it[0], 7.33, y + 0.08, 1.0, 0.28, it[2], 9);
+    txt(s, it[1], 7.28, y + 0.38, 2.34, 0.9, { fontSize: 7.5 });
   });
 }
 
@@ -504,25 +531,24 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Population Structure Analysis", "2.12 人群结构分析");
-  const pieOpt = (title) => ({ showTitle: true, title, titleFontFace: F, titleFontSize: 9.5, titleColor: GRAY, showPercent: true, showValue: false, showLabel: true, dataLabelFontSize: 7.5, dataLabelFontFace: F, dataLabelPosition: "bestFit", showLegend: false, chartColors: [NAVY, ORANGE, GREEN, "8FA6D6", "F2B880"] });
-  s.addChart(pres.charts.PIE, [{ name: "人群来源", labels: ["本地居民", "周边居民", "城区居民"], values: [52, 25, 23] }], Object.assign({ x: 0.45, y: 1.0, w: 3.05, h: 2.45 }, pieOpt("使用人群来源构成（%）")));
-  s.addChart(pres.charts.PIE, [{ name: "年龄构成", labels: ["儿童0-12岁", "青少年13-17岁", "青年18-39岁", "中年40-59岁", "老年60岁以上"], values: [15.31, 13.20, 22.90, 22.03, 26.56] }], Object.assign({ x: 3.5, y: 1.0, w: 3.05, h: 2.45 }, pieOpt("使用人群年龄构成（%）")));
+  img(s, "pie_src", 0.5, 1.0, 2.0, 2.0, "使用人群来源构成");
+  img(s, "pie_age", 2.6, 1.0, 2.0, 2.0, "使用人群年龄构成");
+  img(s, "pie_sex", 4.7, 1.0, 2.0, 2.0, "使用人群性别构成");
   const rows = [["人群", "主要活动", "空间需求"], ["老年人", "散步、晨练、休憩闲谈、社交", "康养步道、器械、林荫座椅"], ["家庭亲子", "儿童攀爬游乐、家长陪护", "分龄儿童游乐区、看护休憩"], ["青少年/学生", "跑步、球类、骑行", "球类场地、环形跑道"], ["中青年", "跑步、健身", "健身器械区、夜间照明"], ["外来游客", "短途停留、生态休闲", "阳光草坪、景观节点"]];
   s.addTable(rows.map((r, i) => r.map((c) => ({ text: c, options: { fontFace: F, fontSize: 8, color: i === 0 ? WHITE : GRAY, bold: i === 0, fill: { color: i === 0 ? NAVY : (i % 2 ? LIGHT : PALE) }, valign: "middle", align: "center" } }))),
-    { x: 0.5, y: 3.55, w: 6.05, colW: [1.25, 2.5, 2.3], rowH: 0.27, border: { type: "solid", color: WHITE, pt: 1 } });
+    { x: 0.5, y: 3.4, w: 6.2, colW: [1.3, 2.6, 2.3], rowH: 0.27, border: { type: "solid", color: WHITE, pt: 1 } });
   rect(s, 6.8, 1.0, 2.85, 4.2, LIGHT);
   label(s, "人群结构特征", 6.9, 1.05, 2.6, 0.3, 10.5);
   txt(s, "仁寿县60岁及以上人口占26.56%，明显高于全国（18.70%）与四川（21.71%）。片区周边居民中老年占比高，并含家庭亲子群体与文镇小学等学校师生。\n\n年龄结构呈中老年、青少年占比偏高、青壮年通勤人群为辅的特征；性别构成男50.62%、女49.38%，基本均衡。", 6.85, 1.38, 2.75, 3.0, { fontSize: 8.5, lineSpacingMultiple: 1.3 });
-  txt(s, "数据来源：《仁寿县第七次全国人口普查公报（第三号）》；人群来源、性别构成为开题报告问卷调研预测数据。", 6.85, 4.4, 2.75, 0.75, { fontSize: 7, color: MUTED });
+  txt(s, "数据来源：《仁寿县第七次全国人口普查公报（第三号）》；饼图为开题报告调研预测数据。", 6.85, 4.4, 2.75, 0.75, { fontSize: 7, color: MUTED });
 }
 
 // ---------- 2.13 需求分析 ----------
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Main Audience Needs Analysis", "2.13 主要人群需求分析——活动类型与时段");
-  const pieOpt = (title) => ({ showTitle: true, title, titleFontFace: F, titleFontSize: 9.5, titleColor: GRAY, showPercent: true, showValue: false, showLabel: true, dataLabelFontSize: 7, dataLabelFontFace: F, dataLabelPosition: "bestFit", showLegend: false, chartColors: [NAVY, ORANGE, GREEN, "8FA6D6", "F2B880", "C9D6F0", "D9534F"] });
-  s.addChart(pres.charts.PIE, [{ name: "活动类型", labels: ["散步", "球类", "健身", "跑步", "攀爬", "交谈", "骑行"], values: [20, 21, 18, 15, 9, 3, 13] }], Object.assign({ x: 0.45, y: 1.0, w: 3.05, h: 2.6 }, pieOpt("居民主要活动类型偏好（%）")));
-  s.addChart(pres.charts.PIE, [{ name: "活动时段", labels: ["6:00-9:00", "9:00-12:00", "12:00-14:00", "14:00-17:00", "17:00-20:00", "20:00-24:00", "0:00-6:00"], values: [16, 13, 7, 15, 36, 11, 2] }], Object.assign({ x: 3.5, y: 1.0, w: 3.05, h: 2.6 }, pieOpt("居民户外活动时段分布（%）")));
+  img(s, "pie_act", 0.5, 1.0, 2.45, 2.45, "居民主要活动类型偏好");
+  img(s, "pie_time", 3.55, 1.0, 2.45, 2.45, "居民户外活动时段分布");
   rect(s, 6.8, 1.0, 2.85, 1.55, LIGHT);
   tag(s, "基本需求", 6.9, 1.1, 0.95, 0.3, NAVY, 9);
   txt(s, "出行、日晒、休憩、体锻——全域无障碍步道、遮阳林荫、充足座椅、分龄健身场地。", 6.85, 1.45, 2.75, 1.05, { fontSize: 8.5 });
@@ -531,7 +557,7 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   txt(s, "情感、兴趣、社交、理疗——邻里聚会草坪、种植科普、康养步道、文化记忆节点。", 6.85, 3.15, 2.75, 1.05, { fontSize: 8.5 });
   const rows = [["人群", "主要活动时段", "主要活动类型"], ["中老年人", "6:00—9:00", "晨练散步、日间休憩闲谈、饭后休闲"], ["中年群体", "14:00—20:00", "跑步、健身等体育运动"], ["青少年", "14:00—19:00", "跑步、球类、骑行；上学途经"], ["儿童（亲子）", "全天分散", "攀爬游乐、亲子游乐"]];
   s.addTable(rows.map((r, i) => r.map((c) => ({ text: c, options: { fontFace: F, fontSize: 8, color: i === 0 ? WHITE : GRAY, bold: i === 0, fill: { color: i === 0 ? NAVY : (i % 2 ? LIGHT : PALE) }, valign: "middle", align: "center" } }))),
-    { x: 0.5, y: 3.75, w: 6.05, colW: [1.3, 1.5, 3.25], rowH: 0.27, border: { type: "solid", color: WHITE, pt: 1 } });
+    { x: 0.5, y: 3.8, w: 6.05, colW: [1.3, 1.5, 3.25], rowH: 0.27, border: { type: "solid", color: WHITE, pt: 1 } });
   txt(s, "注：饼图数据为开题报告调研预测，待问卷统计后校正。", 6.85, 4.4, 2.8, 0.5, { fontSize: 7, color: MUTED });
 }
 
@@ -590,7 +616,7 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 }
 
 // ---------- 03 章节 ----------
-sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设计原则", "3.3 设计构思", "3.4 设计策略", "3.5 设计成果", "3.6 进度安排", "3.7 参考文献"], "sz_4");
+sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设计原则", "3.3 设计构思", "3.4 设计策略", "3.5 设计成果", "3.6 进度安排", "3.7 参考文献"], ["sz_4", "ms_1", "wh_1"]);
 
 // ---------- 3.1 设计目标 ----------
 {
@@ -643,6 +669,16 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
   img(s, "ms_2", 6.05, 4.12, 1.75, 1.0, "跃动组团参考");
   img(s, "sz_4", 7.9, 4.12, 1.75, 1.0, "栖居组团参考");
   txt(s, "注：本页构思为依据开题报告目标与案例借鉴整理的初步框架，需确认或替换。", 0.5, 5.15, 5.3, 0.22, { fontSize: 7, color: MUTED });
+}
+
+// ---------- 3.4 设计策略框架图 ----------
+{
+  const s = pres.addSlide();
+  header(s, SEC3[0], "Design Strategy", "3.4 设计策略——策略框架");
+  img(s, "strategy", 0.5, 1.02, 6.3, 4.15, "设计策略框架图（开题报告）");
+  img(s, "ms_1", 7.05, 1.02, 2.6, 1.3, "运动专项场地（案例）");
+  img(s, "wh_1", 7.05, 2.55, 2.6, 1.3, "运动配套休憩与跑道（案例）");
+  img(s, "sz_4", 7.05, 4.08, 2.6, 1.05, "生态基底与林下空间（案例）");
 }
 
 // ---------- 3.4 设计策略 ----------
@@ -710,7 +746,10 @@ const refs2 = ["[12] 周聪惠,陶成蹊,刘婧方,等.基于弹性共享的户�
 {
   const s = pres.addSlide();
   s.background = { color: WHITE };
-  img(s, "tf_1", 0, 0, 4.6, 5.625);
+  rect(s, 0, 0, 4.6, 5.625, LIGHT);
+  img(s, "tf_1", 0.3, 0.35, 4.0, 2.55);
+  img(s, "tf_3", 0.3, 3.05, 1.95, 2.25);
+  img(s, "sz_3", 2.35, 3.05, 1.95, 2.25);
   rect(s, 4.6, 0, 5.4, 5.625, NAVY);
   s.addText("请各位老师批评指正", { x: 5.0, y: 1.9, w: 4.6, h: 0.8, fontFace: F, fontSize: 28, bold: true, color: WHITE, margin: 0, isTextBox: true });
   s.addText("跃动·栖园——全民健康视角下的眉山市仁寿县体育公园景观设计", { x: 5.0, y: 2.8, w: 4.6, h: 0.7, fontFace: F, fontSize: 11, color: "C9D6F0", margin: 0, isTextBox: true, valign: "top" });
