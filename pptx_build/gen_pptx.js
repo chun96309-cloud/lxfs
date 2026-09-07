@@ -137,32 +137,32 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Preface", "1.1 前言");
-  const r = img(s, "x_aerial_city", 0.5, 1.0, 5.2, 3.5);
+  const r = img(s, "x_cyclists", 0.5, 1.0, 5.2, 3.5);
   rect(s, r.x, r.y + r.h - 0.95, r.w, 0.95, "000000", { fill: { color: "000000", transparency: 45 } });
-  s.addText("我国城市人口老龄化加剧，高密度新城缺少运动与康养场所。如何为亚健康人群与老年人提供一个兼顾美观、实用，同时能休闲娱乐、锻炼身体、放松身心的场所，非常值得探究。", { x: r.x + 0.1, y: r.y + r.h - 0.9, w: r.w - 0.2, h: 0.85, fontFace: F, fontSize: 8.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
-  s.addText("压力！城市病！NO！", { x: r.x + 0.3, y: r.y + 0.9, w: 3.6, h: 0.6, fontFace: F, fontSize: 24, bold: true, color: WHITE, rotate: 340, margin: 0, isTextBox: true, shadow: { type: "outer", color: "000000", blur: 3, offset: 1, angle: 45, opacity: 0.6 } });
-  s.addText("心理健康状态", { x: 5.9, y: 1.0, w: 3.75, h: 0.7, fontFace: F, fontSize: 30, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
+  s.addText("城镇化持续推进，高密度居住区不断涌现，可供居民开展户外运动的场地供给不足，社区运动配套设施缺口较大。如何为全龄居民提供一处能健身、游憩、社交的体育公园，非常值得探究。", { x: r.x + 0.1, y: r.y + r.h - 0.9, w: r.w - 0.2, h: 0.85, fontFace: F, fontSize: 8.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+  s.addText("动起来！体育公园！", { x: r.x + 0.3, y: r.y + 0.9, w: 3.6, h: 0.6, fontFace: F, fontSize: 24, bold: true, color: WHITE, rotate: 340, margin: 0, isTextBox: true, shadow: { type: "outer", color: "000000", blur: 3, offset: 1, angle: 45, opacity: 0.6 } });
+  s.addText("全民健身状态", { x: 5.9, y: 1.0, w: 3.75, h: 0.7, fontFace: F, fontSize: 30, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
   for (let i = 0; i < 6; i++) rect(s, 5.95 + i * 0.62, 1.8, 0.55, 0.28, ["D9DEE8", "C5CDDC", "AEB9CE", "97A5C0", "7E90B2", "5B6F9C"][i]);
-  s.addText("被忽略的亚健康群体", { x: 5.9, y: 2.15, w: 3.75, h: 0.45, fontFace: F, fontSize: 16, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
+  s.addText("被忽略的日常运动需求", { x: 5.9, y: 2.15, w: 3.75, h: 0.45, fontFace: F, fontSize: 16, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
   rect(s, 5.9, 2.65, 1.85, 1.85, "3E5A3A");
-  const kw = [["孤独感", 14, 0.08, 0.1], ["依赖", 12, 1.05, 0.12], ["关爱", 11, 0.12, 0.55], ["经济困扰", 10, 0.7, 0.72], ["焦虑", 9, 0.08, 1.15], ["健康担忧", 13, 0.55, 1.3]];
+  const kw = [["久坐少动", 13, 0.08, 0.1], ["场地不足", 11, 1.0, 0.14], ["老龄化", 12, 0.12, 0.55], ["慢性病风险", 10, 0.7, 0.72], ["亲子游憩", 9, 0.08, 1.15], ["邻里社交", 13, 0.55, 1.3]];
   kw.forEach((k) => s.addText(k[0], { x: 5.9 + k[2], y: 2.65 + k[3], w: 1.3, h: 0.4, fontFace: F, fontSize: k[1], bold: true, color: WHITE, margin: 0, isTextBox: true }));
   rect(s, 7.9, 2.65, 1.75, 1.85, "E4E6EA");
-  txt(s, "我国正处于高速发展时期，伴随而来的是快节奏生活，使人压力日益增加。据世界卫生组织统计，人群中亚健康人群已高达70%。", 7.95, 2.7, 1.65, 1.75, { fontSize: 8, valign: "middle" });
-  s.addText("亚！亚！健康！亚！", { x: 0.5, y: 4.6, w: 3.6, h: 0.5, fontFace: F, fontSize: 20, bold: true, color: "3E5A3A", margin: 0, isTextBox: true });
-  txt(s, "健康不是身体状况的问题，而是精神状况的问题。", 4.2, 4.65, 5.45, 0.4, { fontSize: 10, color: GRAY, valign: "middle", align: "right" });
+  txt(s, "仁寿城北新城集中型公共休闲绿地供给严重不足，现有绿地多为小区内部零散附属绿化，仅配简易健身器械，缺少服务全龄居民的城市综合体育公园。", 7.95, 2.7, 1.65, 1.75, { fontSize: 8, valign: "middle" });
+  s.addText("跃动！栖园！全民健身！", { x: 0.5, y: 4.6, w: 4.2, h: 0.5, fontFace: F, fontSize: 20, bold: true, color: "3E5A3A", margin: 0, isTextBox: true });
+  txt(s, "全民健身 · 全龄游憩 · 生态栖居", 4.8, 4.65, 4.85, 0.4, { fontSize: 10, color: GRAY, valign: "middle", align: "right" });
 }
 
 // ---------- 1.1 时代需求 ----------
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Topic Background", "1.1 选题背景——时代需求");
-  s.addText("70%中国人处于亚健康状态", { x: 0.5, y: 0.98, w: 9.15, h: 0.3, fontFace: F, fontSize: 12, color: GRAY, align: "center", margin: 0, isTextBox: true });
-  s.addText("慢性病死亡人数占总死亡人数86.6%；2023年我国60岁以上人口占比21.1%，65岁以上占比15.4%", { x: 0.5, y: 1.28, w: 9.15, h: 0.28, fontFace: F, fontSize: 10, color: GRAY, align: "center", margin: 0, isTextBox: true });
-  const cards = [["x_elders_bench", "截至2023年，我国60岁以上人口占比21.1%，65岁以上占比15.4%；仁寿县60岁以上人口达26.56%。", "时代背景需求"],
-    ["x_umbrella", "70%国人处于亚健康状态，工作、生活、学习压力增大，作息不规律，缺乏日常运动与情绪释放场所。", "全民健身需求"],
-    ["x_family", "居民健康意识提升，全龄运动、亲子游憩、老年康养需求增长，推动体育公园与健康城市建设。", "市场机遇人群"],
-    ["x_cyclists", "国家全面推进“健康中国2030”与体育公园建设，仁寿县公园城市规划大力支持。", "政策导向优势"]];
+  s.addText("高密度新城：集中公共绿地与户外运动场地供给不足", { x: 0.5, y: 0.98, w: 9.15, h: 0.3, fontFace: F, fontSize: 12, color: GRAY, align: "center", margin: 0, isTextBox: true });
+  s.addText("仁寿县60岁及以上人口占26.56%，已进入深度老龄化；0-14岁占15.31%，全龄运动与游憩需求突出", { x: 0.5, y: 1.28, w: 9.15, h: 0.28, fontFace: F, fontSize: 10, color: GRAY, align: "center", margin: 0, isTextBox: true });
+  const cards = [["x_aerial_city", "城镇化提速，城市建成区人口密度增大，高密度居住区涌现，公共绿地资源分配不均，户外运动场地供给不足。", "时代背景需求"],
+    ["x_basketball", "国民身体素质与日常运动需求矛盾日益凸显，居民就近健身、球类跑步、亲子运动的场地缺口大。", "全民健身需求"],
+    ["x_elders_bench", "仁寿县60岁及以上占26.56%，家庭亲子与学校师生集中，老年康养、儿童游乐、青少年运动需求突出。", "市场机遇人群"],
+    ["x_cyclists", "《“健康中国2030”规划纲要》、七部委体育公园指导意见、仁寿县国土空间规划“公园城市”目标共同支持。", "政策导向优势"]];
   cards.forEach((c, i) => {
     const x = 0.55 + i * 2.3, bw = 2.15, bh = 2.75;
     const r = img(s, c[0], x, 1.62, bw, bh);
@@ -170,7 +170,7 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     s.addText(c[1], { x: r.x + 0.06, y: r.y + r.h * 0.4, w: r.w - 0.12, h: 0.95, fontFace: F, fontSize: 7.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
     s.addText(c[2], { x, y: 4.42, w: bw, h: 0.32, fontFace: F, fontSize: 12, bold: true, color: GRAY, align: "center", margin: 0, isTextBox: true });
   });
-  txt(s, "如今，因工作、生活、学习等带来的压力，导致人们生活作息不规律、熬夜、睡眠不足，身体状况变差。但我国缺少运动与疗愈场所，人们压力无处释放，导致许多年轻人处于亚健康状态。在全民健康、公园城市政策背景下，集运动健康、全龄游憩于一体的体育型综合公园成为化解上述矛盾的核心空间载体。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
+  txt(s, "城市面临雨洪调蓄压力、人居环境品质参差不齐、不同年龄群体休闲游憩需求难以被充分满足等现实矛盾。在全民健康、公园城市政策背景下，集运动健康、全龄游憩于一体的体育型综合公园，成为化解高密度社区绿地不足、居民运动空间匮乏、道路环境干扰等多重问题的核心空间载体。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
 }
 
 // ---------- 1.1 政策导向 ----------
@@ -243,10 +243,10 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     rect(s, x, y, 2.35, 0.55, "E6E8DF");
     s.addText([{ text: t, options: { fontSize: 12, bold: true, color: GRAY, breakLine: true } }, { text: en, options: { fontSize: 7, color: MUTED, fontFace: FE } }], { x, y, w: 2.35, h: 0.55, fontFace: F, align: "center", valign: "middle", margin: 0, isTextBox: true });
   };
-  [["“预防疾病”", "Prevent illness"], ["“改善心理”", "Improve psychological health"], ["“调节身心”", "Adjust body and mind"]].forEach((b, i) => box(b[0], b[1], 0.5, 1.0 + i * 0.68));
-  [["“老年康养”", "Health care for the aged"], ["“社区运动”", "Community sports"], ["“邻里社交”", "Neighborhood interaction"]].forEach((b, i) => box(b[0], b[1], 7.3, 1.0 + i * 0.68));
-  s.addText("第一阶段：疗愈亚健康人群身心", { x: 3.0, y: 1.05, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
-  s.addText("第二阶段：全龄健身·康养·社交", { x: 3.0, y: 2.35, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  [["“全民健身”", "Fitness for all"], ["“全龄友好”", "All-age friendly"], ["“生态缓冲”", "Ecological buffer"]].forEach((b, i) => box(b[0], b[1], 0.5, 1.0 + i * 0.68));
+  [["“老年康养”", "Health care for the aged"], ["“亲子游憩”", "Family recreation"], ["“邻里社交”", "Neighborhood interaction"]].forEach((b, i) => box(b[0], b[1], 7.3, 1.0 + i * 0.68));
+  s.addText("第一阶段：补齐城北新城运动绿地缺口", { x: 3.0, y: 1.05, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  s.addText("第二阶段：全龄健身·康养·社交融合", { x: 3.0, y: 2.35, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
   s.addShape(pres.shapes.LINE, { x: 3.4, y: 2.0, w: 3.35, h: 0, line: { color: LINE, width: 0.75, dashType: "dash" } });
   img(s, "x_people_band", 0.5, 3.05, 9.15, 1.7);
   txt(s, "随着国家发展和社会进步，健康观念已深入人心，要让居民认识到体育公园的重要性并积极走入公园运动。理论上，本研究丰富川南县域新城高密度居住区体育公园设计研究；实践上，城市层面盘活闲置绿地、补齐城北新城体育设施短板，民生层面满足全龄康养、游乐、运动、社交需求，生态层面削弱主干道噪声粉尘、缓解热岛效应，实现全民健康是本次设计的主要意义。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
@@ -590,13 +590,13 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Main Audience Needs Analysis", "2.13 主要人群需求分析");
-  txt(s, "室外除了“树”，好像并没有什么期待。场地功能单一，功能设置没有吸引力，景观没有特征容易视觉疲劳。\n\n周边居民以中老年、家庭亲子与学生为主：出行、日晒、休憩、体锻是基本需求；情感、兴趣、社交、理疗是进阶需求。真正的需求在空间中得以实现，是主宰力的完美表现。", 0.5, 1.15, 2.2, 3.0, { fontSize: 8.5, color: MUTED, lineSpacingMultiple: 1.3 });
+  txt(s, "现有小区附属绿地仅配置简易健身器械，缺乏规模化、分龄化的专业运动场地，居民多元化体育锻炼、亲子运动、康养休闲需求难以满足。\n\n周边居民以中老年、家庭亲子与学生为主：出行、日晒、休憩、体锻是基本需求；情感、兴趣、社交、康养是进阶需求。体育公园需在空间中逐层回应这些需求。", 0.5, 1.15, 2.2, 3.0, { fontSize: 8.5, color: MUTED, lineSpacingMultiple: 1.3 });
   s.addText("基本需求", { x: 2.6, y: 1.05, w: 0.9, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: GRAY, align: "right", margin: 0, isTextBox: true });
   s.addText("进阶需求", { x: 2.6, y: 3.85, w: 0.9, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: GRAY, align: "right", margin: 0, isTextBox: true });
   const shades = ["E07B2A", "E58A45", "EA9A60", "EEA97A", "F2B995", "F6C9B0", "F9D9CA", "FCE9E3"];
   shades.forEach((c, i) => rect(s, 3.57, 1.15 + i * 0.37, 0.07, 0.37, c));
-  ["出行", "日晒", "休憩", "体锻", "情感", "兴趣", "社交", "理疗"].forEach((l, i) => s.addText(l, { x: 3.7, y: 1.12 + i * 0.37, w: 0.5, h: 0.37, fontFace: F, fontSize: 8.5, color: GRAY, margin: 0, isTextBox: true, valign: "middle" }));
-  const rows = [["x_rickshaw", "x_bench2", "x_kites", "x_umbrella"], ["x_bench", "x_bar", "x_tennis2", "x_basketball"], ["x_elders_cake", "x_daisy", "x_cn_street", "x_wheelchair"]];
+  ["出行", "日晒", "休憩", "体锻", "情感", "兴趣", "社交", "康养"].forEach((l, i) => s.addText(l, { x: 3.7, y: 1.12 + i * 0.37, w: 0.5, h: 0.37, fontFace: F, fontSize: 8.5, color: GRAY, margin: 0, isTextBox: true, valign: "middle" }));
+  const rows = [["x_cyclists", "x_kites", "x_bench2", "x_bar"], ["x_basketball", "x_tennis2", "x_skatepark", "x_wheelchair"], ["x_elders_cake", "x_family", "x_cn_street", "x_baseball_kids"]];
   rows.forEach((r, ri) => {
     const y = 1.05 + ri * 1.05, h = 0.98;
     const ws = r.map((n) => Math.min(DIMS[n][0] / DIMS[n][1] * h, 1.7));
