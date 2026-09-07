@@ -117,20 +117,44 @@ function sectionSlide(num, title, en, items, photos) {
 }
 sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研究目的", "1.3 研究意义", "1.4 技术路线与研究方法", "1.5 相关概念", "1.6 国内外研究现状", "1.7 案例参考"], ["tf_1", "tf_3", "sz_1"]);
 
+// ---------- 1.1 前言 ----------
+{
+  const s = pres.addSlide();
+  header(s, SEC1[0], "Preface", "1.1 前言");
+  const r = img(s, "sz_2", 0.5, 1.0, 5.2, 3.5);
+  rect(s, r.x, r.y + r.h - 0.95, r.w, 0.95, "000000", { fill: { color: "000000", transparency: 45 } });
+  s.addText("我国城市人口老龄化加剧，高密度新城缺少运动与康养场所。如何为亚健康人群与老年人提供一个兼顾美观、实用，同时能休闲娱乐、锻炼身体、放松身心的场所，非常值得探究。", { x: r.x + 0.1, y: r.y + r.h - 0.9, w: r.w - 0.2, h: 0.85, fontFace: F, fontSize: 8.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+  s.addText("压力！城市病！NO！", { x: r.x + 0.3, y: r.y + 0.9, w: 3.6, h: 0.6, fontFace: F, fontSize: 24, bold: true, color: WHITE, rotate: 340, margin: 0, isTextBox: true, shadow: { type: "outer", color: "000000", blur: 3, offset: 1, angle: 45, opacity: 0.6 } });
+  s.addText("心理健康状态", { x: 5.9, y: 1.0, w: 3.75, h: 0.7, fontFace: F, fontSize: 30, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
+  for (let i = 0; i < 6; i++) rect(s, 5.95 + i * 0.62, 1.8, 0.55, 0.28, ["D9DEE8", "C5CDDC", "AEB9CE", "97A5C0", "7E90B2", "5B6F9C"][i]);
+  s.addText("被忽略的亚健康群体", { x: 5.9, y: 2.15, w: 3.75, h: 0.45, fontFace: F, fontSize: 16, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
+  rect(s, 5.9, 2.65, 1.85, 1.85, "3E5A3A");
+  const kw = [["孤独感", 14, 0.08, 0.1], ["依赖", 12, 1.05, 0.12], ["关爱", 11, 0.12, 0.55], ["经济困扰", 10, 0.7, 0.72], ["焦虑", 9, 0.08, 1.15], ["健康担忧", 13, 0.55, 1.3]];
+  kw.forEach((k) => s.addText(k[0], { x: 5.9 + k[2], y: 2.65 + k[3], w: 1.3, h: 0.4, fontFace: F, fontSize: k[1], bold: true, color: WHITE, margin: 0, isTextBox: true }));
+  rect(s, 7.9, 2.65, 1.75, 1.85, "E4E6EA");
+  txt(s, "我国正处于高速发展时期，伴随而来的是快节奏生活，使人压力日益增加。据世界卫生组织统计，人群中亚健康人群已高达70%。", 7.95, 2.7, 1.65, 1.75, { fontSize: 8, valign: "middle" });
+  s.addText("亚！亚！健康！亚！", { x: 0.5, y: 4.6, w: 3.6, h: 0.5, fontFace: F, fontSize: 20, bold: true, color: "3E5A3A", margin: 0, isTextBox: true });
+  txt(s, "健康不是身体状况的问题，而是精神状况的问题。", 4.2, 4.65, 5.45, 0.4, { fontSize: 10, color: GRAY, valign: "middle", align: "right" });
+}
+
 // ---------- 1.1 时代需求 ----------
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Topic Background", "1.1 选题背景——时代需求");
-  img(s, "sz_2", 0.5, 1.02, 4.7, 2.7, "高密度城市居住片区（案例照片）");
-  const stats = [["70%", "国人处于亚健康状态"], ["86.6%", "慢性病死亡占总死亡人数"], ["21.1%", "2023年我国60岁以上人口占比"], ["15.4%", "2023年我国65岁以上人口占比"]];
-  stats.forEach((st, i) => {
-    const x = 5.45 + (i % 2) * 2.15, y = 1.02 + Math.floor(i / 2) * 1.4;
-    rect(s, x, y, 2.05, 1.28, LIGHT);
-    s.addText(st[0], { x, y: y + 0.12, w: 2.05, h: 0.6, fontFace: FE, fontSize: 26, bold: true, color: ORANGE, align: "center", margin: 0, isTextBox: true });
-    s.addText(st[1], { x: x + 0.1, y: y + 0.75, w: 1.85, h: 0.45, fontFace: F, fontSize: 8.5, color: GRAY, align: "center", valign: "top", margin: 0, isTextBox: true });
+  s.addText("70%中国人处于亚健康状态", { x: 0.5, y: 0.98, w: 9.15, h: 0.3, fontFace: F, fontSize: 12, color: GRAY, align: "center", margin: 0, isTextBox: true });
+  s.addText("慢性病死亡人数占总死亡人数86.6%；2023年我国60岁以上人口占比21.1%，65岁以上占比15.4%", { x: 0.5, y: 1.28, w: 9.15, h: 0.28, fontFace: F, fontSize: 10, color: GRAY, align: "center", margin: 0, isTextBox: true });
+  const cards = [["tf_2", "截至2023年，我国60岁以上人口占比21.1%，65岁以上占比15.4%；仁寿县60岁以上人口达26.56%。", "时代背景需求"],
+    ["tf_3", "70%国人处于亚健康状态，工作、生活、学习压力增大，作息不规律，缺乏日常运动与情绪释放场所。", "全民健身需求"],
+    ["sz_3", "居民健康意识提升，全龄运动、亲子游憩、老年康养需求增长，推动体育公园与健康城市建设。", "市场机遇人群"],
+    ["sz_1", "国家全面推进“健康中国2030”与体育公园建设，仁寿县公园城市规划大力支持。", "政策导向优势"]];
+  cards.forEach((c, i) => {
+    const x = 0.55 + i * 2.3, bw = 2.15, bh = 2.75;
+    const r = img(s, c[0], x, 1.62, bw, bh);
+    rect(s, r.x, r.y + r.h * 0.4, r.w, 0.95, NAVY, { fill: { color: NAVY, transparency: 30 } });
+    s.addText(c[1], { x: r.x + 0.06, y: r.y + r.h * 0.4, w: r.w - 0.12, h: 0.95, fontFace: F, fontSize: 7.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+    s.addText(c[2], { x, y: 4.42, w: bw, h: 0.32, fontFace: F, fontSize: 12, bold: true, color: GRAY, align: "center", margin: 0, isTextBox: true });
   });
-  txt(s, "随着我国城镇化进程持续推进，城市建成区人口密度不断增大，高密度居住区不断涌现。城市公共绿地资源分配不均，可供居民开展户外运动的场地供给不足，社区运动配套设施缺口较大；同时城市面临雨洪调蓄压力、人居环境品质参差不齐、不同年龄群体休闲游憩需求难以被充分满足等现实矛盾，国民身体素质与日常运动需求之间的矛盾日益凸显。\n因工作、生活、学习带来的压力导致作息不规律、睡眠不足，身体状况变差，但我国缺少疗愈与运动场所。在全民健康、公园城市政策背景下，集运动健康、全龄游憩于一体的体育型综合公园，成为化解上述矛盾的核心空间载体。", 0.5, 4.0, 9.15, 1.2, { fontSize: 9 });
-  txt(s, "注：上排数据为开题报告引用的公开统计口径，答辩前请核对原始来源。", 5.45, 3.78, 4.2, 0.22, { fontSize: 7, color: MUTED });
+  txt(s, "如今，因工作、生活、学习等带来的压力，导致人们生活作息不规律、熬夜、睡眠不足，身体状况变差。但我国缺少运动与疗愈场所，人们压力无处释放，导致许多年轻人处于亚健康状态。在全民健康、公园城市政策背景下，集运动健康、全龄游憩于一体的体育型综合公园成为化解上述矛盾的核心空间载体。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
 }
 
 // ---------- 1.1 政策导向 ----------
@@ -199,21 +223,22 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Research Significance", "1.3 研究意义");
-  rect(s, 0.5, 1.02, 2.9, 4.1, NAVY);
-  s.addText("理论意义", { x: 0.65, y: 1.15, w: 2.6, h: 0.4, fontFace: F, fontSize: 13, bold: true, color: WHITE, margin: 0, isTextBox: true });
-  txt(s, "丰富川南县域新城高密度居住区体育公园规划设计研究；结合仁寿浅丘地域气候、居住区人群活动特征，补充适配县城新城尺度、兼顾生态便民的体育公园设计案例，为西南同类县域新城提供理论参考。", 0.62, 1.65, 2.7, 2.4, { fontSize: 9.5, color: WHITE, lineSpacingMultiple: 1.35 });
-  label(s, "实践意义", 3.65, 1.02, 3, 0.35, 13);
-  const rows = [["城市层面", "落实仁寿县公园城市与全民健康建设要求，盘活城市闲置绿地存量土地，补齐城北新城体育设施短板，塑造兼具运动活力与地域特色的城北门户景观。"],
-    ["民生层面", "打造全龄分段活动空间，满足老人康养、儿童游乐、青年运动、居民休闲社交多元需求，提升居住幸福感，构建和谐邻里氛围。"],
-    ["生态层面", "多层次乡土植物群落与海绵雨水花园，削弱普宁大道噪声粉尘污染，调节片区微气候，缓解热岛效应，提升城北新城生态基底。"]];
-  rows.forEach((r, i) => {
-    const y = 1.45 + i * 1.25;
-    circleNum(s, i + 1, 3.65, y + 0.05, 0.4, i === 1 ? NAVY : ORANGE);
-    s.addText(r[0], { x: 4.15, y, w: 2.5, h: 0.3, fontFace: F, fontSize: 10.5, bold: true, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
-    txt(s, r[1], 4.1, y + 0.32, 2.65, 0.9, { fontSize: 8.5 });
-  });
-  img(s, "ms_4", 6.95, 1.02, 2.7, 1.98, "阳光草坪·邻里休闲");
-  img(s, "sz_3", 6.95, 3.25, 2.7, 1.65, "分龄儿童游乐");
+  const box = (t, en, x, y) => {
+    rect(s, x, y, 2.35, 0.55, "E6E8DF");
+    s.addText([{ text: t, options: { fontSize: 12, bold: true, color: GRAY, breakLine: true } }, { text: en, options: { fontSize: 7, color: MUTED, fontFace: FE } }], { x, y, w: 2.35, h: 0.55, fontFace: F, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  };
+  [["“预防疾病”", "Prevent illness"], ["“改善心理”", "Improve psychological health"], ["“调节身心”", "Adjust body and mind"]].forEach((b, i) => box(b[0], b[1], 0.5, 1.0 + i * 0.68));
+  [["“老年康养”", "Health care for the aged"], ["“社区运动”", "Community sports"], ["“邻里社交”", "Neighborhood interaction"]].forEach((b, i) => box(b[0], b[1], 7.3, 1.0 + i * 0.68));
+  s.addText("第一阶段：疗愈亚健康人群身心", { x: 3.0, y: 1.05, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  s.addText("第二阶段：全龄健身·康养·社交", { x: 3.0, y: 2.35, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  s.addShape(pres.shapes.LINE, { x: 3.4, y: 2.0, w: 3.35, h: 0, line: { color: LINE, width: 0.75, dashType: "dash" } });
+  const band = ["ms_4", "sz_3", "tf_3", "sz_4", "wh_1"];
+  let bh = 1.55, ws = band.map((n) => Math.min(bh * DIMS[n][0] / DIMS[n][1], 2.6));
+  let tot = ws.reduce((p, c) => p + c, 0) + 0.08 * (band.length - 1);
+  if (tot > 9.15) { const k = (9.15 - 0.08 * (band.length - 1)) / (tot - 0.08 * (band.length - 1)); bh *= k; ws = ws.map((w) => w * k); }
+  let bx = 0.5 + (9.15 - (ws.reduce((p, c) => p + c, 0) + 0.08 * (band.length - 1))) / 2;
+  band.forEach((n, i) => { img(s, n, bx, 3.15, ws[i], bh); bx += ws[i] + 0.08; });
+  txt(s, "随着国家发展和社会进步，健康观念已深入人心，要让居民认识到体育公园的重要性并积极走入公园运动。理论上，本研究丰富川南县域新城高密度居住区体育公园设计研究；实践上，城市层面盘活闲置绿地、补齐城北新城体育设施短板，民生层面满足全龄康养、游乐、运动、社交需求，生态层面削弱主干道噪声粉尘、缓解热岛效应，实现全民健康是本次设计的主要意义。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
 }
 
 // ---------- 1.4 技术路线 ----------
@@ -276,32 +301,39 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Historical Development", "1.6 国内外研究现状——发展脉络");
+  const P0 = [0.6, 4.0], P1 = [9.4, 1.8];
+  const dx = P1[0] - P0[0], dy = P1[1] - P0[1];
+  const len = Math.sqrt(dx * dx + dy * dy), ang = Math.atan2(dy, dx) * 180 / Math.PI; // 负角 = 逆时针
+  const cx = (P0[0] + P1[0]) / 2, cy = (P0[1] + P1[1]) / 2;
+  rect(s, cx - len / 2, cy - 0.11, len, 0.22, "C9D6C1", { rotate: 360 + ang });
+  rect(s, cx - len / 2, cy - 0.03, len, 0.06, "4E6B3A", { rotate: 360 + ang });
+  const pt = (t) => [P0[0] + dx * t, P0[1] + dy * t];
+  [["萌芽期", 0.11], ["发展期", 0.5], ["创新成熟期", 0.88]].forEach((pl) => { const [x, y] = pt(pl[1]); s.addText(pl[0], { x: x - 0.7, y: y - 0.5, w: 1.4, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: "4E6B3A", align: "center", rotate: 360 + ang, margin: 0, isTextBox: true }); });
   const nodes = [
-    { yr: "1858", place: "美国", t: "奥姆斯特德中央公园：城市公园体系提出“绿地+运动”融合", up: true },
-    { yr: "1961", place: "美国", t: "简·雅各布斯《美国大城市的死与生》：高密度社区分散布局中小型运动场地", up: false },
-    { yr: "1995", place: "中国", t: "《全民健身计划纲要》颁布，全民健身上升为国家计划", up: true },
-    { yr: "2014", place: "新加坡", t: "ActiveSG计划：社区体育公园模块化球场、全天候遮阳健身区", up: false },
-    { yr: "2016", place: "中国", t: "《“健康中国2030”规划纲要》；《公园设计规范》GB 51192-2016", up: true, ph: "ms_2" },
-    { yr: "2018", place: "中国", t: "《城市居住区规划设计标准》GB 50180-2018：15分钟生活圈绿地系统", up: false, ph: "sz_2" },
-    { yr: "2021", place: "中国", t: "七部委《关于推进体育公园建设的指导意见》；《社区体育公园规划建设指南》T/CSUS 18-2021", up: true, ph: "wh_2" },
-    { yr: "2021", place: "仁寿", t: "《仁寿县国土空间总体规划(2021-2035)》：城北新城公园城市目标", up: false, ph: "satellite" },
+    { t: 0.04, yr: "1858", place: "美国", txt: "奥姆斯特德中央公园：城市公园体系提出“绿地+运动”融合", up: true },
+    { t: 0.17, yr: "1961", place: "美国", txt: "简·雅各布斯《美国大城市的死与生》：高密度社区分散布局中小型运动场地", up: false },
+    { t: 0.30, yr: "1995", place: "中国", txt: "《全民健身计划纲要》颁布，全民健身上升为国家计划", up: true },
+    { t: 0.43, yr: "2014", place: "新加坡", txt: "ActiveSG计划：社区体育公园模块化球场、全天候遮阳健身区", up: false },
+    { t: 0.56, yr: "2016", place: "中国", txt: "《“健康中国2030”规划纲要》；《公园设计规范》GB 51192-2016", up: true, ph: "ms_2" },
+    { t: 0.69, yr: "2018", place: "中国", txt: "《城市居住区规划设计标准》GB 50180-2018：15分钟生活圈绿地系统", up: false, ph: "sz_2" },
+    { t: 0.82, yr: "2021", place: "中国", txt: "七部委《关于推进体育公园建设的指导意见》；《社区体育公园规划建设指南》T/CSUS 18-2021", up: true },
+    { t: 0.95, yr: "2021", place: "仁寿", txt: "《仁寿县国土空间总体规划(2021-2035)》：城北新城公园城市目标", up: false, ph: "satellite" },
   ];
-  const yLine = 3.06;
-  s.addShape(pres.shapes.LINE, { x: 0.5, y: yLine, w: 9.15, h: 0, line: { color: NAVY, width: 2 } });
-  nodes.forEach((n, i) => {
-    const cx = 0.95 + i * 1.245;
-    const foreign = n.place === "美国" || n.place === "新加坡";
-    const col = foreign ? NAVY : ORANGE;
-    s.addShape(pres.shapes.OVAL, { x: cx - 0.09, y: yLine - 0.09, w: 0.18, h: 0.18, fill: { color: col }, line: { color: WHITE, width: 1 } });
-    s.addText(n.yr, { x: cx - 0.6, y: n.up ? yLine + 0.1 : yLine - 0.38, w: 1.2, h: 0.28, fontFace: FE, fontSize: 10, bold: true, color: col, align: "center", margin: 0, isTextBox: true });
-    const cw = 2.25, cx0 = Math.min(Math.max(cx - cw / 2, 0.5), 9.65 - cw);
-    const y0 = n.up ? 1.0 : 3.5, ch = 1.62;
-    rect(s, cx0, y0, cw, ch, LIGHT);
-    s.addShape(pres.shapes.LINE, { x: cx, y: n.up ? y0 + ch : yLine, w: 0, h: n.up ? yLine - (y0 + ch) : y0 - yLine, line: { color: col, width: 1, dashType: "dash" } });
-    let ty = y0 + 0.05;
-    if (n.ph) { img(s, n.ph, cx0 + 0.06, y0 + 0.06, cw - 0.12, 0.62); ty = y0 + 0.7; }
-    s.addText(n.place, { x: cx0 + 0.08, y: ty, w: cw - 0.16, h: 0.22, fontFace: F, fontSize: 8.5, bold: true, color: col, margin: 0, isTextBox: true });
-    txt(s, n.t, cx0 + 0.04, ty + 0.22, cw - 0.08, y0 + ch - ty - 0.24, { fontSize: 7, lineSpacingMultiple: 1.05 });
+  nodes.forEach((n) => {
+    const [x, y] = pt(n.t);
+    const foreign = n.place === "美国" || n.place === "新加坡", col = foreign ? NAVY : ORANGE;
+    s.addShape(pres.shapes.OVAL, { x: x - 0.08, y: y - 0.08, w: 0.16, h: 0.16, fill: { color: col }, line: { color: WHITE, width: 1 } });
+    s.addText(n.yr, { x: x - 0.5, y: n.up ? y + 0.12 : y - 0.38, w: 1.0, h: 0.26, fontFace: FE, fontSize: 9, bold: true, color: col, align: "center", margin: 0, isTextBox: true });
+    const cw = 1.72, x0 = Math.min(Math.max(x - cw / 2, 0.45), 9.65 - cw);
+    const avail = n.up ? y - 0.3 - 1.0 : 5.2 - (y + 0.3);
+    const withPhoto = !!n.ph && avail >= 1.3;
+    const ch = withPhoto ? 1.35 : 0.72;
+    const y0 = n.up ? y - 0.3 - ch : y + 0.3;
+    s.addShape(pres.shapes.LINE, { x, y: n.up ? y0 + ch : y, w: 0, h: 0.3, line: { color: col, width: 1, dashType: "dash" } });
+    rect(s, x0, y0, cw, ch, LIGHT);
+    let ty = y0 + 0.04;
+    if (withPhoto) { img(s, n.ph, x0 + 0.05, y0 + 0.05, cw - 0.1, 0.62); ty = y0 + 0.69; }
+    s.addText([{ text: n.place + " ", options: { bold: true, color: col } }, { text: n.txt, options: { color: GRAY } }], { x: x0 + 0.05, y: ty, w: cw - 0.1, h: ch - (ty - y0) - 0.03, fontFace: F, fontSize: 6.5, margin: 0, isTextBox: true, valign: "top", lineSpacingMultiple: 1.05 });
   });
   txt(s, "蓝色：国外；橙色：国内与地方。配图为本文案例照片及场地卫星影像。", 0.5, 5.28, 6, 0.25, { fontSize: 7.5, color: MUTED });
 }
@@ -543,10 +575,41 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   txt(s, "数据来源：《仁寿县第七次全国人口普查公报（第三号）》；饼图为开题报告调研预测数据。", 6.85, 4.4, 2.75, 0.75, { fontSize: 7, color: MUTED });
 }
 
-// ---------- 2.13 需求分析 ----------
+// ---------- 2.13 需求分析（分析图） ----------
 {
   const s = pres.addSlide();
-  header(s, SEC2[0], "Main Audience Needs Analysis", "2.13 主要人群需求分析——活动类型与时段");
+  header(s, SEC2[0], "Main Audience Needs Analysis", "2.13 主要人群需求分析");
+  txt(s, "室外除了“树”，好像并没有什么期待。场地功能单一，功能设置没有吸引力，景观没有特征容易视觉疲劳。\n\n周边居民以中老年、家庭亲子与学生为主：出行、日晒、休憩、体锻是基本需求；情感、兴趣、社交、理疗是进阶需求。真正的需求在空间中得以实现，是主宰力的完美表现。", 0.5, 1.15, 2.2, 3.0, { fontSize: 8.5, color: MUTED, lineSpacingMultiple: 1.3 });
+  s.addText("基本需求", { x: 2.6, y: 1.05, w: 0.9, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: GRAY, align: "right", margin: 0, isTextBox: true });
+  s.addText("进阶需求", { x: 2.6, y: 3.85, w: 0.9, h: 0.3, fontFace: F, fontSize: 9, bold: true, color: GRAY, align: "right", margin: 0, isTextBox: true });
+  const shades = ["E07B2A", "E58A45", "EA9A60", "EEA97A", "F2B995", "F6C9B0", "F9D9CA", "FCE9E3"];
+  shades.forEach((c, i) => rect(s, 3.57, 1.15 + i * 0.37, 0.07, 0.37, c));
+  ["出行", "日晒", "休憩", "体锻", "情感", "兴趣", "社交", "理疗"].forEach((l, i) => s.addText(l, { x: 3.7, y: 1.12 + i * 0.37, w: 0.5, h: 0.37, fontFace: F, fontSize: 8.5, color: GRAY, margin: 0, isTextBox: true, valign: "middle" }));
+  const rows = [["tf_3", "ms_4", "tf_4", "sz_4"], ["ms_1", "wh_1", "ms_3", "sz_1"], ["sz_3", "tf_1", "tf_2", "ms_2"]];
+  rows.forEach((r, ri) => {
+    const y = 1.05 + ri * 1.05, h = 0.98;
+    const ws = r.map((n) => Math.min(DIMS[n][0] / DIMS[n][1] * h, 1.7));
+    const total = ws.reduce((a, b) => a + b, 0), gap = (5.35 - total) / (r.length - 1);
+    let x = 4.3;
+    r.forEach((n, i) => { img(s, n, x, y, ws[i], h); x += ws[i] + gap; });
+  });
+  rect(s, 0.5, 4.25, 9.15, 0.98, "3A3A3A");
+  s.addText("居民日常户外活动的时段分布", { x: 0.6, y: 4.28, w: 3.0, h: 0.3, fontFace: F, fontSize: 10.5, bold: true, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+  const slots = ["6:00—9:00", "9:00—12:00", "14:00—17:00", "17:00—20:00"];
+  slots.forEach((t, i) => { const x = 3.75 + i * 1.47; s.addShape(pres.shapes.LINE, { x: x + 0.7, y: 4.25, w: 0, h: 0.12, line: { color: WHITE, width: 1 } }); s.addText(t, { x, y: 4.36, w: 1.4, h: 0.22, fontFace: FE, fontSize: 9, bold: true, color: WHITE, align: "center", margin: 0, isTextBox: true }); });
+  const lines = [["动态活动场所：", ["晨练、散步、太极", "", "跑步、球类、骑行", "健身、亲子游乐"]], ["静态活动场所：", ["", "休憩闲谈、晾晒", "", "饭后休闲、聚会下棋"]], ["步行活动场所：", ["上学途经、四向穿越，需连续无障碍步道与岔路口标识系统", "", "", ""]]];
+  lines.forEach((l, li) => {
+    const y = 4.6 + li * 0.2;
+    s.addText(l[0], { x: 0.6, y, w: 1.4, h: 0.2, fontFace: F, fontSize: 7.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+    if (li === 2) s.addText(l[1][0], { x: 3.75, y, w: 5.8, h: 0.2, fontFace: F, fontSize: 7.5, color: "DDDDDD", margin: 0, isTextBox: true, valign: "middle" });
+    else l[1].forEach((t, i) => t && s.addText(t, { x: 3.75 + i * 1.47, y, w: 1.4, h: 0.2, fontFace: F, fontSize: 7.5, color: "DDDDDD", align: "center", margin: 0, isTextBox: true, valign: "middle" }));
+  });
+}
+
+// ---------- 2.13 需求分析（调研数据） ----------
+{
+  const s = pres.addSlide();
+  header(s, SEC2[0], "Main Audience Needs Analysis", "2.13 主要人群需求分析——调研数据");
   img(s, "pie_act", 0.5, 1.0, 2.45, 2.45, "居民主要活动类型偏好");
   img(s, "pie_time", 3.55, 1.0, 2.45, 2.45, "居民户外活动时段分布");
   rect(s, 6.8, 1.0, 2.85, 1.55, LIGHT);
