@@ -199,11 +199,7 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Topic Background", "1.1 选题背景——人口结构与地方需求");
-  s.addChart(pres.charts.BAR, [
-    { name: "0-14岁", labels: ["全国", "四川省", "仁寿县"], values: [17.95, 16.1, 15.31] },
-    { name: "15-59岁", labels: ["全国", "四川省", "仁寿县"], values: [63.35, 62.19, 58.13] },
-    { name: "60岁及以上", labels: ["全国", "四川省", "仁寿县"], values: [18.7, 21.71, 26.56] },
-  ], { x: 0.45, y: 1.0, w: 5.4, h: 3.5, barDir: "col", barGrouping: "clustered", chartColors: [GREEN, NAVY, ORANGE], showTitle: true, title: "第七次全国人口普查年龄构成对比（%）", titleFontFace: F, titleFontSize: 10, titleColor: GRAY, showValue: true, dataLabelPosition: "outEnd", dataLabelFormatCode: "0.0", dataLabelFontSize: 8, dataLabelFontFace: FE, catAxisLabelFontFace: F, catAxisLabelFontSize: 9, valAxisLabelFontSize: 8, valAxisLabelFontFace: FE, valGridLine: { color: "DDDDDD", size: 0.5 }, catGridLine: { style: "none" }, showLegend: true, legendPos: "b", legendFontFace: F, legendFontSize: 8, valAxisMaxVal: 70 });
+  img(s, "ch_pop", 0.45, 1.0, 5.4, 3.5);
   rect(s, 6.1, 1.0, 3.55, 1.25, LIGHT);
   label(s, "仁寿县人口特征（2020年七普）", 6.25, 1.03, 3.3, 0.26, 10);
   txt(s, "常住人口111.0万人。60岁及以上占26.56%，65岁及以上占21.94%，分别高于全国7.86和8.44个百分点，已进入深度老龄化；0-14岁占15.31%。老年康养与亲子游憩需求突出。", 6.2, 1.28, 3.4, 0.95, { fontSize: 8 });
@@ -409,9 +405,8 @@ sectionSlide("02", "项目研究概述", SEC2[1], ["2.1 上位规划", "2.2 区�
     { text: r[1], options: { color: GRAY, fill: { color: i % 2 ? PALE : LIGHT }, fontFace: F, fontSize: 9, valign: "middle" } }]),
     { x: 3.75, y: 1.4, w: 3.9, colW: [1.1, 2.8], rowH: 0.42, border: { type: "solid", color: WHITE, pt: 1 } });
   img(s, "map", 7.85, 1.02, 1.8, 3.4, "场地现状地图");
-  img(s, "satellite", 3.75, 4.45, 1.9, 0.75, null, { vcenter: true });
-  txt(s, "北侧普宁大道车流大，有噪声粉尘干扰；其余三侧为次级道路，人行通达性好。", 5.75, 4.5, 3.9, 0.5, { fontSize: 8.5 });
-  txt(s, "注：西侧道路名称“青冈路”与“陵州大道”两种表述需统一。", 5.75, 4.98, 3.9, 0.22, { fontSize: 7, color: MUTED });
+  txt(s, "北侧普宁大道车流大，有噪声粉尘干扰；其余三侧为次级道路，人行通达性好。", 3.75, 4.6, 3.9, 0.4, { fontSize: 8.5 });
+  txt(s, "注：西侧道路名称“青冈路”与“陵州大道”两种表述需统一。", 3.75, 5.0, 3.9, 0.22, { fontSize: 7, color: MUTED });
 }
 
 // ---------- 2.3 气候（两页） ----------
@@ -434,12 +429,8 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Climate Analysis", "2.3 气候分析——日照、湿度与雨日");
-  s.addChart(pres.charts.BAR, [{ name: "日照时数", labels: MON, values: [42.4, 53.8, 92.3, 126.5, 126.1, 109.4, 133.6, 142.6, 74.6, 51.0, 55.0, 40.3] }],
-    { x: 0.45, y: 1.0, w: 4.55, h: 3.1, barDir: "col", chartColors: [ORANGE], showTitle: true, title: "各月日照时数（h）", titleFontFace: F, titleFontSize: 10, titleColor: GRAY, showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 7, catAxisTitle: "月份", showCatAxisTitle: true, catAxisTitleFontFace: F, catAxisTitleFontSize: 8, catAxisLabelFontSize: 8, valAxisLabelFontSize: 8, valGridLine: { color: "DDDDDD", size: 0.5 }, catGridLine: { style: "none" }, showLegend: false });
-  s.addChart(pres.charts.LINE, [
-    { name: "相对湿度（%）", labels: MON, values: [77, 74, 70, 69, 67, 75, 78, 77, 80, 81, 78, 78] },
-    { name: "降水日数（d）", labels: MON, values: [7.8, 7.8, 10.0, 12.1, 13.2, 14.5, 14.6, 13.8, 14.7, 14.1, 7.4, 7.0] },
-  ], { x: 5.1, y: 1.0, w: 4.55, h: 3.1, chartColors: [NAVY, GREEN], lineSize: 2, lineDataSymbolSize: 5, showTitle: true, title: "各月相对湿度与降水日数", titleFontFace: F, titleFontSize: 10, titleColor: GRAY, showValue: true, dataLabelFontSize: 7, dataLabelPosition: "t", catAxisTitle: "月份", showCatAxisTitle: true, catAxisTitleFontFace: F, catAxisTitleFontSize: 8, catAxisLabelFontSize: 8, valAxisLabelFontSize: 8, valGridLine: { color: "DDDDDD", size: 0.5 }, catGridLine: { style: "none" }, showLegend: true, legendPos: "b", legendFontFace: F, legendFontSize: 8 });
+  img(s, "ch_sun", 0.45, 1.0, 4.55, 3.1);
+  img(s, "ch_humid", 5.1, 1.0, 4.55, 3.1);
   img(s, "x_lawn", 0.5, 4.25, 2.2, 0.95, null, { vcenter: true });
   txt(s, "年日照仅1047.6h、全年阴湿：以开敞向阳草坪和运动场地为主体", 2.8, 4.25, 2.1, 0.95, { fontSize: 8.5, bold: true, color: ORANGE, valign: "middle" });
   img(s, "x_bench", 5.0, 4.25, 2.2, 0.95, null, { vcenter: true });
