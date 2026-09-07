@@ -140,24 +140,24 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
   const r = img(s, "x_cyclists", 0.5, 1.0, 5.2, 3.5);
   rect(s, r.x, r.y + r.h - 0.95, r.w, 0.95, "000000", { fill: { color: "000000", transparency: 45 } });
   s.addText("城镇化持续推进，高密度居住区不断涌现，可供居民开展户外运动的场地供给不足，社区运动配套设施缺口较大。如何为全龄居民提供一处能健身、游憩、社交的体育公园，非常值得探究。", { x: r.x + 0.1, y: r.y + r.h - 0.9, w: r.w - 0.2, h: 0.85, fontFace: F, fontSize: 8.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
-  s.addText("动起来！体育公园！", { x: r.x + 0.3, y: r.y + 0.9, w: 3.6, h: 0.6, fontFace: F, fontSize: 24, bold: true, color: WHITE, rotate: 340, margin: 0, isTextBox: true, shadow: { type: "outer", color: "000000", blur: 3, offset: 1, angle: 45, opacity: 0.6 } });
-  s.addText("全民健身状态", { x: 5.9, y: 1.0, w: 3.75, h: 0.7, fontFace: F, fontSize: 30, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
+  s.addText("全民健康！动起来！", { x: r.x + 0.3, y: r.y + 0.9, w: 3.6, h: 0.6, fontFace: F, fontSize: 24, bold: true, color: WHITE, rotate: 340, margin: 0, isTextBox: true, shadow: { type: "outer", color: "000000", blur: 3, offset: 1, angle: 45, opacity: 0.6 } });
+  s.addText("全民健康视角", { x: 5.9, y: 1.0, w: 3.75, h: 0.7, fontFace: F, fontSize: 30, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
   for (let i = 0; i < 6; i++) rect(s, 5.95 + i * 0.62, 1.8, 0.55, 0.28, ["D9DEE8", "C5CDDC", "AEB9CE", "97A5C0", "7E90B2", "5B6F9C"][i]);
-  s.addText("被忽略的日常运动需求", { x: 5.9, y: 2.15, w: 3.75, h: 0.45, fontFace: F, fontSize: 16, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
+  s.addText("身体健康 · 心理健康 · 社会适应", { x: 5.9, y: 2.15, w: 3.75, h: 0.45, fontFace: F, fontSize: 16, bold: true, color: GRAY, margin: 0, isTextBox: true, align: "right" });
   rect(s, 5.9, 2.65, 1.85, 1.85, "3E5A3A");
-  const kw = [["久坐少动", 13, 0.08, 0.1], ["场地不足", 11, 1.0, 0.14], ["老龄化", 12, 0.12, 0.55], ["慢性病风险", 10, 0.7, 0.72], ["亲子游憩", 9, 0.08, 1.15], ["邻里社交", 13, 0.55, 1.3]];
+  const kw = [["全民健身", 13, 0.08, 0.1], ["场地不足", 11, 1.0, 0.14], ["老龄化", 12, 0.12, 0.55], ["慢性病预防", 10, 0.7, 0.72], ["亲子游憩", 9, 0.08, 1.15], ["邻里社交", 13, 0.55, 1.3]];
   kw.forEach((k) => s.addText(k[0], { x: 5.9 + k[2], y: 2.65 + k[3], w: 1.3, h: 0.4, fontFace: F, fontSize: k[1], bold: true, color: WHITE, margin: 0, isTextBox: true }));
   rect(s, 7.9, 2.65, 1.75, 1.85, "E4E6EA");
-  txt(s, "仁寿城北新城集中型公共休闲绿地供给严重不足，现有绿地多为小区内部零散附属绿化，仅配简易健身器械，缺少服务全龄居民的城市综合体育公园。", 7.95, 2.7, 1.65, 1.75, { fontSize: 8, valign: "middle" });
-  s.addText("跃动！栖园！全民健身！", { x: 0.5, y: 4.6, w: 4.2, h: 0.5, fontFace: F, fontSize: 20, bold: true, color: "3E5A3A", margin: 0, isTextBox: true });
-  txt(s, "全民健身 · 全龄游憩 · 生态栖居", 4.8, 4.65, 4.85, 0.4, { fontSize: 10, color: GRAY, valign: "middle", align: "right" });
+  txt(s, "全民健康视角：以全民健身为核心，把身体锻炼、心理放松、邻里交往一并纳入公园设计。仁寿城北新城集中型公共绿地供给不足，现有小区绿地仅配简易器械，缺少服务全龄居民的综合体育公园。", 7.95, 2.7, 1.65, 1.75, { fontSize: 7.5, valign: "middle" });
+  s.addText("全民健康 · 跃动栖园", { x: 0.5, y: 4.6, w: 4.2, h: 0.5, fontFace: F, fontSize: 20, bold: true, color: "3E5A3A", margin: 0, isTextBox: true });
+  txt(s, "全民健康视角下的眉山市仁寿县体育公园景观设计：让全龄居民在家门口运动、休憩、交往。", 4.8, 4.65, 4.85, 0.4, { fontSize: 9, color: GRAY, valign: "middle", align: "right" });
 }
 
 // ---------- 1.1 时代需求 ----------
 {
   const s = pres.addSlide();
   header(s, SEC1[0], "Topic Background", "1.1 选题背景——时代需求");
-  s.addText("高密度新城：集中公共绿地与户外运动场地供给不足", { x: 0.5, y: 0.98, w: 9.15, h: 0.3, fontFace: F, fontSize: 12, color: GRAY, align: "center", margin: 0, isTextBox: true });
+  s.addText("全民健康视角：仁寿城北新城集中公共绿地与户外运动场地供给不足", { x: 0.5, y: 0.98, w: 9.15, h: 0.3, fontFace: F, fontSize: 12, color: GRAY, align: "center", margin: 0, isTextBox: true });
   s.addText("仁寿县60岁及以上人口占26.56%，已进入深度老龄化；0-14岁占15.31%，全龄运动与游憩需求突出", { x: 0.5, y: 1.28, w: 9.15, h: 0.28, fontFace: F, fontSize: 10, color: GRAY, align: "center", margin: 0, isTextBox: true });
   const cards = [["x_aerial_city", "城镇化提速，城市建成区人口密度增大，高密度居住区涌现，公共绿地资源分配不均，户外运动场地供给不足。", "时代背景需求"],
     ["x_basketball", "国民身体素质与日常运动需求矛盾日益凸显，居民就近健身、球类跑步、亲子运动的场地缺口大。", "全民健身需求"],
@@ -243,13 +243,13 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     rect(s, x, y, 2.35, 0.55, "E6E8DF");
     s.addText([{ text: t, options: { fontSize: 12, bold: true, color: GRAY, breakLine: true } }, { text: en, options: { fontSize: 7, color: MUTED, fontFace: FE } }], { x, y, w: 2.35, h: 0.55, fontFace: F, align: "center", valign: "middle", margin: 0, isTextBox: true });
   };
-  [["“全民健身”", "Fitness for all"], ["“全龄友好”", "All-age friendly"], ["“生态缓冲”", "Ecological buffer"]].forEach((b, i) => box(b[0], b[1], 0.5, 1.0 + i * 0.68));
-  [["“老年康养”", "Health care for the aged"], ["“亲子游憩”", "Family recreation"], ["“邻里社交”", "Neighborhood interaction"]].forEach((b, i) => box(b[0], b[1], 7.3, 1.0 + i * 0.68));
-  s.addText("第一阶段：补齐城北新城运动绿地缺口", { x: 3.0, y: 1.05, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
-  s.addText("第二阶段：全龄健身·康养·社交融合", { x: 3.0, y: 2.35, w: 4.15, h: 0.6, fontFace: F, fontSize: 14, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  [["“增强体质”", "Physical fitness"], ["“缓解压力”", "Mental relief"], ["“邻里交往”", "Social interaction"]].forEach((b, i) => box(b[0], b[1], 0.5, 1.0 + i * 0.68));
+  [["“老年康养”", "Care for the aged"], ["“亲子游憩”", "Family recreation"], ["“青少年运动”", "Youth sports"]].forEach((b, i) => box(b[0], b[1], 7.3, 1.0 + i * 0.68));
+  s.addText("第一阶段：全民健身——补齐仁寿城北新城运动绿地缺口", { x: 3.0, y: 1.05, w: 4.15, h: 0.6, fontFace: F, fontSize: 12, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
+  s.addText("第二阶段：全民健康——身体、心理、社交三维融合", { x: 3.0, y: 2.35, w: 4.15, h: 0.6, fontFace: F, fontSize: 12, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true });
   s.addShape(pres.shapes.LINE, { x: 3.4, y: 2.0, w: 3.35, h: 0, line: { color: LINE, width: 0.75, dashType: "dash" } });
   img(s, "x_people_band", 0.5, 3.05, 9.15, 1.7);
-  txt(s, "随着国家发展和社会进步，健康观念已深入人心，要让居民认识到体育公园的重要性并积极走入公园运动。理论上，本研究丰富川南县域新城高密度居住区体育公园设计研究；实践上，城市层面盘活闲置绿地、补齐城北新城体育设施短板，民生层面满足全龄康养、游乐、运动、社交需求，生态层面削弱主干道噪声粉尘、缓解热岛效应，实现全民健康是本次设计的主要意义。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
+  txt(s, "全民健康视角下，体育公园不仅是运动场地，更是身体健康、心理健康与社会交往的综合载体。理论上，本研究丰富川南县域新城高密度居住区体育公园设计研究；实践上，城市层面盘活闲置绿地、补齐城北新城体育设施短板，民生层面满足全龄康养、游乐、运动、社交需求，生态层面削弱主干道噪声粉尘、缓解热岛效应，实现全民健康是本次设计的主要意义。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
 }
 
 // ---------- 1.4 技术路线 ----------
@@ -735,7 +735,7 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
   s.addText("跃动·栖园", { x: r.x + 0.15, y: r.y + 0.05, w: 2.5, h: 0.65, fontFace: F, fontSize: 26, bold: true, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
   s.addText("一环 · 一带 · 三组团", { x: r.x + r.w - 2.2, y: r.y + 0.2, w: 2.05, h: 0.4, fontFace: F, fontSize: 11, bold: true, color: WHITE, align: "right", margin: 0, isTextBox: true, valign: "middle" });
   rect(s, r.x, r.y + r.h - 0.85, r.w, 0.85, NAVY, { fill: { color: NAVY, transparency: 25 } });
-  s.addText("“跃动”对应全民健康——全龄运动、活力健身；“栖园”对应生态栖居——林下休憩、海绵生态、乡土记忆。以“一环”健康步道串联“动”“静”两类组团，主干道一侧以“一带”防护林承担生态缓冲。", { x: r.x + 0.1, y: r.y + r.h - 0.83, w: r.w - 0.2, h: 0.8, fontFace: F, fontSize: 8, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+  s.addText("构思立足全民健康视角：“跃动”对应全民健身——全龄运动、活力健身；“栖园”对应生态栖居——林下休憩、海绵生态、乡土记忆。以“一环”健康步道串联“动”“静”两类组团，主干道一侧以“一带”防护林承担生态缓冲。", { x: r.x + 0.1, y: r.y + r.h - 0.83, w: r.w - 0.2, h: 0.8, fontFace: F, fontSize: 8, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
   const g = [["x_bar", "跃动组团（动）", "青少年球类运动区、中青年健身器械区、环形健康步道", ORANGE], ["x_bench", "栖居组团（静）", "老年康养林荫区、邻里阳光草坪、海绵雨水花园、文化记忆节点", NAVY], ["x_swing", "亲子组团（动静结合）", "分龄儿童游乐区、家长看护休憩、自然科普种植", GREEN]];
   g.forEach((it, i) => {
     const y = 1.0 + i * 1.25;
