@@ -28,20 +28,23 @@ function header(s, sec, en, sub) {
 const DIMS = require(path.join(__dirname, "figs", "dims.json"));
 // 图槽：每处用图一个编号，figs/user/<编号>.jpg 存在则优先使用；否则用备选图，并自动避免同一张图重复出现
 const CAT = {
-  sport: ["x_basketball", "x_tennis", "x_tennis2", "x_volleyball", "x_court", "x_stadium", "x_baseball_kids", "x_skate", "x_skatepark", "x_exercise", "x_bar", "x_wheelchair", "x_mtb", "x_tandem", "x_cyclists"],
-  park: ["x_kites", "x_lawn", "x_kid_lawn", "x_beachkites", "x_bench", "x_lake", "x_daisy", "x_greenhouse", "x_flowers", "x_plaza_flowers", "x_fountain", "x_swing", "x_patio"],
-  people: ["x_bench2", "x_elders_bench", "x_elders_cake", "x_elder_phone", "x_elders", "x_cn_street", "x_family", "x_umbrella", "x_crowd"],
-  city: ["x_aerial_city", "x_aerial_round", "x_city", "x_street", "x_rickshaw", "x_bus", "x_bus2", "x_plaza", "x_steps", "x_sign", "x_stonewall", "x_alp", "x_ped1", "x_ped2"],
+  sport: ["x_basketball", "x_gym_ball", "x_gym_ball2", "x_tennis", "x_tennis2", "x_volleyball", "x_court", "x_stadium", "x_soccer", "x_soccer_w", "x_baseball", "x_baseball_kids", "x_marathon", "x_gym_mat", "x_skate", "x_skatepark", "x_exercise", "x_bar", "x_wheelchair", "x_mtb", "x_tandem", "x_cyclists", "x_cycle_street", "x_ski_group", "x_ski2", "x_beam", "x_pbars", "x_tricycle", "x_unicycle", "x_golfcart"],
+  park: ["x_kites", "x_lawn", "x_kid_lawn", "x_beachkites", "x_park_bench", "x_bench_lawn", "x_bench", "x_lake", "x_daisy", "x_greenhouse", "x_flowers", "x_plaza_flowers", "x_fountain", "x_swing", "x_patio", "x_kids_bench", "x_fountain", "x_boathouse", "x_pier", "x_hay", "x_mower", "x_maze", "x_picket", "x_woodfence", "x_coast"],
+  people: ["x_bench2", "x_elders_bench", "x_elders_cake", "x_elder_phone", "x_elders", "x_cn_street", "x_elder_market", "x_family", "x_family2", "x_umbrella", "x_crowd", "x_plaza_ped"],
+  city: ["x_aerial_city", "x_aerial_round", "x_aerial_ped", "x_city_road", "x_city", "x_street", "x_street_ped", "x_ped_street", "x_rickshaw", "x_bus", "x_bus2", "x_bus_ped", "x_plaza", "x_steps", "x_sign", "x_stonewall", "x_alp", "x_ped1", "x_ped2", "x_viaduct", "x_dock", "x_watertower", "x_schoolbus", "x_minibus"],
 };
 const CATOF = {}; Object.entries(CAT).forEach(([k, v]) => v.forEach((n) => (CATOF[n] = k)));
 const USED = new Set(), SLOTS = [];
 let slotNo = 0, curTitle = "";
+let SLOTMAP = {};
+try { SLOTMAP = require(path.join(__dirname, "slotmap.json")); } catch (e) {}
 function resolve(name) {
   if (typeof name !== "string" || name.startsWith("user/")) return name;
   slotNo++;
   const id = "s" + String(slotNo).padStart(3, "0");
-  let use = name, dup = false;
+  let use = SLOTMAP[id] && DIMS[SLOTMAP[id]] ? SLOTMAP[id] : name, dup = false;
   if (DIMS["user/" + id]) use = "user/" + id;
+  else if (SLOTMAP[id] && DIMS[SLOTMAP[id]]) { USED.add(use); SLOTS.push({ id, page, title: curTitle, fallback: name, used: use, dup: false }); return use; }
   else if (USED.has(name) && CATOF[name]) {
     const alt = CAT[CATOF[name]].find((n) => !USED.has(n) && DIMS[n]);
     if (alt) use = alt; else dup = true;
@@ -56,7 +59,7 @@ function img(s, name, x, y, w, h, cap, o = {}) {
   const [iw, ih] = DIMS[name];
   const sc = Math.min(w / iw, h / ih);
   const dw = iw * sc, dh = ih * sc;
-  const dx = x + (w - dw) / 2, dy = o.vcenter ? y + (h - dh) / 2 : y;
+  const dx = x + (w - dw) / 2, dy = o.bottom ? y + h - dh : o.vcenter ? y + (h - dh) / 2 : y;
   s.addImage({ path: FIG(name), x: dx, y: dy, w: dw, h: dh });
   if (cap) s.addText(cap, { x, y: dy + dh + 0.02, w, h: 0.22, fontFace: F, fontSize: 8, color: MUTED, align: "center", margin: 0, isTextBox: true });
   return { x: dx, y: dy, w: dw, h: dh };
@@ -84,7 +87,7 @@ function label(s, t, x, y, w, h = 0.28, size = 11) {
 }
 // 照片卡片：等比放图，图上叠半透明色带写字，下方标签
 function photoCard(s, name, x, y, w, h, over, label, col = NAVY, o = {}) {
-  const r = img(s, name, x, y, w, h);
+  const r = img(s, name, x, y, w, h, null, { bottom: true });
   const bh = o.bandH || Math.min(0.9, r.h * 0.42), by = r.y + (o.bandPos === "bottom" ? r.h - bh : r.h * 0.36);
   rect(s, r.x, by, r.w, bh, col, { fill: { color: col, transparency: o.alpha || 30 } });
   s.addText(over, { x: r.x + 0.06, y: by, w: r.w - 0.12, h: bh, fontFace: F, fontSize: o.fontSize || 7.5, color: WHITE, bold: !!o.bold, margin: 0, isTextBox: true, valign: "middle", align: o.align || "left" });
@@ -142,8 +145,7 @@ const SEC3 = ["03 场地规划分析", "Site Planning Analysis"];
 function sectionSlide(num, title, en, items, photos) {
   const s = pres.addSlide();
   header(s, `${num} ${title}`, en, null);
-  img(s, photos[0], 5.3, 0.9, 4.35, 2.4);
-  img(s, photos[1], 5.3, 3.45, 4.35, 1.7);
+  img(s, photos[0], 5.3, 0.95, 4.35, 4.2);
   s.addText(num, { x: 0.6, y: 1.0, w: 3, h: 1.0, fontFace: FE, fontSize: 60, bold: true, color: NAVY, margin: 0, isTextBox: true });
   s.addText(title, { x: 0.6, y: 2.0, w: 4.5, h: 0.5, fontFace: F, fontSize: 22, bold: true, color: GRAY, margin: 0, isTextBox: true });
   const half = Math.ceil(items.length / 2);
@@ -188,9 +190,9 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     ["x_cyclists", "《“健康中国2030”规划纲要》、七部委体育公园指导意见、仁寿县国土空间规划“公园城市”目标共同支持。", "政策导向优势"]];
   cards.forEach((c, i) => {
     const x = 0.55 + i * 2.3, bw = 2.15, bh = 2.75;
-    const r = img(s, c[0], x, 1.62, bw, bh);
-    rect(s, r.x, r.y + r.h * 0.4, r.w, 0.95, NAVY, { fill: { color: NAVY, transparency: 30 } });
-    s.addText(c[1], { x: r.x + 0.06, y: r.y + r.h * 0.4, w: r.w - 0.12, h: 0.95, fontFace: F, fontSize: 7.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
+    const r = img(s, c[0], x, 1.62, bw, bh, null, { bottom: true });
+    rect(s, r.x, r.y + r.h - 0.95, r.w, 0.95, NAVY, { fill: { color: NAVY, transparency: 30 } });
+    s.addText(c[1], { x: r.x + 0.06, y: r.y + r.h - 0.95, w: r.w - 0.12, h: 0.95, fontFace: F, fontSize: 7.5, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
     s.addText(c[2], { x, y: 4.42, w: bw, h: 0.32, fontFace: F, fontSize: 12, bold: true, color: GRAY, align: "center", margin: 0, isTextBox: true });
   });
   txt(s, "城市面临雨洪调蓄压力、人居环境品质参差不齐、不同年龄群体休闲游憩需求难以被充分满足等现实矛盾。在全民健康、公园城市政策背景下，集运动健康、全龄游憩于一体的体育型综合公园，成为化解高密度社区绿地不足、居民运动空间匮乏、道路环境干扰等多重问题的核心空间载体。", 0.5, 4.78, 9.15, 0.5, { fontSize: 8.5 });
@@ -213,9 +215,7 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
     s.addText(r[1], { x: 1.6, y, w: 4.7, h: 0.32, fontFace: F, fontSize: 10.5, bold: true, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
     s.addText(r[2], { x: 1.6, y: y + 0.32, w: 4.7, h: 0.4, fontFace: F, fontSize: 9, color: MUTED, margin: 0, isTextBox: true, valign: "top" });
   });
-  img(s, "x_bar", 6.6, 1.02, 1.45, 1.85);
-  img(s, "x_tennis", 8.2, 1.02, 1.45, 1.85);
-  img(s, "x_kites", 6.6, 3.05, 3.05, 1.75, "户外健身与社区绿地");
+  img(s, "x_bar", 6.6, 1.6, 3.05, 2.4, "政策导向下的社区体育公园", { vcenter: true });
 }
 
 // ---------- 1.1 人口结构 ----------
@@ -298,16 +298,14 @@ sectionSlide("01", "课题研究背景", SEC1[1], ["1.1 选题背景", "1.2 研�
   const c = [["x_basketball", "体育公园", "Sports Park", ["体育健身为核心", "与自然生态融合", "绿化占比不低于65%"], "以体育健身为核心、与自然生态融合的城市绿色公共空间，兼具生态、健身、游憩、防灾功能（七部委指导意见）。", NAVY],
     ["x_exercise", "全民健康视角", "Health for All", ["人人可运动", "处处能休憩", "动静分区"], "以全民健康为导向，把全民健身融入公园设计，兼顾婴幼儿到老年人、残障群体的运动需求，分层适配。", ORANGE],
     ["x_swing", "全龄友好型景观", "All-age Friendly", ["分区适配", "无障碍通行", "安全防护"], "布局、设施、尺度兼顾不同人群需求，分区设置活动场地，完善无障碍、休憩与安全配套。", GREEN]];
-  const cPh = ["x_court", "x_wheelchair", "x_kid_lawn"];
   c.forEach((it, i) => {
     const x = 0.5 + i * 3.1, w = 2.95;
-    const r = img(s, it[0], x, 1.02, w, 1.7);
+    const r = img(s, it[0], x, 1.02, w, 1.7, null, { bottom: true });
     rect(s, r.x, r.y + r.h - 0.62, r.w, 0.62, it[5], { fill: { color: it[5], transparency: 20 } });
     s.addText([{ text: it[1], options: { fontSize: 12, bold: true, breakLine: true } }, { text: it[2], options: { fontSize: 7.5, fontFace: FE } }], { x: r.x + 0.1, y: r.y + r.h - 0.62, w: r.w - 0.2, h: 0.62, fontFace: F, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
     it[3].forEach((k, j) => { const kx = x + j * (w / 3); rect(s, kx + 0.03, 2.82, w / 3 - 0.06, 0.4, "E6E8DF"); s.addText(k, { x: kx + 0.03, y: 2.82, w: w / 3 - 0.06, h: 0.4, fontFace: F, fontSize: 7.5, bold: true, color: GRAY, align: "center", valign: "middle", margin: 0, isTextBox: true }); });
-    rect(s, x, 3.32, w, 0.85, LIGHT);
-    txt(s, it[4], x + 0.08, 3.36, w - 0.16, 0.8, { fontSize: 8.5 });
-    img(s, cPh[i], x, 4.27, w, 0.93, null, { vcenter: true });
+    rect(s, x, 3.32, w, 1.85, LIGHT);
+    txt(s, it[4], x + 0.08, 3.4, w - 0.16, 1.75, { fontSize: 9.5, lineSpacingMultiple: 1.3 });
   });
 }
 
@@ -408,9 +406,7 @@ sectionSlide("02", "项目研究概述", SEC2[1], ["2.1 上位规划", "2.2 区�
     s.addText(p[0], { x: 3.55, y, w: 2.6, h: 0.28, fontFace: F, fontSize: 10, bold: true, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
     txt(s, p[1], 3.5, y + 0.28, 2.75, 0.6, { fontSize: 8.5 });
   });
-  img(s, "satellite", 6.4, 1.02, 3.25, 2.4, "场地卫星影像（规划预留集中绿地）");
-  img(s, "x_aerial_city", 6.4, 3.7, 1.55, 1.3, "城北新城片区");
-  img(s, "x_aerial_round", 8.1, 3.7, 1.55, 1.3, "公园城市");
+  img(s, "satellite", 6.4, 1.02, 3.25, 4.0, "场地卫星影像（规划预留集中绿地）");
 }
 
 // ---------- 2.2 区位 ----------
@@ -439,10 +435,9 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   s.addText([{ text: "年降水 881.8mm", options: { bold: true, color: NAVY, fontSize: 12, breakLine: true } }, { text: "6—9月占70%以上，8月最多", options: { fontSize: 8.5 } }], { x: 2.8, y: 3.62, w: 2.3, h: 0.55, fontFace: F, color: GRAY, margin: 0, isTextBox: true, valign: "middle", align: "center" });
   s.addText([{ text: "雨热同季", options: { bold: true, color: GREEN, fontSize: 12, breakLine: true } }, { text: "夏季高温多雨，冬季温和少霜", options: { fontSize: 8.5 } }], { x: 5.2, y: 3.62, w: 2.2, h: 0.55, fontFace: F, color: GRAY, margin: 0, isTextBox: true, valign: "middle", align: "center" });
   s.addText([{ text: "亚热带湿润季风", options: { bold: true, color: ORANGE, fontSize: 12, breakLine: true } }, { text: "四季分明，雨量充沛", options: { fontSize: 8.5 } }], { x: 7.45, y: 3.62, w: 2.2, h: 0.55, fontFace: F, color: GRAY, margin: 0, isTextBox: true, valign: "middle", align: "center" });
-  img(s, "x_kites", 0.5, 4.25, 2.2, 0.95, null, { vcenter: true });
-  txt(s, "夏季高温暴晒：乔木林荫、遮阳构筑", 2.8, 4.25, 2.1, 0.95, { fontSize: 9, bold: true, color: ORANGE, valign: "middle" });
-  img(s, "x_umbrella", 5.0, 4.25, 2.2, 0.95, null, { vcenter: true });
-  txt(s, "夏季集中降雨：海绵调蓄、场地排水", 7.3, 4.25, 2.35, 0.95, { fontSize: 9, bold: true, color: NAVY, valign: "middle" });
+  img(s, "x_kites", 0.5, 4.2, 2.6, 1.0, null, { vcenter: true });
+  txt(s, "夏季高温暴晒：乔木林荫、遮阳构筑", 3.3, 4.2, 3.0, 1.0, { fontSize: 10, bold: true, color: ORANGE, valign: "middle" });
+  txt(s, "夏季集中降雨：海绵调蓄、场地排水", 6.5, 4.2, 3.15, 1.0, { fontSize: 10, bold: true, color: NAVY, valign: "middle" });
   txt(s, "数据来源：中国气象局1991—2020年气候标准值（仁寿站）。", 0.5, 5.22, 8.5, 0.22, { fontSize: 7, color: MUTED });
 }
 {
@@ -450,10 +445,9 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   header(s, SEC2[0], "Climate Analysis", "2.3 气候分析——日照、湿度与雨日");
   img(s, "ch_sun", 0.45, 1.0, 4.55, 3.1);
   img(s, "ch_humid", 5.1, 1.0, 4.55, 3.1);
-  img(s, "x_lawn", 0.5, 4.25, 2.2, 0.95, null, { vcenter: true });
-  txt(s, "年日照仅1047.6h、全年阴湿：以开敞向阳草坪和运动场地为主体", 2.8, 4.25, 2.1, 0.95, { fontSize: 8.5, bold: true, color: ORANGE, valign: "middle" });
-  img(s, "x_bench", 5.0, 4.25, 2.2, 0.95, null, { vcenter: true });
-  txt(s, "降水日137天：可透光疏林、透水防滑铺装", 7.3, 4.25, 2.35, 0.95, { fontSize: 8.5, bold: true, color: NAVY, valign: "middle" });
+  img(s, "x_lawn", 0.5, 4.2, 2.6, 1.0, null, { vcenter: true });
+  txt(s, "年日照仅1047.6h、全年阴湿：以开敞向阳草坪和运动场地为主体", 3.3, 4.2, 3.0, 1.0, { fontSize: 9.5, bold: true, color: ORANGE, valign: "middle" });
+  txt(s, "降水日137天：可透光疏林、透水防滑铺装", 6.5, 4.2, 3.15, 1.0, { fontSize: 9.5, bold: true, color: NAVY, valign: "middle" });
   txt(s, "数据来源：中国气象局1991—2020年气候标准值（仁寿站）。", 0.5, 5.22, 8.5, 0.22, { fontSize: 7, color: MUTED });
 }
 
@@ -461,15 +455,13 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Plant Analysis", "2.4 植物分析");
-  img(s, "plants", 0.5, 1.02, 6.05, 3.32, "仁寿县植物配置分析图");
+  img(s, "plants", 0.5, 1.02, 6.05, 3.5, "仁寿县植物配置分析图");
   const groups = [["优势乔木", "桢楠、香樟、黄葛树、二球悬铃木、桂花、小叶榕", GREEN], ["花灌木", "紫薇、木芙蓉、蜡梅、红花檵木", ORANGE], ["地被", "麦冬、沿阶草、野花组合", NAVY]];
   groups.forEach((g, i) => {
     const y = 1.02 + i * 0.95;
     tag(s, g[0], 6.8, y, 0.95, 0.32, g[2], 9.5);
     txt(s, g[1], 6.75, y + 0.34, 2.9, 0.55, { fontSize: 9 });
   });
-  img(s, "x_daisy", 6.8, 3.85, 1.38, 1.3, null, { vcenter: true });
-  img(s, "x_greenhouse", 8.27, 3.85, 1.38, 1.3, null, { vcenter: true });
   rect(s, 0.5, 4.62, 6.05, 0.58, LIGHT);
   txt(s, "配置策略：北侧多层降噪林带；运动场地周边高大乔木林荫；低洼区雨水花园耐湿地被；四季分层乡土乔灌。", 0.58, 4.64, 5.9, 0.55, { fontSize: 9, valign: "middle" });
 }
@@ -489,8 +481,7 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
     s.addText(it[0], { x: 5.55, y: y + 0.05, w: 4.0, h: 0.28, fontFace: F, fontSize: 10, bold: true, color: it[2], margin: 0, isTextBox: true, valign: "middle" });
     txt(s, it[1], 5.5, y + 0.33, 4.1, 0.4, { fontSize: 8.5 });
   });
-  img(s, "x_cn_street", 5.35, 3.65, 2.1, 1.3, "市井生活记忆");
-  img(s, "x_stonewall", 7.55, 3.65, 2.1, 1.3, "乡土田园肌理");
+  img(s, "x_cn_street", 5.35, 3.6, 4.3, 1.45, "陵州市井生活与农耕田园记忆");
   txt(s, "新城缺少文化载体，居民对黑龙滩水利、陵州文脉、农耕田园有情感共鸣：以轻量化景观载体植入文化符号。", 0.5, 4.72, 4.7, 0.55, { fontSize: 8.5 });
 }
 
@@ -520,8 +511,7 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
     tag(s, it[0], 6.55, y + 0.08, 1.0, 0.3, it[2], 9);
     txt(s, it[1], 6.5, y + 0.4, 3.1, 0.42, { fontSize: 8.5 });
   });
-  img(s, "x_bus2", 6.45, 3.9, 1.55, 1.25, "公交接驳");
-  img(s, "x_ped2", 8.1, 3.9, 1.55, 1.25, "慢行入口");
+  img(s, "x_bus2", 6.45, 3.85, 3.2, 1.35, "周边公交接驳与慢行出入口");
   img(s, "site_2", 0.5, 4.12, 2.8, 1.05);
   img(s, "site_3", 3.4, 4.12, 2.8, 1.05);
   txt(s, "场地周边道路现状照片", 0.5, 5.18, 5.7, 0.2, { fontSize: 7.5, color: MUTED, align: "center" });
@@ -534,8 +524,7 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   img(s, "flow", 0.5, 1.02, 5.7, 2.82, "周边人行流线分析图（蓝：居民聚集点；红：进入聚集点）");
   bullets(s, ["居住区环绕，紧邻四所学校，人流量大", "东西两侧小区人流最强；上下学潮汐穿越", "四向入口对应小区与学校，主流线连续无障碍"], 6.45, 1.02, 3.2, 1.6, 8.5);
   img(s, "x_ped1", 6.45, 2.7, 3.2, 1.6, "居民步行流线");
-  img(s, "x_rickshaw", 0.5, 4.15, 2.8, 1.05, null, { vcenter: true });
-  img(s, "x_tandem", 3.4, 4.15, 2.8, 1.05, null, { vcenter: true });
+  img(s, "x_ped_street", 0.5, 4.15, 5.7, 1.05, null, { vcenter: true });
   txt(s, "中老年散步社交、青少年运动、家庭亲子游憩、外来游客短途停留", 6.45, 4.45, 3.2, 0.7, { fontSize: 8.5, valign: "middle" });
 }
 
@@ -551,8 +540,7 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
     s.addText(l[0], { x: 6.5, y, w: 1.4, h: 0.32, fontFace: F, fontSize: 9.5, color: GRAY, margin: 0, isTextBox: true, valign: "middle" });
   });
   img(s, "map", 8.0, 1.05, 1.65, 2.9, "现状地图");
-  img(s, "x_aerial_round", 6.1, 3.3, 1.75, 1.3, null, { vcenter: true });
-  txt(s, "四周以二类居住用地为主，配套幼儿园、小学、沿街商业；北侧为商务配套用地。服务人群以常住居民为主。", 6.1, 4.65, 3.55, 0.55, { fontSize: 8 });
+  txt(s, "四周以二类居住用地为主，配套幼儿园、小学、沿街商业；北侧为商务配套用地。服务人群以常住居民为主。", 6.1, 4.3, 3.55, 0.9, { fontSize: 9 });
   txt(s, "周边学校：星光幼儿园、文镇小学、文镇幼儿园、仁寿实验中学", 0.5, 4.5, 5.3, 0.3, { fontSize: 8.5, bold: true, color: NAVY });
 }
 
@@ -570,8 +558,7 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   rect(s, 7.45, 2.65, 2.2, 0.95, LIGHT);
   label(s, "场地地形", 7.55, 2.68, 2.0, 0.28, 10);
   txt(s, "整体平缓，局部小土坡；土方场内平衡，微高差布置雨水花园", 7.5, 2.97, 2.1, 0.6, { fontSize: 8.5 });
-  img(s, "site_2", 5.15, 3.75, 2.2, 1.4, null, { vcenter: true });
-  img(s, "x_alp", 7.45, 3.75, 2.2, 1.4, "浅丘地貌");
+  img(s, "site_2", 5.15, 3.75, 4.5, 1.4, null, { vcenter: true });
 }
 
 // ---------- 2.11 场地现状 ----------
@@ -622,13 +609,13 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   const shades = ["E07B2A", "E58A45", "EA9A60", "EEA97A", "F2B995", "F6C9B0", "F9D9CA", "FCE9E3"];
   shades.forEach((c, i) => rect(s, 3.57, 1.15 + i * 0.37, 0.07, 0.37, c));
   ["出行", "日晒", "休憩", "体锻", "情感", "兴趣", "社交", "康养"].forEach((l, i) => s.addText(l, { x: 3.7, y: 1.12 + i * 0.37, w: 0.5, h: 0.37, fontFace: F, fontSize: 8.5, color: GRAY, margin: 0, isTextBox: true, valign: "middle" }));
-  const rows = [["x_cyclists", "x_kites", "x_bench2", "x_bar"], ["x_basketball", "x_tennis2", "x_skatepark", "x_wheelchair"], ["x_elders_cake", "x_family", "x_cn_street", "x_baseball_kids"]];
+  const rows = [["x_cyclists", "x_kites", "x_bench2", "x_bar"], ["x_basketball", "x_tennis2", "x_skatepark", "x_wheelchair"]];
   rows.forEach((r, ri) => {
-    const y = 1.05 + ri * 1.05, h = 0.98;
+    const y = 1.1 + ri * 1.6, h = 1.5;
     const ws = r.map((n) => Math.min(DIMS[n][0] / DIMS[n][1] * h, 1.7));
     const total = ws.reduce((a, b) => a + b, 0), gap = (5.35 - total) / (r.length - 1);
     let x = 4.3;
-    r.forEach((n, i) => { img(s, n, x, y, ws[i], h); x += ws[i] + gap; });
+    r.forEach((n, i) => { img(s, n, x, y, ws[i], h, null, { bottom: true }); x += ws[i] + gap; });
   });
   rect(s, 0.5, 4.25, 9.15, 0.98, "3A3A3A");
   s.addText("居民日常户外活动的时段分布", { x: 0.6, y: 4.28, w: 3.0, h: 0.3, fontFace: F, fontSize: 10.5, bold: true, color: WHITE, margin: 0, isTextBox: true, valign: "middle" });
@@ -664,15 +651,14 @@ const MON = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 {
   const s = pres.addSlide();
   header(s, SEC2[0], "Sunlight Analysis", "2.14 光照分析");
-  img(s, "sun1", 0.5, 1.02, 4.55, 2.25, "夏季太阳轨迹与场地日照");
-  img(s, "sun2", 5.45, 1.02, 3.8, 2.25, "光照分析图（冬季太阳高度角较低）");
-  const c = [["全日照区（≥6h）", "阳光草坪、运动场地、露天活动", ORANGE, "x_lawn"], ["半日照区（3—6h）", "疏林草地、慢行步道、林下休憩", GREEN, "x_bench"], ["阴影区（<3h）", "阴生植物景观、静谧休闲空间", NAVY, "x_greenhouse"]];
+  img(s, "sun1", 0.5, 1.02, 4.55, 2.35, "夏季太阳轨迹与场地日照");
+  img(s, "sun2", 5.45, 1.02, 3.8, 2.35, "光照分析图（冬季太阳高度角较低）");
+  const c = [["全日照区（≥6h）", "阳光草坪、运动场地、露天活动", ORANGE], ["半日照区（3—6h）", "疏林草地、慢行步道、林下休憩", GREEN], ["阴影区（<3h）", "阴生植物景观、静谧休闲空间", NAVY]];
   c.forEach((it, i) => {
     const x = 0.5 + i * 3.1;
     rect(s, x, 3.6, 2.95, 0.6, LIGHT);
     tag(s, it[0], x + 0.08, 3.68, 1.35, 0.44, it[2], 8.5);
     txt(s, it[1], x + 1.5, 3.62, 1.45, 0.56, { fontSize: 8.5, valign: "middle" });
-    img(s, it[3], x, 4.28, 2.95, 0.92, null, { vcenter: true });
   });
 }
 
@@ -718,18 +704,17 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
 {
   const s = pres.addSlide();
   header(s, SEC3[0], "Design Objectives", "3.1 设计目标");
-  const g = [["x_lake", "生态目标", "乡土植物群落 + 生态缓冲带 + 海绵雨水系统", GREEN, "x_daisy"],
-    ["x_basketball", "功能目标", "游乐、运动、康养、草坪、科普五大分区", ORANGE, "x_tennis2"],
-    ["x_aerial_city", "空间目标", "四向人行入口，公园与居住区步行无缝衔接", NAVY, "x_sign"],
-    ["satellite", "落地目标", "本土苗木、少土方、轻量化构筑，低成本低维护", "5B7DB1", "x_stonewall"]];
+  const g = [["x_lake", "生态目标", "多层次乡土植物群落、主干道生态缓冲带与海绵雨水系统，降低径流，削弱噪声粉尘", GREEN],
+    ["x_basketball", "功能目标", "婴幼儿游乐、青少年运动、老年康养、邻里草坪、自然科普五大分区", ORANGE],
+    ["x_aerial_city", "空间目标", "优化主次入口与人车流线，四向人行通道与居住区步行无缝衔接", NAVY],
+    ["satellite", "落地目标", "眉山本土苗木，减少土方开挖，构筑物轻量化，低成本低维护", "5B7DB1"]];
   g.forEach((it, i) => {
     const x = 0.5 + i * 2.3, w = 2.2;
     photoCard(s, it[0], x, 1.02, w, 2.2, it[1], null, it[3], { bold: true, fontSize: 12, bandPos: "bottom", bandH: 0.45, alpha: 15, align: "center" });
     circleNum(s, i + 1, x, 3.35, 0.34, it[3]);
     s.addText(it[1], { x: x + 0.42, y: 3.35, w: w - 0.42, h: 0.34, fontFace: F, fontSize: 10.5, bold: true, color: it[3], margin: 0, isTextBox: true, valign: "middle" });
-    rect(s, x, 3.78, w, 0.6, LIGHT);
-    txt(s, it[2], x + 0.06, 3.8, w - 0.12, 0.56, { fontSize: 8.5, valign: "middle" });
-    img(s, it[4], x, 4.48, w, 0.72, null, { vcenter: true });
+    rect(s, x, 3.78, w, 1.4, LIGHT);
+    txt(s, it[2], x + 0.06, 3.84, w - 0.12, 1.3, { fontSize: 9.5, lineSpacingMultiple: 1.3 });
   });
 }
 
@@ -737,16 +722,15 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
 {
   const s = pres.addSlide();
   header(s, SEC3[0], "Design Principles", "3.2 设计原则");
-  const p = [["x_swing", "以人为本·全龄友好", "按人群分区，全域无障碍、座椅、遮阳乔木", NAVY, "x_wheelchair"],
-    ["x_plaza", "交通便捷·开放共享", "四面人行入口，软边界代替围墙，24小时开放", ORANGE, "x_cyclists"],
-    ["x_stonewall", "乡土风貌·简约宜居", "川南浅丘风格，提取田园、黑龙滩水系元素", GREEN, "x_cn_street"],
-    ["x_lake", "生态节约·海绵低碳", "土方场内平衡，乡土树种，雨水花园植草沟", "5B7DB1", "x_greenhouse"]];
+  const p = [["x_swing", "以人为本·全龄友好", "依老人、儿童、中青年行为特征分区，全域无障碍步道、休憩座椅、遮阳乔木", NAVY],
+    ["x_plaza", "交通便捷·开放共享", "四面设主次人行入口，绿篱、微地形软边界代替围墙，24小时开放", ORANGE],
+    ["x_stonewall", "乡土风貌·简约宜居", "川南浅丘自然简约风格，小品铺装提取仁寿田园、黑龙滩水系元素", GREEN],
+    ["x_lake", "生态节约·海绵低碳", "保留原始地形，土方场内平衡；乡土树种；雨水花园、植草沟就地净化", "5B7DB1"]];
   p.forEach((it, i) => {
     const x = 0.5 + i * 2.3, w = 2.2;
     photoCard(s, it[0], x, 1.02, w, 2.2, it[1], null, it[3], { bold: true, fontSize: 10.5, bandPos: "bottom", bandH: 0.45, alpha: 15, align: "center" });
-    rect(s, x, 3.32, w, 0.7, LIGHT);
-    txt(s, it[2], x + 0.08, 3.35, w - 0.16, 0.64, { fontSize: 9, valign: "middle" });
-    img(s, it[4], x, 4.1, w, 1.1, null, { vcenter: true });
+    rect(s, x, 3.32, w, 1.85, LIGHT);
+    txt(s, it[2], x + 0.08, 3.4, w - 0.16, 1.75, { fontSize: 9.5, lineSpacingMultiple: 1.3 });
   });
 }
 
@@ -813,7 +797,7 @@ sectionSlide("03", "场地规划分析", SEC3[1], ["3.1 设计目标", "3.2 设�
   const rows = [["类别", "主要内容"], ["现状分析", "区位、自然条件、社会条件"], ["设计分析", "道路、视线、建筑、入口、人流、景观序列"], ["设计图纸", "总平面图、节点详图、植物配置图"], ["效果图", "场地鸟瞰图、节点效果图"], ["专项设计", "建筑外立面、照明、平立面、效果图"], ["文本", "目的、依据、原则、分析、设计说明"]];
   s.addTable(rows.map((r, i) => r.map((c, j) => ({ text: c, options: { fontFace: F, fontSize: 8, color: i === 0 ? WHITE : GRAY, bold: i === 0 || j === 0, fill: { color: i === 0 ? NAVY : (i % 2 ? LIGHT : PALE) }, valign: "middle", align: j === 0 ? "center" : "left" } }))),
     { x: 0.5, y: 1.02, w: 4.6, colW: [0.9, 3.7], rowH: 0.42, border: { type: "solid", color: WHITE, pt: 1 } });
-  const tiles = [["x_aerial_round", "场地鸟瞰图"], ["x_basketball", "节点效果图"], ["plants", "植物配置图"], ["siteplan", "总平面图"]];
+  const tiles = [["x_aerial_round", "场地与周边环境"], ["x_basketball", "运动节点效果"], ["plants", "植物配置图"], ["siteplan", "总平面图"]];
   tiles.forEach((t, i) => {
     const x = 5.35 + (i % 2) * 2.2, y = 1.02 + Math.floor(i / 2) * 2.1;
     photoCard(s, t[0], x, y, 2.1, 2.0, t[1], null, NAVY, { bold: true, fontSize: 8.5, bandPos: "bottom", bandH: 0.32, alpha: 15, align: "center" });
@@ -853,8 +837,7 @@ const refs2 = ["[12] 周聪惠,陶成蹊,刘婧方,等.基于弹性共享的户�
   const s = pres.addSlide();
   s.background = { color: WHITE };
   rect(s, 0, 0, 4.6, 5.625, LIGHT);
-  img(s, "x_lake", 0.3, 0.35, 4.0, 2.55);
-  img(s, "x_swing", 0.3, 3.05, 4.0, 2.25);
+  img(s, "x_lake", 0.35, 0.5, 3.9, 4.6, null, { vcenter: true });
   rect(s, 4.6, 0, 5.4, 5.625, NAVY);
   s.addText("请各位老师批评指正", { x: 5.0, y: 1.9, w: 4.6, h: 0.8, fontFace: F, fontSize: 28, bold: true, color: WHITE, margin: 0, isTextBox: true });
   s.addText("跃动·栖园——全民健康视角下的眉山市仁寿县体育公园景观设计", { x: 5.0, y: 2.8, w: 4.6, h: 0.7, fontFace: F, fontSize: 11, color: "C9D6F0", margin: 0, isTextBox: true, valign: "top" });
