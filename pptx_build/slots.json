@@ -1,0 +1,1378 @@
+[
+ {
+  "id": "s001",
+  "page": 0,
+  "title": "",
+  "fallback": "x_aerial_city",
+  "used": "x_aerial_city",
+  "dup": false
+ },
+ {
+  "id": "s002",
+  "page": 0,
+  "title": "",
+  "fallback": "x_kites",
+  "used": "x_kites",
+  "dup": false
+ },
+ {
+  "id": "s003",
+  "page": 1,
+  "title": "01 课题研究背景",
+  "fallback": "x_kites",
+  "used": "x_lawn",
+  "dup": false
+ },
+ {
+  "id": "s004",
+  "page": 1,
+  "title": "01 课题研究背景",
+  "fallback": "x_bar",
+  "used": "x_bar",
+  "dup": false
+ },
+ {
+  "id": "s005",
+  "page": 2,
+  "title": "1.1 前言",
+  "fallback": "x_cyclists",
+  "used": "x_cyclists",
+  "dup": false
+ },
+ {
+  "id": "s006",
+  "page": 3,
+  "title": "1.1 选题背景——时代需求",
+  "fallback": "x_aerial_city",
+  "used": "x_aerial_round",
+  "dup": false
+ },
+ {
+  "id": "s007",
+  "page": 3,
+  "title": "1.1 选题背景——时代需求",
+  "fallback": "x_basketball",
+  "used": "x_basketball",
+  "dup": false
+ },
+ {
+  "id": "s008",
+  "page": 3,
+  "title": "1.1 选题背景——时代需求",
+  "fallback": "x_elders_bench",
+  "used": "x_elders_bench",
+  "dup": false
+ },
+ {
+  "id": "s009",
+  "page": 3,
+  "title": "1.1 选题背景——时代需求",
+  "fallback": "x_cyclists",
+  "used": "x_tennis",
+  "dup": false
+ },
+ {
+  "id": "s010",
+  "page": 4,
+  "title": "1.1 选题背景——政策导向",
+  "fallback": "x_bar",
+  "used": "x_tennis2",
+  "dup": false
+ },
+ {
+  "id": "s011",
+  "page": 4,
+  "title": "1.1 选题背景——政策导向",
+  "fallback": "x_tennis",
+  "used": "x_volleyball",
+  "dup": false
+ },
+ {
+  "id": "s012",
+  "page": 4,
+  "title": "1.1 选题背景——政策导向",
+  "fallback": "x_kites",
+  "used": "x_kid_lawn",
+  "dup": false
+ },
+ {
+  "id": "s013",
+  "page": 5,
+  "title": "1.1 选题背景——人口结构与地方需求",
+  "fallback": "ch_pop",
+  "used": "ch_pop",
+  "dup": false
+ },
+ {
+  "id": "s014",
+  "page": 5,
+  "title": "1.1 选题背景——人口结构与地方需求",
+  "fallback": "site_1",
+  "used": "site_1",
+  "dup": false
+ },
+ {
+  "id": "s015",
+  "page": 5,
+  "title": "1.1 选题背景——人口结构与地方需求",
+  "fallback": "site_3",
+  "used": "site_3",
+  "dup": false
+ },
+ {
+  "id": "s016",
+  "page": 6,
+  "title": "1.2 研究目的",
+  "fallback": "x_kites",
+  "used": "x_beachkites",
+  "dup": false
+ },
+ {
+  "id": "s017",
+  "page": 6,
+  "title": "1.2 研究目的",
+  "fallback": "x_lake",
+  "used": "x_lake",
+  "dup": false
+ },
+ {
+  "id": "s018",
+  "page": 6,
+  "title": "1.2 研究目的",
+  "fallback": "x_alp",
+  "used": "x_alp",
+  "dup": false
+ },
+ {
+  "id": "s019",
+  "page": 7,
+  "title": "1.3 研究意义",
+  "fallback": "x_people_band",
+  "used": "x_people_band",
+  "dup": false
+ },
+ {
+  "id": "s020",
+  "page": 8,
+  "title": "1.4 技术路线与研究方法",
+  "fallback": "route",
+  "used": "route",
+  "dup": false
+ },
+ {
+  "id": "s021",
+  "page": 9,
+  "title": "1.5 相关概念",
+  "fallback": "x_basketball",
+  "used": "x_court",
+  "dup": false
+ },
+ {
+  "id": "s022",
+  "page": 9,
+  "title": "1.5 相关概念",
+  "fallback": "x_court",
+  "used": "x_stadium",
+  "dup": false
+ },
+ {
+  "id": "s023",
+  "page": 9,
+  "title": "1.5 相关概念",
+  "fallback": "x_exercise",
+  "used": "x_exercise",
+  "dup": false
+ },
+ {
+  "id": "s024",
+  "page": 9,
+  "title": "1.5 相关概念",
+  "fallback": "x_wheelchair",
+  "used": "x_wheelchair",
+  "dup": false
+ },
+ {
+  "id": "s025",
+  "page": 9,
+  "title": "1.5 相关概念",
+  "fallback": "x_swing",
+  "used": "x_swing",
+  "dup": false
+ },
+ {
+  "id": "s026",
+  "page": 9,
+  "title": "1.5 相关概念",
+  "fallback": "x_kid_lawn",
+  "used": "x_bench",
+  "dup": false
+ },
+ {
+  "id": "s027",
+  "page": 10,
+  "title": "1.6 国内外研究现状",
+  "fallback": "x_volleyball",
+  "used": "x_baseball_kids",
+  "dup": false
+ },
+ {
+  "id": "s028",
+  "page": 10,
+  "title": "1.6 国内外研究现状",
+  "fallback": "x_skatepark",
+  "used": "x_skatepark",
+  "dup": false
+ },
+ {
+  "id": "s029",
+  "page": 10,
+  "title": "1.6 国内外研究现状",
+  "fallback": "x_cyclists",
+  "used": "x_skate",
+  "dup": false
+ },
+ {
+  "id": "s030",
+  "page": 10,
+  "title": "1.6 国内外研究现状",
+  "fallback": "x_bench",
+  "used": "x_daisy",
+  "dup": false
+ },
+ {
+  "id": "s031",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "x_bench",
+  "used": "x_greenhouse",
+  "dup": false
+ },
+ {
+  "id": "s032",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "x_plaza",
+  "used": "x_plaza",
+  "dup": false
+ },
+ {
+  "id": "s033",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "x_bar",
+  "used": "x_mtb",
+  "dup": false
+ },
+ {
+  "id": "s034",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "x_basketball",
+  "used": "x_tandem",
+  "dup": false
+ },
+ {
+  "id": "s035",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "x_tennis",
+  "used": "x_tennis",
+  "dup": true
+ },
+ {
+  "id": "s036",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "x_kites",
+  "used": "x_flowers",
+  "dup": false
+ },
+ {
+  "id": "s037",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "wh_2",
+  "used": "wh_2",
+  "dup": false
+ },
+ {
+  "id": "s038",
+  "page": 11,
+  "title": "1.6 国内外研究现状——发展脉络",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s039",
+  "page": 12,
+  "title": "1.7 案例参考（一）成都天府公园西区",
+  "fallback": "tf_5",
+  "used": "tf_5",
+  "dup": false
+ },
+ {
+  "id": "s040",
+  "page": 12,
+  "title": "1.7 案例参考（一）成都天府公园西区",
+  "fallback": "tf_1",
+  "used": "tf_1",
+  "dup": false
+ },
+ {
+  "id": "s041",
+  "page": 12,
+  "title": "1.7 案例参考（一）成都天府公园西区",
+  "fallback": "tf_2",
+  "used": "tf_2",
+  "dup": false
+ },
+ {
+  "id": "s042",
+  "page": 12,
+  "title": "1.7 案例参考（一）成都天府公园西区",
+  "fallback": "tf_3",
+  "used": "tf_3",
+  "dup": false
+ },
+ {
+  "id": "s043",
+  "page": 12,
+  "title": "1.7 案例参考（一）成都天府公园西区",
+  "fallback": "tf_4",
+  "used": "tf_4",
+  "dup": false
+ },
+ {
+  "id": "s044",
+  "page": 13,
+  "title": "1.7 案例参考（二）成都天府牧山活力体育公园",
+  "fallback": "ms_2",
+  "used": "ms_2",
+  "dup": false
+ },
+ {
+  "id": "s045",
+  "page": 13,
+  "title": "1.7 案例参考（二）成都天府牧山活力体育公园",
+  "fallback": "ms_1",
+  "used": "ms_1",
+  "dup": false
+ },
+ {
+  "id": "s046",
+  "page": 13,
+  "title": "1.7 案例参考（二）成都天府牧山活力体育公园",
+  "fallback": "ms_3",
+  "used": "ms_3",
+  "dup": false
+ },
+ {
+  "id": "s047",
+  "page": 13,
+  "title": "1.7 案例参考（二）成都天府牧山活力体育公园",
+  "fallback": "ms_4",
+  "used": "ms_4",
+  "dup": false
+ },
+ {
+  "id": "s048",
+  "page": 14,
+  "title": "1.7 案例参考（三）苏州相城活力体育公园",
+  "fallback": "sz_2",
+  "used": "sz_2",
+  "dup": false
+ },
+ {
+  "id": "s049",
+  "page": 14,
+  "title": "1.7 案例参考（三）苏州相城活力体育公园",
+  "fallback": "sz_1",
+  "used": "sz_1",
+  "dup": false
+ },
+ {
+  "id": "s050",
+  "page": 14,
+  "title": "1.7 案例参考（三）苏州相城活力体育公园",
+  "fallback": "sz_3",
+  "used": "sz_3",
+  "dup": false
+ },
+ {
+  "id": "s051",
+  "page": 14,
+  "title": "1.7 案例参考（三）苏州相城活力体育公园",
+  "fallback": "sz_4",
+  "used": "sz_4",
+  "dup": false
+ },
+ {
+  "id": "s052",
+  "page": 15,
+  "title": "1.7 案例参考（四）芜湖长江三桥桥下体育公园",
+  "fallback": "wh_2",
+  "used": "wh_2",
+  "dup": false
+ },
+ {
+  "id": "s053",
+  "page": 15,
+  "title": "1.7 案例参考（四）芜湖长江三桥桥下体育公园",
+  "fallback": "wh_1",
+  "used": "wh_1",
+  "dup": false
+ },
+ {
+  "id": "s054",
+  "page": 16,
+  "title": "02 项目研究概述",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s055",
+  "page": 16,
+  "title": "02 项目研究概述",
+  "fallback": "site_2",
+  "used": "site_2",
+  "dup": false
+ },
+ {
+  "id": "s056",
+  "page": 17,
+  "title": "2.1 上位规划",
+  "fallback": "map",
+  "used": "map",
+  "dup": false
+ },
+ {
+  "id": "s057",
+  "page": 17,
+  "title": "2.1 上位规划",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s058",
+  "page": 17,
+  "title": "2.1 上位规划",
+  "fallback": "x_aerial_city",
+  "used": "x_city",
+  "dup": false
+ },
+ {
+  "id": "s059",
+  "page": 17,
+  "title": "2.1 上位规划",
+  "fallback": "x_aerial_round",
+  "used": "x_street",
+  "dup": false
+ },
+ {
+  "id": "s060",
+  "page": 18,
+  "title": "2.2 区位分析",
+  "fallback": "location",
+  "used": "location",
+  "dup": false
+ },
+ {
+  "id": "s061",
+  "page": 18,
+  "title": "2.2 区位分析",
+  "fallback": "map",
+  "used": "map",
+  "dup": false
+ },
+ {
+  "id": "s062",
+  "page": 19,
+  "title": "2.3 气候分析——气温与降水",
+  "fallback": "clim_temp",
+  "used": "clim_temp",
+  "dup": false
+ },
+ {
+  "id": "s063",
+  "page": 19,
+  "title": "2.3 气候分析——气温与降水",
+  "fallback": "clim_rain",
+  "used": "clim_rain",
+  "dup": false
+ },
+ {
+  "id": "s064",
+  "page": 19,
+  "title": "2.3 气候分析——气温与降水",
+  "fallback": "x_kites",
+  "used": "x_plaza_flowers",
+  "dup": false
+ },
+ {
+  "id": "s065",
+  "page": 19,
+  "title": "2.3 气候分析——气温与降水",
+  "fallback": "x_umbrella",
+  "used": "x_umbrella",
+  "dup": false
+ },
+ {
+  "id": "s066",
+  "page": 20,
+  "title": "2.3 气候分析——日照、湿度与雨日",
+  "fallback": "ch_sun",
+  "used": "ch_sun",
+  "dup": false
+ },
+ {
+  "id": "s067",
+  "page": 20,
+  "title": "2.3 气候分析——日照、湿度与雨日",
+  "fallback": "ch_humid",
+  "used": "ch_humid",
+  "dup": false
+ },
+ {
+  "id": "s068",
+  "page": 20,
+  "title": "2.3 气候分析——日照、湿度与雨日",
+  "fallback": "x_lawn",
+  "used": "x_fountain",
+  "dup": false
+ },
+ {
+  "id": "s069",
+  "page": 20,
+  "title": "2.3 气候分析——日照、湿度与雨日",
+  "fallback": "x_bench",
+  "used": "x_patio",
+  "dup": false
+ },
+ {
+  "id": "s070",
+  "page": 21,
+  "title": "2.4 植物分析",
+  "fallback": "plants",
+  "used": "plants",
+  "dup": false
+ },
+ {
+  "id": "s071",
+  "page": 21,
+  "title": "2.4 植物分析",
+  "fallback": "x_daisy",
+  "used": "x_daisy",
+  "dup": true
+ },
+ {
+  "id": "s072",
+  "page": 21,
+  "title": "2.4 植物分析",
+  "fallback": "x_greenhouse",
+  "used": "x_greenhouse",
+  "dup": true
+ },
+ {
+  "id": "s073",
+  "page": 22,
+  "title": "2.5 历史文化分析",
+  "fallback": "culture",
+  "used": "culture",
+  "dup": false
+ },
+ {
+  "id": "s074",
+  "page": 22,
+  "title": "2.5 历史文化分析",
+  "fallback": "x_cn_street",
+  "used": "x_cn_street",
+  "dup": false
+ },
+ {
+  "id": "s075",
+  "page": 22,
+  "title": "2.5 历史文化分析",
+  "fallback": "x_stonewall",
+  "used": "x_stonewall",
+  "dup": false
+ },
+ {
+  "id": "s076",
+  "page": 23,
+  "title": "2.6 周边道路分析",
+  "fallback": "roads",
+  "used": "roads",
+  "dup": false
+ },
+ {
+  "id": "s077",
+  "page": 23,
+  "title": "2.6 周边道路分析",
+  "fallback": "roadcond",
+  "used": "roadcond",
+  "dup": false
+ },
+ {
+  "id": "s078",
+  "page": 23,
+  "title": "2.6 周边道路分析",
+  "fallback": "site_2",
+  "used": "site_2",
+  "dup": false
+ },
+ {
+  "id": "s079",
+  "page": 23,
+  "title": "2.6 周边道路分析",
+  "fallback": "site_3",
+  "used": "site_3",
+  "dup": false
+ },
+ {
+  "id": "s080",
+  "page": 24,
+  "title": "2.7 周边交通分析",
+  "fallback": "traffic",
+  "used": "traffic",
+  "dup": false
+ },
+ {
+  "id": "s081",
+  "page": 24,
+  "title": "2.7 周边交通分析",
+  "fallback": "x_bus2",
+  "used": "x_bus2",
+  "dup": false
+ },
+ {
+  "id": "s082",
+  "page": 24,
+  "title": "2.7 周边交通分析",
+  "fallback": "x_ped2",
+  "used": "x_ped2",
+  "dup": false
+ },
+ {
+  "id": "s083",
+  "page": 24,
+  "title": "2.7 周边交通分析",
+  "fallback": "site_2",
+  "used": "site_2",
+  "dup": false
+ },
+ {
+  "id": "s084",
+  "page": 24,
+  "title": "2.7 周边交通分析",
+  "fallback": "site_3",
+  "used": "site_3",
+  "dup": false
+ },
+ {
+  "id": "s085",
+  "page": 25,
+  "title": "2.8 周边人行流线分析",
+  "fallback": "flow",
+  "used": "flow",
+  "dup": false
+ },
+ {
+  "id": "s086",
+  "page": 25,
+  "title": "2.8 周边人行流线分析",
+  "fallback": "x_ped1",
+  "used": "x_ped1",
+  "dup": false
+ },
+ {
+  "id": "s087",
+  "page": 25,
+  "title": "2.8 周边人行流线分析",
+  "fallback": "x_rickshaw",
+  "used": "x_rickshaw",
+  "dup": false
+ },
+ {
+  "id": "s088",
+  "page": 25,
+  "title": "2.8 周边人行流线分析",
+  "fallback": "x_tandem",
+  "used": "x_tandem",
+  "dup": true
+ },
+ {
+  "id": "s089",
+  "page": 26,
+  "title": "2.9 周边用地分析",
+  "fallback": "landuse",
+  "used": "landuse",
+  "dup": false
+ },
+ {
+  "id": "s090",
+  "page": 26,
+  "title": "2.9 周边用地分析",
+  "fallback": "map",
+  "used": "map",
+  "dup": false
+ },
+ {
+  "id": "s091",
+  "page": 26,
+  "title": "2.9 周边用地分析",
+  "fallback": "x_aerial_round",
+  "used": "x_bus",
+  "dup": false
+ },
+ {
+  "id": "s092",
+  "page": 27,
+  "title": "2.10 地形地貌分析",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s093",
+  "page": 27,
+  "title": "2.10 地形地貌分析",
+  "fallback": "site_4",
+  "used": "site_4",
+  "dup": false
+ },
+ {
+  "id": "s094",
+  "page": 27,
+  "title": "2.10 地形地貌分析",
+  "fallback": "site_1",
+  "used": "site_1",
+  "dup": false
+ },
+ {
+  "id": "s095",
+  "page": 27,
+  "title": "2.10 地形地貌分析",
+  "fallback": "site_2",
+  "used": "site_2",
+  "dup": false
+ },
+ {
+  "id": "s096",
+  "page": 27,
+  "title": "2.10 地形地貌分析",
+  "fallback": "x_alp",
+  "used": "x_steps",
+  "dup": false
+ },
+ {
+  "id": "s097",
+  "page": 28,
+  "title": "2.11 场地现状分析",
+  "fallback": "siteplan",
+  "used": "siteplan",
+  "dup": false
+ },
+ {
+  "id": "s098",
+  "page": 28,
+  "title": "2.11 场地现状分析",
+  "fallback": "site_1",
+  "used": "site_1",
+  "dup": false
+ },
+ {
+  "id": "s099",
+  "page": 28,
+  "title": "2.11 场地现状分析",
+  "fallback": "site_2",
+  "used": "site_2",
+  "dup": false
+ },
+ {
+  "id": "s100",
+  "page": 28,
+  "title": "2.11 场地现状分析",
+  "fallback": "site_3",
+  "used": "site_3",
+  "dup": false
+ },
+ {
+  "id": "s101",
+  "page": 28,
+  "title": "2.11 场地现状分析",
+  "fallback": "site_4",
+  "used": "site_4",
+  "dup": false
+ },
+ {
+  "id": "s102",
+  "page": 28,
+  "title": "2.11 场地现状分析",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s103",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "x_cn_street",
+  "used": "x_bench2",
+  "dup": false
+ },
+ {
+  "id": "s104",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "x_family",
+  "used": "x_family",
+  "dup": false
+ },
+ {
+  "id": "s105",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "x_skatepark",
+  "used": "x_skatepark",
+  "dup": true
+ },
+ {
+  "id": "s106",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "x_exercise",
+  "used": "x_exercise",
+  "dup": true
+ },
+ {
+  "id": "s107",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "x_beachkites",
+  "used": "x_beachkites",
+  "dup": true
+ },
+ {
+  "id": "s108",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "pie_src",
+  "used": "pie_src",
+  "dup": false
+ },
+ {
+  "id": "s109",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "pie_age",
+  "used": "pie_age",
+  "dup": false
+ },
+ {
+  "id": "s110",
+  "page": 29,
+  "title": "2.12 人群结构分析",
+  "fallback": "pie_sex",
+  "used": "pie_sex",
+  "dup": false
+ },
+ {
+  "id": "s111",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_cyclists",
+  "used": "x_cyclists",
+  "dup": true
+ },
+ {
+  "id": "s112",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_kites",
+  "used": "x_kites",
+  "dup": true
+ },
+ {
+  "id": "s113",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_bench2",
+  "used": "x_elders_cake",
+  "dup": false
+ },
+ {
+  "id": "s114",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_bar",
+  "used": "x_bar",
+  "dup": true
+ },
+ {
+  "id": "s115",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_basketball",
+  "used": "x_basketball",
+  "dup": true
+ },
+ {
+  "id": "s116",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_tennis2",
+  "used": "x_tennis2",
+  "dup": true
+ },
+ {
+  "id": "s117",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_skatepark",
+  "used": "x_skatepark",
+  "dup": true
+ },
+ {
+  "id": "s118",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_wheelchair",
+  "used": "x_wheelchair",
+  "dup": true
+ },
+ {
+  "id": "s119",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_elders_cake",
+  "used": "x_elder_phone",
+  "dup": false
+ },
+ {
+  "id": "s120",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_family",
+  "used": "x_elders",
+  "dup": false
+ },
+ {
+  "id": "s121",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_cn_street",
+  "used": "x_crowd",
+  "dup": false
+ },
+ {
+  "id": "s122",
+  "page": 30,
+  "title": "2.13 主要人群需求分析",
+  "fallback": "x_baseball_kids",
+  "used": "x_baseball_kids",
+  "dup": true
+ },
+ {
+  "id": "s123",
+  "page": 31,
+  "title": "2.13 主要人群需求分析——调研数据",
+  "fallback": "pie_act",
+  "used": "pie_act",
+  "dup": false
+ },
+ {
+  "id": "s124",
+  "page": 31,
+  "title": "2.13 主要人群需求分析——调研数据",
+  "fallback": "pie_time",
+  "used": "pie_time",
+  "dup": false
+ },
+ {
+  "id": "s125",
+  "page": 32,
+  "title": "2.14 光照分析",
+  "fallback": "sun1",
+  "used": "sun1",
+  "dup": false
+ },
+ {
+  "id": "s126",
+  "page": 32,
+  "title": "2.14 光照分析",
+  "fallback": "sun2",
+  "used": "sun2",
+  "dup": false
+ },
+ {
+  "id": "s127",
+  "page": 32,
+  "title": "2.14 光照分析",
+  "fallback": "x_lawn",
+  "used": "x_lawn",
+  "dup": true
+ },
+ {
+  "id": "s128",
+  "page": 32,
+  "title": "2.14 光照分析",
+  "fallback": "x_bench",
+  "used": "x_bench",
+  "dup": true
+ },
+ {
+  "id": "s129",
+  "page": 32,
+  "title": "2.14 光照分析",
+  "fallback": "x_greenhouse",
+  "used": "x_greenhouse",
+  "dup": true
+ },
+ {
+  "id": "s130",
+  "page": 33,
+  "title": "2.15 SWOT分析",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s131",
+  "page": 33,
+  "title": "2.15 SWOT分析",
+  "fallback": "site_1",
+  "used": "site_1",
+  "dup": false
+ },
+ {
+  "id": "s132",
+  "page": 33,
+  "title": "2.15 SWOT分析",
+  "fallback": "map",
+  "used": "map",
+  "dup": false
+ },
+ {
+  "id": "s133",
+  "page": 33,
+  "title": "2.15 SWOT分析",
+  "fallback": "site_4",
+  "used": "site_4",
+  "dup": false
+ },
+ {
+  "id": "s134",
+  "page": 34,
+  "title": "2.16 问题梳理",
+  "fallback": "site_3",
+  "used": "site_3",
+  "dup": false
+ },
+ {
+  "id": "s135",
+  "page": 34,
+  "title": "2.16 问题梳理",
+  "fallback": "site_2",
+  "used": "site_2",
+  "dup": false
+ },
+ {
+  "id": "s136",
+  "page": 34,
+  "title": "2.16 问题梳理",
+  "fallback": "site_4",
+  "used": "site_4",
+  "dup": false
+ },
+ {
+  "id": "s137",
+  "page": 35,
+  "title": "03 场地规划分析",
+  "fallback": "x_tennis",
+  "used": "x_tennis",
+  "dup": true
+ },
+ {
+  "id": "s138",
+  "page": 35,
+  "title": "03 场地规划分析",
+  "fallback": "x_sign",
+  "used": "x_sign",
+  "dup": false
+ },
+ {
+  "id": "s139",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "x_lake",
+  "used": "x_lake",
+  "dup": true
+ },
+ {
+  "id": "s140",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "x_daisy",
+  "used": "x_daisy",
+  "dup": true
+ },
+ {
+  "id": "s141",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "x_basketball",
+  "used": "x_basketball",
+  "dup": true
+ },
+ {
+  "id": "s142",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "x_tennis2",
+  "used": "x_tennis2",
+  "dup": true
+ },
+ {
+  "id": "s143",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "x_aerial_city",
+  "used": "x_aerial_city",
+  "dup": true
+ },
+ {
+  "id": "s144",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "x_sign",
+  "used": "x_sign",
+  "dup": true
+ },
+ {
+  "id": "s145",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s146",
+  "page": 36,
+  "title": "3.1 设计目标",
+  "fallback": "x_stonewall",
+  "used": "x_stonewall",
+  "dup": true
+ },
+ {
+  "id": "s147",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_swing",
+  "used": "x_swing",
+  "dup": true
+ },
+ {
+  "id": "s148",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_wheelchair",
+  "used": "x_wheelchair",
+  "dup": true
+ },
+ {
+  "id": "s149",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_plaza",
+  "used": "x_plaza",
+  "dup": true
+ },
+ {
+  "id": "s150",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_cyclists",
+  "used": "x_cyclists",
+  "dup": true
+ },
+ {
+  "id": "s151",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_stonewall",
+  "used": "x_stonewall",
+  "dup": true
+ },
+ {
+  "id": "s152",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_cn_street",
+  "used": "x_cn_street",
+  "dup": true
+ },
+ {
+  "id": "s153",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_lake",
+  "used": "x_lake",
+  "dup": true
+ },
+ {
+  "id": "s154",
+  "page": 37,
+  "title": "3.2 设计原则",
+  "fallback": "x_greenhouse",
+  "used": "x_greenhouse",
+  "dup": true
+ },
+ {
+  "id": "s155",
+  "page": 38,
+  "title": "3.3 设计构思",
+  "fallback": "satellite",
+  "used": "satellite",
+  "dup": false
+ },
+ {
+  "id": "s156",
+  "page": 38,
+  "title": "3.3 设计构思",
+  "fallback": "x_bar",
+  "used": "x_bar",
+  "dup": true
+ },
+ {
+  "id": "s157",
+  "page": 38,
+  "title": "3.3 设计构思",
+  "fallback": "x_bench",
+  "used": "x_bench",
+  "dup": true
+ },
+ {
+  "id": "s158",
+  "page": 38,
+  "title": "3.3 设计构思",
+  "fallback": "x_swing",
+  "used": "x_swing",
+  "dup": true
+ },
+ {
+  "id": "s159",
+  "page": 39,
+  "title": "3.4 设计策略——策略框架",
+  "fallback": "strategy",
+  "used": "strategy",
+  "dup": false
+ },
+ {
+  "id": "s160",
+  "page": 39,
+  "title": "3.4 设计策略——策略框架",
+  "fallback": "x_tennis",
+  "used": "x_tennis",
+  "dup": true
+ },
+ {
+  "id": "s161",
+  "page": 39,
+  "title": "3.4 设计策略——策略框架",
+  "fallback": "x_sign",
+  "used": "x_sign",
+  "dup": true
+ },
+ {
+  "id": "s162",
+  "page": 39,
+  "title": "3.4 设计策略——策略框架",
+  "fallback": "x_greenhouse",
+  "used": "x_greenhouse",
+  "dup": true
+ },
+ {
+  "id": "s163",
+  "page": 40,
+  "title": "3.4 设计策略——回应2.16问题",
+  "fallback": "x_aerial_round",
+  "used": "x_aerial_round",
+  "dup": true
+ },
+ {
+  "id": "s164",
+  "page": 40,
+  "title": "3.4 设计策略——回应2.16问题",
+  "fallback": "x_kites",
+  "used": "x_kites",
+  "dup": true
+ },
+ {
+  "id": "s165",
+  "page": 40,
+  "title": "3.4 设计策略——回应2.16问题",
+  "fallback": "x_basketball",
+  "used": "x_basketball",
+  "dup": true
+ },
+ {
+  "id": "s166",
+  "page": 40,
+  "title": "3.4 设计策略——回应2.16问题",
+  "fallback": "x_daisy",
+  "used": "x_daisy",
+  "dup": true
+ },
+ {
+  "id": "s167",
+  "page": 41,
+  "title": "3.5 设计成果",
+  "fallback": "x_aerial_round",
+  "used": "x_aerial_round",
+  "dup": true
+ },
+ {
+  "id": "s168",
+  "page": 41,
+  "title": "3.5 设计成果",
+  "fallback": "x_basketball",
+  "used": "x_basketball",
+  "dup": true
+ },
+ {
+  "id": "s169",
+  "page": 41,
+  "title": "3.5 设计成果",
+  "fallback": "plants",
+  "used": "plants",
+  "dup": false
+ },
+ {
+  "id": "s170",
+  "page": 41,
+  "title": "3.5 设计成果",
+  "fallback": "siteplan",
+  "used": "siteplan",
+  "dup": false
+ },
+ {
+  "id": "s171",
+  "page": 44,
+  "title": "3.7 参考文献（2/2）",
+  "fallback": "x_lake",
+  "used": "x_lake",
+  "dup": true
+ },
+ {
+  "id": "s172",
+  "page": 44,
+  "title": "3.7 参考文献（2/2）",
+  "fallback": "x_swing",
+  "used": "x_swing",
+  "dup": true
+ }
+]
