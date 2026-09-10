@@ -129,13 +129,13 @@ diff_one <- function(df, v) {
   res <- data.frame(Var = v, stringsAsFactors = FALSE)
   ms  <- tapply(d$y, d$g, mean); se <- tapply(d$y, d$g, function(x) sd(x) / sqrt(length(x)))
   if (length(unique(d$y)) < 3 || any(table(d$g) < 2)) {   # 常数或缺失过多
-    for (g in group_levels) res[[g]] <- sprintf("%.3g ± %.2g", ms[g], se[g])
+    for (g in group_levels) res[[g]] <- fmt_ms(ms[g], se[g])
     res$F_value <- NA; res$P_anova <- NA; res$P_KW <- NA; res$P_shapiro <- NA; res$P_levene <- NA
     res$Letters <- NA; res$Order <- NA; return(res)
   }
   fit <- aov(y ~ g, data = d); a <- summary(fit)[[1]]
   let <- posthoc_letters(fit, d, ms)
-  for (g in group_levels) res[[g]] <- sprintf("%.3g ± %.2g %s", ms[g], se[g], let[g])
+  for (g in group_levels) res[[g]] <- fmt_ms(ms[g], se[g], let[g])
   res$F_value   <- round(a[["F value"]][1], 2)
   res$P_anova   <- signif(a[["Pr(>F)"]][1], 3)
   res$P_KW      <- signif(kruskal.test(y ~ g, data = d)$p.value, 3)
@@ -161,6 +161,11 @@ posthoc_letters <- function(fit, d, ms) {
                   unique(unlist(strsplit(paste(lt, collapse = ""), ""))))
   lt <- sapply(lt, function(z) paste(sort(map[strsplit(z, "")[[1]]]), collapse = ""))
   lt[group_levels]
+}
+
+fmt_ms <- function(m, s, l = "") {   # 均值3位有效数字, SE 2位, 不用科学计数
+  trimws(paste(format(signif(m, 3), scientific = FALSE, big.mark = ""), "±",
+               format(signif(s, 2), scientific = FALSE, big.mark = ""), l))
 }
 
 sig_mark <- function(p) ifelse(is.na(p), "", ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "ns"))))
