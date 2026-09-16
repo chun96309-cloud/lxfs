@@ -158,13 +158,15 @@ def save(fig, stem):
 
 
 # ---------------- 图1 ----------------
-fig1, ax1 = plt.subplots(figsize=(3.35, 2.75), dpi=300)
+# 画幅加大、纵轴留出上方余量、图例行距收紧, 避免图例文字与曲线重叠
+fig1, ax1 = plt.subplots(figsize=(4.0, 3.2), dpi=300)
 plot_group(ax1, T1, REL)
-style_axes(ax1, xmajor=6, ymajor=20, xlim=(0, 24), ylim=(0, 100))
+style_axes(ax1, xmajor=6, ymajor=20, xlim=(0, 24), ylim=(0, 106))
 ax1.set_xlabel(FIG1_XLABEL)
 ax1.set_ylabel(FIG1_YLABEL)
-leg1 = ax1.legend(loc="upper left", frameon=False, handlelength=1.8,
-                  labelspacing=0.3, borderpad=0.2, handletextpad=0.5)
+leg1 = ax1.legend(loc="upper left", frameon=False, handlelength=1.5,
+                  labelspacing=0.22, borderpad=0.15, handletextpad=0.4,
+                  borderaxespad=0.3)
 save(fig1, "Fig1_SeNPs_release")
 plt.close(fig1)
 
