@@ -24,7 +24,7 @@ FIG2_YLABEL = r"Tumor volume (mm$\mathregular{^3}$)"
 
 # ---------------- 全局字体与线宽 ----------------
 plt.rcParams["font.family"] = "serif"
-plt.rcParams["font.serif"] = ["Times New Roman", "SimSun"]
+plt.rcParams["font.serif"] = ["Times New Roman", "SimSun", "Liberation Serif"]
 plt.rcParams["font.sans-serif"] = ["SimSun"]
 plt.rcParams["mathtext.fontset"] = "stix"
 plt.rcParams["axes.unicode_minus"] = False
