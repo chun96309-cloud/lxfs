@@ -55,6 +55,7 @@ OUT_STEM = os.path.join(OUT_DIR, "Fig_coexpression_heatmap")
 TOPN = 20              # 每个 marker 取 |r| 最大的前 N 个基因
 CORR_METHOD = "pearson"  # 在 log2(CPM+1) 上计算
 GENE_LABEL_SIZE = 5.5  # 基因名过多, 单独设小字号; 其余文字为五号 10.5
+HORIZ_PANELS = 2       # 横版把基因分成几段上下堆叠, 1 = 一整行 (很长), 2 = 两段
 
 # ---------------- 字体 ----------------
 plt.rcParams["font.family"] = "serif"
@@ -186,44 +187,14 @@ GENE_LABEL = "Co-expressed genes (top {} per marker, n = {})".format(TOPN, n_col
 MARKER_LABEL = "Marker genes"
 
 
-def draw_heatmap(vertical):
-    """vertical=False: marker 作行, 基因作列 (横版)
-       vertical=True : 基因作行, marker 作列 (竖版)"""
-    M = Rsel.T if vertical else Rsel
-    nr, nc = M.shape
-    if vertical:
-        fig_w = n_row * 0.28 + 2.4
-        fig_h = max(4.0, n_col * 0.105 + 1.4)
-    else:
-        fig_w = max(6.0, n_col * 0.105 + 1.8)
-        fig_h = n_row * 0.28 + 1.9
-    fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=300)
-    im = ax.imshow(M, cmap=cmap, norm=norm, aspect="auto", interpolation="nearest")
-
-    if vertical:
-        ax.set_xticks(np.arange(nc))
-        ax.set_xticklabels(marker_ids, rotation=90, fontsize=8, fontweight="bold")
-        ax.set_yticks(np.arange(nr))
-        ax.set_yticklabels(sel_names, fontsize=GENE_LABEL_SIZE, fontweight="bold")
-        ax.set_xlabel(MARKER_LABEL, fontsize=10.5, labelpad=6, fontweight="bold")
-        ax.set_ylabel(GENE_LABEL, fontsize=10.5, fontweight="bold")
-    else:
-        ax.set_xticks(np.arange(nc))
-        ax.set_xticklabels(sel_names, rotation=90, fontsize=GENE_LABEL_SIZE, fontweight="bold")
-        ax.set_yticks(np.arange(nr))
-        ax.set_yticklabels(marker_ids, fontsize=8, fontweight="bold")
-        ax.set_xlabel(GENE_LABEL, fontsize=10.5, labelpad=6, fontweight="bold")
-        ax.set_ylabel(MARKER_LABEL, fontsize=10.5, fontweight="bold")
-
-    ax.set_xticks(np.arange(-0.5, nc, 1), minor=True)
-    ax.set_yticks(np.arange(-0.5, nr, 1), minor=True)
-    ax.grid(which="minor", color="white", linewidth=0.4)
+def _style(ax):
     ax.tick_params(which="minor", length=0)
     ax.tick_params(which="major", length=2.0, width=0.8)
     for side in ("left", "bottom", "right", "top"):
         ax.spines[side].set_linewidth(0.8)
 
-    frac = 0.05 if vertical else 0.02
+
+def _colorbar(fig, im, ax, frac):
     cbar = fig.colorbar(im, ax=ax, fraction=frac, pad=0.02,
                         ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
     cbar.set_label("Pearson r", fontsize=10.5, fontweight="bold")
@@ -231,14 +202,71 @@ def draw_heatmap(vertical):
     for lab in cbar.ax.get_yticklabels():
         lab.set_fontweight("bold")
     cbar.outline.set_linewidth(0.8)
+    return cbar
 
-    fig.tight_layout()
-    stem = OUT_STEM + ("_vertical" if vertical else "_horizontal")
+
+def _save(fig, stem):
     for ext in ("pdf", "svg", "png"):
         path = "{}.{}".format(stem, ext)
         fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05)
         print("saved:", path)
     plt.close(fig)
+
+
+def draw_heatmap(vertical):
+    """vertical=False: marker 作行, 基因作列, 基因分 HORIZ_PANELS 段上下堆叠 (横版)
+       vertical=True : 基因作行, marker 作列 (竖版)"""
+    if vertical:
+        M = Rsel.T
+        nr, nc = M.shape
+        fig_w = n_row * 0.28 + 2.4
+        fig_h = max(4.0, n_col * 0.105 + 1.4)
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=300)
+        im = ax.imshow(M, cmap=cmap, norm=norm, aspect="auto", interpolation="nearest")
+        ax.set_xticks(np.arange(nc))
+        ax.set_xticklabels(marker_ids, rotation=90, fontsize=8, fontweight="bold")
+        ax.set_yticks(np.arange(nr))
+        ax.set_yticklabels(sel_names, fontsize=GENE_LABEL_SIZE, fontweight="bold")
+        ax.set_xlabel(MARKER_LABEL, fontsize=10.5, labelpad=6, fontweight="bold")
+        ax.set_ylabel(GENE_LABEL, fontsize=10.5, fontweight="bold")
+        ax.set_xticks(np.arange(-0.5, nc, 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, nr, 1), minor=True)
+        ax.grid(which="minor", color="white", linewidth=0.4)
+        _style(ax)
+        _colorbar(fig, im, ax, 0.05)
+        fig.tight_layout()
+        _save(fig, OUT_STEM + "_vertical")
+        return
+
+    # ---- 横版: 按聚类顺序切成 HORIZ_PANELS 段, 上下堆叠, 共用一个色条 ----
+    k = max(1, int(HORIZ_PANELS))
+    per_panel = int(np.ceil(n_col / k))               # 前面的段取整, 最后一段可短
+    bounds = [min(i * per_panel, n_col) for i in range(k + 1)]
+    fig_w = max(5.0, per_panel * 0.105 + 1.8)
+    fig_h = k * (n_row * 0.26 + 0.9) + 0.6
+    fig, axes = plt.subplots(k, 1, figsize=(fig_w, fig_h), dpi=300, squeeze=False)
+    axes = axes[:, 0]
+    im = None
+    for i, ax in enumerate(axes):
+        a, b = bounds[i], bounds[i + 1]
+        M = Rsel[:, a:b]
+        names = sel_names[a:b]
+        im = ax.imshow(M, cmap=cmap, norm=norm, aspect="auto", interpolation="nearest")
+        ax.set_xlim(-0.5, per_panel - 0.5)          # 各段同宽, 末段留空对齐
+        ax.set_xticks(np.arange(M.shape[1]))
+        ax.set_xticklabels(names, rotation=90, fontsize=GENE_LABEL_SIZE, fontweight="bold")
+        ax.set_yticks(np.arange(n_row))
+        ax.set_yticklabels(marker_ids, fontsize=8, fontweight="bold")
+        ax.set_xticks(np.arange(-0.5, M.shape[1], 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, n_row, 1), minor=True)
+        ax.grid(which="minor", color="white", linewidth=0.4)
+        _style(ax)
+        if i == k - 1:
+            ax.set_xlabel(GENE_LABEL, fontsize=10.5, labelpad=6, fontweight="bold")
+    fig.supylabel(MARKER_LABEL, fontsize=10.5, fontweight="bold", x=0.005)
+    fig.tight_layout(h_pad=1.2)
+    _colorbar(fig, im, list(axes), 0.03)
+    _save(fig, OUT_STEM + "_horizontal")
 
 
 draw_heatmap(vertical=False)
