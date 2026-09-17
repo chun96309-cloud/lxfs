@@ -1,5 +1,6 @@
 // 生成共表达热图的分析说明文档 (Word, 适配 WPS)
-// 用法: node make_coexpression_docx.js [输出目录]
+// 用法: node make_coexpression_docx.js [输出目录] [插图目录]
+// 不带参数时输出到 <WORK_ROOT>\\当天日期 文件夹
 const fs = require("fs");
 const path = require("path");
 const {
@@ -7,8 +8,19 @@ const {
   Table, TableRow, TableCell, WidthType, ShadingType, BorderStyle, ImageRun,
 } = require("docx");
 
-const OUT_DIR = process.argv[2] || __dirname;
-const FIG_DIR = process.argv[3] || __dirname;
+// 工作根目录: 输出与插图默认都在 <WORK_ROOT>/YYYY-MM-DD 下, 每天自动新建
+const WORK_ROOT_DEFAULT = "C:\\Users\\23027\\Desktop\\11\\画各种图";
+const WORK_ROOT = fs.existsSync(WORK_ROOT_DEFAULT) ? WORK_ROOT_DEFAULT
+  : (fs.existsSync(path.join(path.dirname(__dirname), "data")) ? path.dirname(__dirname) : __dirname);
+const today = new Date();
+const DATE_DIR = [today.getFullYear(),
+  String(today.getMonth() + 1).padStart(2, "0"),
+  String(today.getDate()).padStart(2, "0")].join("-");
+const DEFAULT_DIR = path.join(WORK_ROOT, DATE_DIR);
+fs.mkdirSync(DEFAULT_DIR, { recursive: true });
+
+const OUT_DIR = process.argv[2] || DEFAULT_DIR;
+const FIG_DIR = process.argv[3] || DEFAULT_DIR;
 const CN = "宋体", EN = "Times New Roman", HEI = "黑体";
 const BODY = 21;          // 五号 = 10.5 pt = 21 half-points
 const TABLE_W = 8300;

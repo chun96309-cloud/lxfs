@@ -20,10 +20,22 @@ suppressPackageStartupMessages({
   library(grid)
 })
 
-## ---------------- 路径与参数 ----------------
-EXPR_FILE   <- "expression_matrix.xlsx"
-MARKER_FILE <- "marker_genes.xlsx"
-OUT_DIR     <- "."
+## ---------------- 工作目录 ----------------
+## 所有输入输出统一放在这个工作根目录下:
+##   <WORK_ROOT>/data/          输入数据 (xlsx)
+##   <WORK_ROOT>/YYYY-MM-DD/    当天的输出, 每天自动新建一个文件夹
+WORK_ROOT <- "C:/Users/23027/Desktop/11/画各种图"
+if (!dir.exists(WORK_ROOT)) {                      # 换机器时退回当前工作目录
+  WORK_ROOT <- if (dir.exists(file.path(getwd(), "data"))) getwd() else dirname(getwd())
+}
+DATA_DIR <- file.path(WORK_ROOT, "data")
+if (!dir.exists(DATA_DIR)) DATA_DIR <- WORK_ROOT
+OUT_DIR <- file.path(WORK_ROOT, format(Sys.Date(), "%Y-%m-%d"))
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+
+## ---------------- 输入文件与参数 ----------------
+EXPR_FILE   <- file.path(DATA_DIR, "expression_matrix.xlsx")
+MARKER_FILE <- file.path(DATA_DIR, "marker_genes.xlsx")
 TOPN        <- 20      # 每个 marker 取 |r| 最大的前 N 个基因
 FONT        <- "Times New Roman"
 GENE_FS     <- 5.5     # 基因名字号

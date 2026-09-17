@@ -7,14 +7,27 @@
 """
 
 import os
+import datetime
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
-# ---------------- 输出目录 ----------------
-OUT_DIR = os.path.dirname(os.path.abspath(__file__))
+# ---------------- 工作目录 ----------------
+# 所有输入输出统一放在这个工作根目录下:
+#   <WORK_ROOT>\data\          输入数据 (xlsx)
+#   <WORK_ROOT>\YYYY-MM-DD\    当天的输出, 每天自动新建一个文件夹
+WORK_ROOT = r"C:\Users\23027\Desktop\11\画各种图"
+if not os.path.isdir(WORK_ROOT):                  # 换机器时退回脚本所在目录的上一级
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _parent = os.path.dirname(_here)
+    WORK_ROOT = _parent if os.path.isdir(os.path.join(_parent, "data")) else _here
+DATA_DIR = os.path.join(WORK_ROOT, "data")
+if not os.path.isdir(DATA_DIR):
+    DATA_DIR = WORK_ROOT
+OUT_DIR = os.path.join(WORK_ROOT, datetime.date.today().strftime("%Y-%m-%d"))
+os.makedirs(OUT_DIR, exist_ok=True)
 
 # ---------------- 轴标题（与 xlsx 中登记的一致，可在此处修改） ----------------
 FIG1_XLABEL = "Times (hours)"
@@ -157,7 +170,7 @@ def plot_group(ax, x, data_dict, capsize=3.0):
 
 
 def save(fig, stem):
-    for ext in ("pdf", "svg"):
+    for ext in ("pdf", "svg", "png"):
         path = os.path.join(OUT_DIR, "{}.{}".format(stem, ext))
         fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05,
                     transparent=False)

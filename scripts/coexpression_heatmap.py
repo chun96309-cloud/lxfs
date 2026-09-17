@@ -11,11 +11,12 @@
 
 用法:
   python coexpression_heatmap.py [expression_matrix.xlsx] [marker_genes.xlsx]
-  不带参数时使用下方 EXPR_FILE / MARKER_FILE 的默认路径。
+  不带参数时从 <WORK_ROOT>\\data 读取, 结果写入 <WORK_ROOT>\\当天日期 文件夹。
 """
 
 import os
 import sys
+import datetime
 import numpy as np
 import openpyxl
 import matplotlib
@@ -23,13 +24,26 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 
-# ---------------- 输入输出 ----------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-EXPR_FILE = os.path.join(BASE_DIR, "expression_matrix.xlsx")
-MARKER_FILE = os.path.join(BASE_DIR, "marker_genes.xlsx")
-if len(sys.argv) >= 3:
+# ---------------- 工作目录 ----------------
+# 所有输入输出统一放在这个工作根目录下:
+#   <WORK_ROOT>\data\          输入数据 (xlsx)
+#   <WORK_ROOT>\YYYY-MM-DD\    当天的输出, 每天自动新建一个文件夹
+WORK_ROOT = r"C:\Users\23027\Desktop\11\画各种图"
+if not os.path.isdir(WORK_ROOT):                  # 换机器时退回脚本所在目录的上一级
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _parent = os.path.dirname(_here)
+    WORK_ROOT = _parent if os.path.isdir(os.path.join(_parent, "data")) else _here
+DATA_DIR = os.path.join(WORK_ROOT, "data")
+if not os.path.isdir(DATA_DIR):
+    DATA_DIR = WORK_ROOT
+OUT_DIR = os.path.join(WORK_ROOT, datetime.date.today().strftime("%Y-%m-%d"))
+os.makedirs(OUT_DIR, exist_ok=True)
+
+EXPR_FILE = os.path.join(DATA_DIR, "expression_matrix.xlsx")
+MARKER_FILE = os.path.join(DATA_DIR, "marker_genes.xlsx")
+if len(sys.argv) >= 3:                            # 也可用命令行参数覆盖
     EXPR_FILE, MARKER_FILE = sys.argv[1], sys.argv[2]
-OUT_STEM = os.path.join(BASE_DIR, "Fig_coexpression_heatmap")
+OUT_STEM = os.path.join(OUT_DIR, "Fig_coexpression_heatmap")
 
 # ---------------- 参数 ----------------
 TOPN = 20              # 每个 marker 取 |r| 最大的前 N 个基因
@@ -188,7 +202,7 @@ def draw_heatmap(vertical):
 
     fig.tight_layout()
     stem = OUT_STEM + ("_vertical" if vertical else "_horizontal")
-    for ext in ("pdf", "svg"):
+    for ext in ("pdf", "svg", "png"):
         path = "{}.{}".format(stem, ext)
         fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05)
         print("saved:", path)
