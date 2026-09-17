@@ -133,40 +133,65 @@ norm = TwoSlopeNorm(vmin=-1.0, vcenter=0.0, vmax=1.0)
 
 n_col = Rsel.shape[1]
 n_row = Rsel.shape[0]
-fig_w = max(6.0, n_col * 0.105 + 1.8)
-fig_h = n_row * 0.28 + 1.9
-fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=300)
+GENE_LABEL = "Co-expressed genes (top {} per marker, n = {})".format(TOPN, n_col)
+MARKER_LABEL = "Marker genes"
 
-im = ax.imshow(Rsel, cmap=cmap, norm=norm, aspect="auto", interpolation="nearest")
 
-ax.set_xticks(np.arange(n_col))
-ax.set_xticklabels(sel_names, rotation=90, fontsize=GENE_LABEL_SIZE)
-ax.set_yticks(np.arange(n_row))
-ax.set_yticklabels(marker_ids, fontsize=8)
-ax.set_xticks(np.arange(-0.5, n_col, 1), minor=True)
-ax.set_yticks(np.arange(-0.5, n_row, 1), minor=True)
-ax.grid(which="minor", color="white", linewidth=0.4)
-ax.tick_params(which="minor", length=0)
-ax.tick_params(which="major", length=2.0, width=0.8)
-for side in ("left", "bottom", "right", "top"):
-    ax.spines[side].set_linewidth(0.8)
+def draw_heatmap(vertical):
+    """vertical=False: marker 作行, 基因作列 (横版)
+       vertical=True : 基因作行, marker 作列 (竖版)"""
+    M = Rsel.T if vertical else Rsel
+    nr, nc = M.shape
+    if vertical:
+        fig_w = n_row * 0.28 + 2.4
+        fig_h = max(4.0, n_col * 0.105 + 1.4)
+    else:
+        fig_w = max(6.0, n_col * 0.105 + 1.8)
+        fig_h = n_row * 0.28 + 1.9
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=300)
+    im = ax.imshow(M, cmap=cmap, norm=norm, aspect="auto", interpolation="nearest")
 
-cbar = fig.colorbar(im, ax=ax, fraction=0.02, pad=0.012,
-                    ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
-cbar.set_label("Pearson r", fontsize=10.5)
-cbar.ax.tick_params(labelsize=9)
-cbar.outline.set_linewidth(0.8)
+    if vertical:
+        ax.set_xticks(np.arange(nc))
+        ax.set_xticklabels(marker_ids, rotation=90, fontsize=8)
+        ax.set_yticks(np.arange(nr))
+        ax.set_yticklabels(sel_names, fontsize=GENE_LABEL_SIZE)
+        ax.set_xlabel(MARKER_LABEL, fontsize=10.5, labelpad=6)
+        ax.set_ylabel(GENE_LABEL, fontsize=10.5)
+    else:
+        ax.set_xticks(np.arange(nc))
+        ax.set_xticklabels(sel_names, rotation=90, fontsize=GENE_LABEL_SIZE)
+        ax.set_yticks(np.arange(nr))
+        ax.set_yticklabels(marker_ids, fontsize=8)
+        ax.set_xlabel(GENE_LABEL, fontsize=10.5, labelpad=6)
+        ax.set_ylabel(MARKER_LABEL, fontsize=10.5)
 
-ax.set_xlabel("Co-expressed genes (top {} per marker, n = {})".format(TOPN, n_col),
-              fontsize=10.5, labelpad=6)
-ax.set_ylabel("Marker genes", fontsize=10.5)
+    ax.set_xticks(np.arange(-0.5, nc, 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, nr, 1), minor=True)
+    ax.grid(which="minor", color="white", linewidth=0.4)
+    ax.tick_params(which="minor", length=0)
+    ax.tick_params(which="major", length=2.0, width=0.8)
+    for side in ("left", "bottom", "right", "top"):
+        ax.spines[side].set_linewidth(0.8)
 
-fig.tight_layout()
-for ext in ("pdf", "svg"):
-    path = "{}.{}".format(OUT_STEM, ext)
-    fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05)
-    print("saved:", path)
-plt.close(fig)
+    frac = 0.05 if vertical else 0.02
+    cbar = fig.colorbar(im, ax=ax, fraction=frac, pad=0.02,
+                        ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
+    cbar.set_label("Pearson r", fontsize=10.5)
+    cbar.ax.tick_params(labelsize=9)
+    cbar.outline.set_linewidth(0.8)
+
+    fig.tight_layout()
+    stem = OUT_STEM + ("_vertical" if vertical else "_horizontal")
+    for ext in ("pdf", "svg"):
+        path = "{}.{}".format(stem, ext)
+        fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05)
+        print("saved:", path)
+    plt.close(fig)
+
+
+draw_heatmap(vertical=False)
+draw_heatmap(vertical=True)
 
 # ---------------- 5. 导出完整相关系数表 ----------------
 csv_path = OUT_STEM + "_correlation_full.csv"
