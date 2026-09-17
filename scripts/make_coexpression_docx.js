@@ -21,7 +21,7 @@ function body(text, opts = {}) {
     spacing: { line: 360, lineRule: "auto", before: 40, after: 40 },
     indent: opts.noIndent ? undefined : { firstLine: 420 },
     alignment: opts.align,
-    children: [new TextRun({ text, font, size: BODY })],
+    children: [new TextRun({ text, font, size: BODY, bold: true })],
   });
 }
 
@@ -39,7 +39,7 @@ function caption(text) {
   return new Paragraph({
     spacing: { before: 60, after: 160, line: 300, lineRule: "auto" },
     alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text, font, size: 18 })],
+    children: [new TextRun({ text, font, size: 18, bold: true })],
   });
 }
 
@@ -51,7 +51,7 @@ function cell(text, { head = false, widths, align } = {}) {
     children: [new Paragraph({
       alignment: align || (head ? AlignmentType.CENTER : AlignmentType.LEFT),
       spacing: { line: 280, lineRule: "auto" },
-      children: [new TextRun({ text, font, size: 19, bold: head })],
+      children: [new TextRun({ text, font, size: 19, bold: true })],
     })],
   });
 }
