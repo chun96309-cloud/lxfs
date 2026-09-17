@@ -10,7 +10,7 @@
   5. 对列做层次聚类排序, 输出矢量热图 (PDF + SVG) 与完整相关系数表 (CSV)
 
 用法:
-  python coexpression_heatmap.py [expression_matrix.xlsx] [marker_genes.xlsx]
+  python coexpression_heatmap.py [表达矩阵文件] [marker文件]   (txt 或 xlsx 均可)
   不带参数时从 <WORK_ROOT>\\data 读取, 结果写入 <WORK_ROOT>\\当天日期 文件夹。
 """
 
@@ -36,8 +36,17 @@ os.makedirs(DATA_DIR, exist_ok=True)
 OUT_DIR = os.path.join(WORK_ROOT, datetime.date.today().strftime("%Y-%m-%d"))
 os.makedirs(OUT_DIR, exist_ok=True)
 
-EXPR_FILE = os.path.join(DATA_DIR, "expression_matrix.xlsx")
-MARKER_FILE = os.path.join(DATA_DIR, "marker_genes.xlsx")
+# 输入文件: 同名的 .txt 和 .xlsx 都支持, 优先用存在的那个
+def _pick(stem):
+    for ext in (".txt", ".tsv", ".csv", ".xlsx"):
+        cand = os.path.join(DATA_DIR, stem + ext)
+        if os.path.isfile(cand):
+            return cand
+    return os.path.join(DATA_DIR, stem + ".xlsx")
+
+
+EXPR_FILE = _pick("expression_matrix")
+MARKER_FILE = _pick("marker_genes")
 if len(sys.argv) >= 3:                            # 也可用命令行参数覆盖
     EXPR_FILE, MARKER_FILE = sys.argv[1], sys.argv[2]
 OUT_STEM = os.path.join(OUT_DIR, "Fig_coexpression_heatmap")
@@ -65,21 +74,49 @@ plt.rcParams["ps.fonttype"] = 42
 plt.rcParams["svg.fonttype"] = "none"
 
 
+def _rows_from_file(path):
+    """按扩展名读取 xlsx 或 文本表格 (制表符/逗号分隔), 统一返回二维列表"""
+    ext = os.path.splitext(path)[1].lower()
+    if ext in (".xlsx", ".xlsm", ".xltx"):
+        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+        ws = wb[wb.sheetnames[0]]
+        rows = [list(r) for r in ws.iter_rows(values_only=True)]
+        wb.close()
+        return rows
+    with open(path, "r", encoding="utf-8-sig") as fh:
+        lines = [ln.rstrip("\r\n") for ln in fh if ln.strip()]
+    sep = "\t" if "\t" in lines[0] else ("," if "," in lines[0] else None)
+    return [ln.split(sep) if sep else [ln] for ln in lines]
+
+
 def read_matrix(path):
-    """读取 xlsx, 返回 (样本名, 基因名列表, 计数矩阵)"""
-    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    ws = wb[wb.sheetnames[0]]
-    rows = list(ws.iter_rows(values_only=True))
-    wb.close()
-    header = [h for h in rows[0] if h is not None]
-    samples = header[1:]
+    """读取表达矩阵, 返回 (样本名, 基因名列表, 计数矩阵)"""
+    rows = _rows_from_file(path)
+    header = [h for h in rows[0] if h not in (None, "")]
+    samples = [str(h) for h in header[1:]]
     genes, values = [], []
     for r in rows[1:]:
-        if r[0] is None:
+        if r[0] in (None, ""):
             continue
-        genes.append(str(r[0]))
+        genes.append(str(r[0]).strip())
         values.append([float(r[i + 1]) for i in range(len(samples))])
     return samples, genes, np.array(values, dtype=float)
+
+
+def read_marker_ids(path):
+    """读取 marker 基因名。支持两种格式:
+       1) 只有基因名的单列文件 (可有可无表头)
+       2) 与表达矩阵同结构的文件, 取第一列"""
+    rows = _rows_from_file(path)
+    ids = []
+    for i, r in enumerate(rows):
+        first = str(r[0]).strip() if r and r[0] is not None else ""
+        if not first:
+            continue
+        if i == 0 and (first.startswith("#") or first.lower() in ("id", "gene", "geneid")):
+            continue                      # 跳过表头
+        ids.append(first)
+    return ids
 
 
 def pearson_vs_matrix(v, M):
@@ -107,9 +144,7 @@ def order_by_cluster(M):
 
 # ---------------- 1. 读入并标准化 ----------------
 samples, genes, counts = read_matrix(EXPR_FILE)
-m_samples, marker_ids, _ = read_matrix(MARKER_FILE)
-if samples != m_samples:
-    raise ValueError("两个文件的样本列不一致: {} vs {}".format(samples, m_samples))
+marker_ids = read_marker_ids(MARKER_FILE)
 
 cpm = counts / counts.sum(axis=0, keepdims=True) * 1e6
 logcpm = np.log2(cpm + 1.0)

@@ -33,8 +33,16 @@ OUT_DIR <- file.path(WORK_ROOT, format(Sys.Date(), "%Y-%m-%d"))
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
 ## ---------------- 输入文件与参数 ----------------
-EXPR_FILE   <- file.path(DATA_DIR, "expression_matrix.xlsx")
-MARKER_FILE <- file.path(DATA_DIR, "marker_genes.xlsx")
+## 输入文件: 同名的 .txt 和 .xlsx 都支持, 优先用存在的那个
+pick_file <- function(stem) {
+  for (ext in c(".txt", ".tsv", ".csv", ".xlsx")) {
+    cand <- file.path(DATA_DIR, paste0(stem, ext))
+    if (file.exists(cand)) return(cand)
+  }
+  file.path(DATA_DIR, paste0(stem, ".xlsx"))
+}
+EXPR_FILE   <- pick_file("expression_matrix")
+MARKER_FILE <- pick_file("marker_genes")
 TOPN        <- 20      # 每个 marker 取 |r| 最大的前 N 个基因
 FONT        <- "Times New Roman"
 GENE_FS     <- 5.5     # 基因名字号
@@ -48,8 +56,21 @@ if (length(args) >= 2) {
 }
 
 ## ---------------- 1. 读入 ----------------
+## 按扩展名读取 xlsx 或文本表格 (制表符/逗号分隔)
+read_table_any <- function(path, header = TRUE) {
+  ext <- tolower(tools::file_ext(path))
+  if (ext %in% c("xlsx", "xlsm", "xltx")) {
+    as.data.frame(read_excel(path, col_names = header))
+  } else {
+    sep <- if (ext == "csv") "," else "\t"
+    read.table(path, header = header, sep = sep, quote = "",
+               comment.char = "", check.names = FALSE,
+               stringsAsFactors = FALSE)
+  }
+}
+
 read_matrix <- function(path) {
-  df <- as.data.frame(read_excel(path))
+  df <- read_table_any(path, header = TRUE)
   df <- df[, colSums(!is.na(df)) > 0, drop = FALSE]   # 去掉全空列
   ids <- as.character(df[[1]])
   m <- as.matrix(df[, -1, drop = FALSE])
@@ -58,13 +79,20 @@ read_matrix <- function(path) {
   m
 }
 
-expr <- read_matrix(EXPR_FILE)
-mark <- read_matrix(MARKER_FILE)
-
-if (!identical(colnames(expr), colnames(mark))) {
-  stop("两个文件的样本列不一致")
+## 读取 marker 基因名。支持单列基因名文件 (可有可无表头), 或与表达矩阵同结构的文件
+read_marker_ids <- function(path) {
+  df <- read_table_any(path, header = FALSE)
+  ids <- trimws(as.character(df[[1]]))
+  ids <- ids[nzchar(ids)]
+  if (length(ids) && (startsWith(ids[1], "#") ||
+                      tolower(ids[1]) %in% c("id", "gene", "geneid"))) {
+    ids <- ids[-1]                                     # 跳过表头
+  }
+  ids
 }
-marker_ids <- rownames(mark)
+
+expr <- read_matrix(EXPR_FILE)
+marker_ids <- read_marker_ids(MARKER_FILE)
 if (!all(marker_ids %in% rownames(expr))) {
   stop("marker 基因不在表达矩阵中: ",
        paste(setdiff(marker_ids, rownames(expr)), collapse = ", "))

@@ -3,9 +3,10 @@
 工作根目录: C:\Users\23027\Desktop\11\画各种图
 
 目录结构
-  data\                     输入数据, 放 xlsx 原始文件
-      expression_matrix.xlsx    表达矩阵 436 基因 x 6 样本
-      marker_genes.xlsx         6 个 marker 基因
+  data\                     输入数据, txt 或 xlsx 都支持
+      expression_matrix.txt     表达矩阵 436 基因 x 6 样本 (制表符分隔)
+      marker_genes.txt          marker 基因名, 单列, 可以没有表头
+      (同名的 .xlsx 也可以, 两种都在时优先读 .txt)
   scripts\                  分析与绘图脚本
       plot_vector_figures.py        释放曲线与肿瘤体积折线图 (Python)
       coexpression_heatmap.py       共表达热图 (Python)
@@ -24,7 +25,7 @@
   输出自动写入 <工作根目录>\当天日期\ 文件夹, 该文件夹不存在时自动创建。
   要换到别的目录, 只改各脚本开头的 WORK_ROOT 一行。
   也可以手动指定:
-  python coexpression_heatmap.py 其他表达矩阵.xlsx 其他marker.xlsx
+  python coexpression_heatmap.py 其他表达矩阵.txt 其他marker.txt
 
 每次输出的文件
   Fig1_SeNPs_release.pdf / .svg / .png        释放曲线
