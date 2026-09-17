@@ -1,0 +1,183 @@
+# -*- coding: utf-8 -*-
+# 6 个 marker 基因与其余基因的共表达热图 (ComplexHeatmap 版)
+#
+# 流程与 Python 版一致:
+#   1. 读入表达矩阵与 marker 列表
+#   2. CPM 标准化后 log2(CPM+1)
+#   3. 每个 marker 与其余基因逐一计算 Pearson 相关系数
+#   4. 每个 marker 取 |r| 最大的前 TOPN 个基因, 取并集
+#   5. 列做层次聚类排序, 输出横版与竖版 PDF, 并导出完整相关系数表
+#
+# 依赖: readxl, ComplexHeatmap, circlize
+#   install.packages(c("readxl", "circlize"))
+#   if (!require("BiocManager")) install.packages("BiocManager")
+#   BiocManager::install("ComplexHeatmap")
+
+suppressPackageStartupMessages({
+  library(readxl)
+  library(ComplexHeatmap)
+  library(circlize)
+  library(grid)
+})
+
+## ---------------- 路径与参数 ----------------
+EXPR_FILE   <- "expression_matrix.xlsx"
+MARKER_FILE <- "marker_genes.xlsx"
+OUT_DIR     <- "."
+TOPN        <- 20      # 每个 marker 取 |r| 最大的前 N 个基因
+FONT        <- "Times New Roman"
+GENE_FS     <- 5.5     # 基因名字号
+MARKER_FS   <- 8       # marker 名字号
+TITLE_FS    <- 10.5    # 标题与图例字号 (五号)
+
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) >= 2) {
+  EXPR_FILE <- args[1]
+  MARKER_FILE <- args[2]
+}
+
+## ---------------- 1. 读入 ----------------
+read_matrix <- function(path) {
+  df <- as.data.frame(read_excel(path))
+  df <- df[, colSums(!is.na(df)) > 0, drop = FALSE]   # 去掉全空列
+  ids <- as.character(df[[1]])
+  m <- as.matrix(df[, -1, drop = FALSE])
+  storage.mode(m) <- "double"
+  rownames(m) <- ids
+  m
+}
+
+expr <- read_matrix(EXPR_FILE)
+mark <- read_matrix(MARKER_FILE)
+
+if (!identical(colnames(expr), colnames(mark))) {
+  stop("两个文件的样本列不一致")
+}
+marker_ids <- rownames(mark)
+if (!all(marker_ids %in% rownames(expr))) {
+  stop("marker 基因不在表达矩阵中: ",
+       paste(setdiff(marker_ids, rownames(expr)), collapse = ", "))
+}
+
+## ---------------- 2. CPM 标准化 ----------------
+cpm <- sweep(expr, 2, colSums(expr), "/") * 1e6
+L <- log2(cpm + 1)
+
+other_ids <- setdiff(rownames(L), marker_ids)
+Lm <- L[marker_ids, , drop = FALSE]
+Lo <- L[other_ids, , drop = FALSE]
+
+## ---------------- 3. 相关系数矩阵 (6 x 其余基因) ----------------
+R <- cor(t(Lm), t(Lo), method = "pearson")
+
+## ---------------- 4. 每个 marker 取 topN, 求并集 ----------------
+selected <- character(0)
+for (i in seq_len(nrow(R))) {
+  ord <- order(abs(R[i, ]), decreasing = TRUE)[seq_len(TOPN)]
+  selected <- union(selected, colnames(R)[ord])
+}
+Rsel <- R[, selected, drop = FALSE]
+
+## 列聚类排序 (1 - Pearson 相关距离, average linkage), 两版共用同一顺序
+d_genes <- as.dist(1 - cor(Rsel))
+hc_genes <- hclust(d_genes, method = "average")
+
+## ---------------- 5. 绘图 ----------------
+col_fun <- colorRamp2(c(-1, 0, 1), c("#3C5488", "#FFFFFF", "#E64B35"))
+n_gene <- ncol(Rsel)
+gene_title <- sprintf("Co-expressed genes (top %d per marker, n = %d)", TOPN, n_gene)
+marker_title <- "Marker genes"
+
+legend_param <- list(
+  title = "Pearson r",
+  at = c(-1, -0.5, 0, 0.5, 1),
+  title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
+  labels_gp = gpar(fontsize = 9, fontfamily = FONT),
+  border = "black"
+)
+
+## 横版: marker 作行, 基因作列
+ht_h <- Heatmap(
+  Rsel,
+  name = "Pearson r",
+  col = col_fun,
+  cluster_rows = FALSE,
+  cluster_columns = hc_genes,
+  show_column_dend = FALSE,
+  row_names_side = "left",
+  column_names_side = "bottom",
+  row_names_gp = gpar(fontsize = MARKER_FS, fontfamily = FONT),
+  column_names_gp = gpar(fontsize = GENE_FS, fontfamily = FONT),
+  row_title = marker_title,
+  column_title = gene_title,
+  column_title_side = "bottom",
+  row_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
+  column_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
+  rect_gp = gpar(col = "white", lwd = 0.4),
+  border = TRUE,
+  heatmap_legend_param = legend_param
+)
+
+path_h <- file.path(OUT_DIR, "Fig_coexpression_heatmap_horizontal.pdf")
+cairo_pdf(path_h, width = max(6, n_gene * 0.105 + 2.2),
+          height = nrow(Rsel) * 0.28 + 2.2, family = FONT)
+draw(ht_h, heatmap_legend_side = "right", merge_legend = TRUE)
+dev.off()
+cat("saved:", normalizePath(path_h), "\n")
+
+## 竖版: 基因作行, marker 作列
+Rt <- t(Rsel)
+ht_v <- Heatmap(
+  Rt,
+  name = "Pearson r",
+  col = col_fun,
+  cluster_rows = hc_genes,
+  cluster_columns = FALSE,
+  show_row_dend = FALSE,
+  row_names_side = "left",
+  column_names_side = "bottom",
+  row_names_gp = gpar(fontsize = GENE_FS, fontfamily = FONT),
+  column_names_gp = gpar(fontsize = MARKER_FS, fontfamily = FONT),
+  row_title = gene_title,
+  column_title = marker_title,
+  column_title_side = "bottom",
+  row_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
+  column_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
+  rect_gp = gpar(col = "white", lwd = 0.4),
+  border = TRUE,
+  heatmap_legend_param = legend_param
+)
+
+path_v <- file.path(OUT_DIR, "Fig_coexpression_heatmap_vertical.pdf")
+cairo_pdf(path_v, width = ncol(Rt) * 0.28 + 3.0,
+          height = max(4, nrow(Rt) * 0.105 + 1.8), family = FONT)
+draw(ht_v, heatmap_legend_side = "right", merge_legend = TRUE)
+dev.off()
+cat("saved:", normalizePath(path_v), "\n")
+
+## ---------------- 6. 导出完整相关系数表 ----------------
+out_tab <- data.frame(
+  gene = colnames(R),
+  t(R),
+  in_heatmap = ifelse(colnames(R) %in% selected, "yes", "no"),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+csv_path <- file.path(OUT_DIR, "Fig_coexpression_heatmap_correlation_full.csv")
+write.csv(out_tab, csv_path, row.names = FALSE, fileEncoding = "UTF-8")
+cat("saved:", normalizePath(csv_path), "\n")
+
+## ---------------- 7. 关键信息 ----------------
+cat("\nsamples:", paste(colnames(expr), collapse = ", "), "\n")
+cat("library size (raw counts):", paste(colSums(expr), collapse = ", "), "\n")
+cat("genes in matrix:", nrow(expr), " markers:", length(marker_ids),
+    " others:", length(other_ids), "\n")
+cat("genes kept in heatmap:", n_gene, "\n")
+cat("n = 6 samples -> |r| > 0.811 corresponds to P < 0.05 (two-sided)\n\n")
+cat("top 3 co-expressed genes per marker:\n")
+for (i in seq_len(nrow(R))) {
+  ord <- order(abs(R[i, ]), decreasing = TRUE)[1:3]
+  cat(sprintf("  %s: %s\n", rownames(R)[i],
+              paste(sprintf("%s (r = %.3f)", colnames(R)[ord], R[i, ord]),
+                    collapse = ", ")))
+}
