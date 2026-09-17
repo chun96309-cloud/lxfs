@@ -21,15 +21,14 @@ suppressPackageStartupMessages({
 })
 
 ## ---------------- 工作目录 ----------------
-## 所有输入输出统一放在这个工作根目录下:
+## 直接把工作目录切到这里, 之后所有相对路径都以它为准:
 ##   <WORK_ROOT>/data/          输入数据 (xlsx)
 ##   <WORK_ROOT>/YYYY-MM-DD/    当天的输出, 每天自动新建一个文件夹
 WORK_ROOT <- "C:/Users/23027/Desktop/11/画各种图"
-if (!dir.exists(WORK_ROOT)) {                      # 换机器时退回当前工作目录
-  WORK_ROOT <- if (dir.exists(file.path(getwd(), "data"))) getwd() else dirname(getwd())
-}
+dir.create(WORK_ROOT, showWarnings = FALSE, recursive = TRUE)
+setwd(WORK_ROOT)
 DATA_DIR <- file.path(WORK_ROOT, "data")
-if (!dir.exists(DATA_DIR)) DATA_DIR <- WORK_ROOT
+dir.create(DATA_DIR, showWarnings = FALSE, recursive = TRUE)
 OUT_DIR <- file.path(WORK_ROOT, format(Sys.Date(), "%Y-%m-%d"))
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 

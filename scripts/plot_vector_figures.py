@@ -15,17 +15,14 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
 # ---------------- 工作目录 ----------------
-# 所有输入输出统一放在这个工作根目录下:
+# 直接把工作目录切到这里, 之后所有相对路径都以它为准:
 #   <WORK_ROOT>\data\          输入数据 (xlsx)
 #   <WORK_ROOT>\YYYY-MM-DD\    当天的输出, 每天自动新建一个文件夹
 WORK_ROOT = r"C:\Users\23027\Desktop\11\画各种图"
-if not os.path.isdir(WORK_ROOT):                  # 换机器时退回脚本所在目录的上一级
-    _here = os.path.dirname(os.path.abspath(__file__))
-    _parent = os.path.dirname(_here)
-    WORK_ROOT = _parent if os.path.isdir(os.path.join(_parent, "data")) else _here
+os.makedirs(WORK_ROOT, exist_ok=True)
+os.chdir(WORK_ROOT)
 DATA_DIR = os.path.join(WORK_ROOT, "data")
-if not os.path.isdir(DATA_DIR):
-    DATA_DIR = WORK_ROOT
+os.makedirs(DATA_DIR, exist_ok=True)
 OUT_DIR = os.path.join(WORK_ROOT, datetime.date.today().strftime("%Y-%m-%d"))
 os.makedirs(OUT_DIR, exist_ok=True)
 

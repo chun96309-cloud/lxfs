@@ -8,10 +8,10 @@ const {
   Table, TableRow, TableCell, WidthType, ShadingType, BorderStyle, ImageRun,
 } = require("docx");
 
-// 工作根目录: 输出与插图默认都在 <WORK_ROOT>/YYYY-MM-DD 下, 每天自动新建
-const WORK_ROOT_DEFAULT = "C:\\Users\\23027\\Desktop\\11\\画各种图";
-const WORK_ROOT = fs.existsSync(WORK_ROOT_DEFAULT) ? WORK_ROOT_DEFAULT
-  : (fs.existsSync(path.join(path.dirname(__dirname), "data")) ? path.dirname(__dirname) : __dirname);
+// 工作根目录: 直接把工作目录切到这里, 输出与插图都在 <WORK_ROOT>/YYYY-MM-DD 下
+const WORK_ROOT = "C:\\Users\\23027\\Desktop\\11\\画各种图";
+fs.mkdirSync(WORK_ROOT, { recursive: true });
+process.chdir(WORK_ROOT);
 const today = new Date();
 const DATE_DIR = [today.getFullYear(),
   String(today.getMonth() + 1).padStart(2, "0"),

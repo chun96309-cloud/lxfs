@@ -13,14 +13,16 @@
       make_coexpression_docx.js     分析说明 Word 文档生成 (Node)
   YYYY-MM-DD\               每天的输出, 脚本运行时按当天日期自动新建
 
-运行方式 (在 scripts 目录下)
+运行方式 (脚本会自动把工作目录切到上面这个根目录, 在哪里运行都一样)
   python plot_vector_figures.py
   python coexpression_heatmap.py
   Rscript coexpression_heatmap.R
   node make_coexpression_docx.js
 
-  四个脚本都不需要传参数, 输入自动从 data\ 读取,
-  输出自动写入 <工作根目录>\当天日期\ 文件夹。
+  四个脚本开头都用 chdir / setwd 把工作目录直接切到工作根目录,
+  不需要传参数, 输入自动从 data\ 读取,
+  输出自动写入 <工作根目录>\当天日期\ 文件夹, 该文件夹不存在时自动创建。
+  要换到别的目录, 只改各脚本开头的 WORK_ROOT 一行。
   也可以手动指定:
   python coexpression_heatmap.py 其他表达矩阵.xlsx 其他marker.xlsx
 
