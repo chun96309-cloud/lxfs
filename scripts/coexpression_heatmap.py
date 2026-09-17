@@ -309,6 +309,28 @@ with open(csv_path, "w", encoding="utf-8-sig") as fh:
         fh.write(",".join(cells) + "\n")
 print("saved:", csv_path)
 
+# ---------------- 5b. 入选基因名单: 每个基因被哪些 marker 选中 ----------------
+import json
+membership = {}                     # gene -> [(marker, r), ...]
+for i, m in enumerate(marker_ids):
+    for j in np.argsort(-np.abs(np.nan_to_num(R[i])))[:TOPN]:
+        membership.setdefault(other_genes[j], []).append((m, float(R[i, j])))
+by_count = {}
+for g, lst in membership.items():
+    by_count.setdefault(len(lst), []).append(
+        {"gene": g, "markers": [{"marker": m, "r": round(r, 3)} for m, r in lst]})
+for k in by_count:
+    by_count[k].sort(key=lambda d: (-max(abs(x["r"]) for x in d["markers"]), d["gene"]))
+gene_lists = {
+    "topn": TOPN,
+    "marker_order": list(marker_ids),
+    "by_count": {str(k): v for k, v in sorted(by_count.items(), reverse=True)},
+}
+json_path = OUT_STEM + "_gene_lists.json"
+with open(json_path, "w", encoding="utf-8") as fh:
+    json.dump(gene_lists, fh, ensure_ascii=False, indent=1)
+print("saved:", json_path)
+
 # ---------------- 6. 关键信息输出 ----------------
 print("\nsamples:", samples)
 print("library size (raw counts):", counts.sum(axis=0).astype(int).tolist())

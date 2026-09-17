@@ -179,6 +179,39 @@ children.push(table([
 ], [3000, 2650, 2650]));
 children.push(body("120 个名额中有 30 个来自负相关基因。名单高度不重叠说明 6 个 marker 并不共享同一个共表达模块，各自有相对独立的关联基因群，这一点在热图上也能直接看出来。"));
 
+// ---- 表 3 对应的基因名单 (由 coexpression_heatmap.py 输出的 JSON 读取) ----
+const listPath = path.join(FIG_DIR, "Fig_coexpression_heatmap_gene_lists.json");
+if (fs.existsSync(listPath)) {
+  const gl = JSON.parse(fs.readFileSync(listPath, "utf8"));
+  const fmt = (e) => e.markers.map((m) => m.marker + " (r = " + m.r.toFixed(3) + ")").join("；");
+  children.push(body("表 3 各组对应的具体基因如下，括号内为该基因与对应 marker 的 Pearson r。"));
+
+  for (const k of ["3", "2"]) {
+    const arr = gl.by_count[k] || [];
+    if (!arr.length) continue;
+    children.push(caption("表 3-" + (k === "3" ? "1" : "2") + "  被 " + k + " 个 marker 同时选中的基因（" + arr.length + " 个）"));
+    children.push(table(
+      [["基因", "选中该基因的 marker 及相关系数"]].concat(arr.map((e) => [e.gene, fmt(e)])),
+      [2200, 6100]));
+  }
+
+  const one = gl.by_count["1"] || [];
+  if (one.length) {
+    const byMarker = {};
+    for (const e of one) {
+      const m = e.markers[0];
+      (byMarker[m.marker] = byMarker[m.marker] || []).push(e.gene + " (" + m.r.toFixed(3) + ")");
+    }
+    const rows = [["Marker 基因", "基因数", "仅被该 marker 选中的基因（r）"]];
+    for (const m of gl.marker_order) {
+      const lst = byMarker[m] || [];
+      rows.push([m, String(lst.length), lst.join("、")]);
+    }
+    children.push(caption("表 3-3  仅被 1 个 marker 选中的基因（" + one.length + " 个），按 marker 分组"));
+    children.push(table(rows, [1900, 900, 5500]));
+  }
+}
+
 children.push(h("3.3 热图的解读", 2));
 children.push(image("Fig_coexpression_heatmap_horizontal.png", 554, 156));
 children.push(caption("图 1  共表达热图（横版）。行为 6 个 marker 基因，列为 99 个入选基因，颜色表示 Pearson 相关系数。基因名在此缩放比例下不可读，细节请查看矢量 PDF 文件。"));

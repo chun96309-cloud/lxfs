@@ -33,6 +33,7 @@
   Fig_coexpression_heatmap_horizontal.*       共表达热图, 横版
   Fig_coexpression_heatmap_vertical.*         共表达热图, 竖版
   Fig_coexpression_heatmap_correlation_full.csv   全部 r / P / BH q 值
+  Fig_coexpression_heatmap_gene_lists.json        入选基因被哪些 marker 选中 (供 Word 文档用)
   共表达热图分析说明.docx                      原理与结果说明文档
 
 注意
