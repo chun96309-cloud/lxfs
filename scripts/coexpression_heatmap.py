@@ -125,10 +125,11 @@ Rsel = Rsel[:, col_order]
 sel_names = [selected[j] for j in col_order]
 
 # ---------------- 4. 绘图 ----------------
+# 配色: NPG 蓝白红, 蓝为负相关, 红为正相关, 白为 0
+# Pearson r 本身的取值范围是 [-1, 1], 故色标固定为 -1 到 1, 不随数据缩放
 cmap = LinearSegmentedColormap.from_list(
-    "blue_white_red", ["#91ABD2", "#FFFFFF", "#F59694"])
-vmax = float(np.nanmax(np.abs(Rsel)))
-norm = TwoSlopeNorm(vmin=-vmax, vcenter=0.0, vmax=vmax)
+    "npg_blue_white_red", ["#3C5488", "#FFFFFF", "#E64B35"])
+norm = TwoSlopeNorm(vmin=-1.0, vcenter=0.0, vmax=1.0)
 
 n_col = Rsel.shape[1]
 n_row = Rsel.shape[0]
@@ -150,7 +151,8 @@ ax.tick_params(which="major", length=2.0, width=0.8)
 for side in ("left", "bottom", "right", "top"):
     ax.spines[side].set_linewidth(0.8)
 
-cbar = fig.colorbar(im, ax=ax, fraction=0.02, pad=0.012)
+cbar = fig.colorbar(im, ax=ax, fraction=0.02, pad=0.012,
+                    ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
 cbar.set_label("Pearson r", fontsize=10.5)
 cbar.ax.tick_params(labelsize=9)
 cbar.outline.set_linewidth(0.8)
