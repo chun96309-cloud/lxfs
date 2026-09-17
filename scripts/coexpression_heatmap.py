@@ -41,6 +41,9 @@ plt.rcParams["font.family"] = "serif"
 plt.rcParams["font.serif"] = ["Times New Roman", "SimSun", "Liberation Serif"]
 plt.rcParams["font.sans-serif"] = ["SimSun"]
 plt.rcParams["mathtext.fontset"] = "stix"
+plt.rcParams["font.weight"] = "bold"
+plt.rcParams["axes.labelweight"] = "bold"
+plt.rcParams["axes.titleweight"] = "bold"
 plt.rcParams["axes.unicode_minus"] = False
 plt.rcParams["font.size"] = 10.5
 plt.rcParams["axes.labelsize"] = 10.5
@@ -153,18 +156,18 @@ def draw_heatmap(vertical):
 
     if vertical:
         ax.set_xticks(np.arange(nc))
-        ax.set_xticklabels(marker_ids, rotation=90, fontsize=8)
+        ax.set_xticklabels(marker_ids, rotation=90, fontsize=8, fontweight="bold")
         ax.set_yticks(np.arange(nr))
-        ax.set_yticklabels(sel_names, fontsize=GENE_LABEL_SIZE)
-        ax.set_xlabel(MARKER_LABEL, fontsize=10.5, labelpad=6)
-        ax.set_ylabel(GENE_LABEL, fontsize=10.5)
+        ax.set_yticklabels(sel_names, fontsize=GENE_LABEL_SIZE, fontweight="bold")
+        ax.set_xlabel(MARKER_LABEL, fontsize=10.5, labelpad=6, fontweight="bold")
+        ax.set_ylabel(GENE_LABEL, fontsize=10.5, fontweight="bold")
     else:
         ax.set_xticks(np.arange(nc))
-        ax.set_xticklabels(sel_names, rotation=90, fontsize=GENE_LABEL_SIZE)
+        ax.set_xticklabels(sel_names, rotation=90, fontsize=GENE_LABEL_SIZE, fontweight="bold")
         ax.set_yticks(np.arange(nr))
-        ax.set_yticklabels(marker_ids, fontsize=8)
-        ax.set_xlabel(GENE_LABEL, fontsize=10.5, labelpad=6)
-        ax.set_ylabel(MARKER_LABEL, fontsize=10.5)
+        ax.set_yticklabels(marker_ids, fontsize=8, fontweight="bold")
+        ax.set_xlabel(GENE_LABEL, fontsize=10.5, labelpad=6, fontweight="bold")
+        ax.set_ylabel(MARKER_LABEL, fontsize=10.5, fontweight="bold")
 
     ax.set_xticks(np.arange(-0.5, nc, 1), minor=True)
     ax.set_yticks(np.arange(-0.5, nr, 1), minor=True)
@@ -177,8 +180,10 @@ def draw_heatmap(vertical):
     frac = 0.05 if vertical else 0.02
     cbar = fig.colorbar(im, ax=ax, fraction=frac, pad=0.02,
                         ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
-    cbar.set_label("Pearson r", fontsize=10.5)
+    cbar.set_label("Pearson r", fontsize=10.5, fontweight="bold")
     cbar.ax.tick_params(labelsize=9)
+    for lab in cbar.ax.get_yticklabels():
+        lab.set_fontweight("bold")
     cbar.outline.set_linewidth(0.8)
 
     fig.tight_layout()

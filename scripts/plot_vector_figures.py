@@ -20,13 +20,17 @@ OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 FIG1_XLABEL = "Times (hours)"
 FIG1_YLABEL = "SeNPs release (%)"
 FIG2_XLABEL = "Time (days)"
-FIG2_YLABEL = r"Tumor volume (mm$\mathregular{^3}$)"
+FIG2_YLABEL = r"Tumor volume (mm$\mathbf{^3}$)"
 
 # ---------------- 全局字体与线宽 ----------------
 plt.rcParams["font.family"] = "serif"
 plt.rcParams["font.serif"] = ["Times New Roman", "SimSun", "Liberation Serif"]
 plt.rcParams["font.sans-serif"] = ["SimSun"]
 plt.rcParams["mathtext.fontset"] = "stix"
+plt.rcParams["mathtext.default"] = "bf"
+plt.rcParams["font.weight"] = "bold"
+plt.rcParams["axes.labelweight"] = "bold"
+plt.rcParams["axes.titleweight"] = "bold"
 plt.rcParams["axes.unicode_minus"] = False
 plt.rcParams["font.size"] = 10.5
 plt.rcParams["axes.labelsize"] = 10.5
@@ -48,7 +52,7 @@ REL = {
         [36.03, 35.14, 35.61],
         [40.62, 40.83, 41.29],
     ]),
-    r"$\mathregular{H_2O_2}$": np.array([
+    r"$\mathbf{H_2O_2}$": np.array([
         [0, 0, 0],
         [37.05, 37.95, 37.64],
         [43.37, 42.80, 43.17],
@@ -64,7 +68,7 @@ REL = {
         [62.35, 63.53, 62.71],
         [73.15, 72.37, 73.26],
     ]),
-    r"$\mathregular{H_2O_2}$+UTMD": np.array([
+    r"$\mathbf{H_2O_2}$+UTMD": np.array([
         [0, 0, 0],
         [45.31, 46.22, 45.75],
         [52.86, 53.01, 53.26],

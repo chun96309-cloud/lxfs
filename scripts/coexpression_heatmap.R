@@ -91,8 +91,8 @@ marker_title <- "Marker genes"
 legend_param <- list(
   title = "Pearson r",
   at = c(-1, -0.5, 0, 0.5, 1),
-  title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
-  labels_gp = gpar(fontsize = 9, fontfamily = FONT),
+  title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT, fontface = "bold"),
+  labels_gp = gpar(fontsize = 9, fontfamily = FONT, fontface = "bold"),
   border = "black"
 )
 
@@ -106,13 +106,13 @@ ht_h <- Heatmap(
   show_column_dend = FALSE,
   row_names_side = "left",
   column_names_side = "bottom",
-  row_names_gp = gpar(fontsize = MARKER_FS, fontfamily = FONT),
-  column_names_gp = gpar(fontsize = GENE_FS, fontfamily = FONT),
+  row_names_gp = gpar(fontsize = MARKER_FS, fontfamily = FONT, fontface = "bold"),
+  column_names_gp = gpar(fontsize = GENE_FS, fontfamily = FONT, fontface = "bold"),
   row_title = marker_title,
   column_title = gene_title,
   column_title_side = "bottom",
-  row_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
-  column_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
+  row_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT, fontface = "bold"),
+  column_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT, fontface = "bold"),
   rect_gp = gpar(col = "white", lwd = 0.4),
   border = TRUE,
   heatmap_legend_param = legend_param
@@ -136,13 +136,13 @@ ht_v <- Heatmap(
   show_row_dend = FALSE,
   row_names_side = "left",
   column_names_side = "bottom",
-  row_names_gp = gpar(fontsize = GENE_FS, fontfamily = FONT),
-  column_names_gp = gpar(fontsize = MARKER_FS, fontfamily = FONT),
+  row_names_gp = gpar(fontsize = GENE_FS, fontfamily = FONT, fontface = "bold"),
+  column_names_gp = gpar(fontsize = MARKER_FS, fontfamily = FONT, fontface = "bold"),
   row_title = gene_title,
   column_title = marker_title,
   column_title_side = "bottom",
-  row_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
-  column_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT),
+  row_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT, fontface = "bold"),
+  column_title_gp = gpar(fontsize = TITLE_FS, fontfamily = FONT, fontface = "bold"),
   rect_gp = gpar(col = "white", lwd = 0.4),
   border = TRUE,
   heatmap_legend_param = legend_param
