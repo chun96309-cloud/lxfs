@@ -194,12 +194,40 @@ draw_heatmap(vertical=False)
 draw_heatmap(vertical=True)
 
 # ---------------- 5. 导出完整相关系数表 ----------------
+# 相关系数 -> t 检验 P 值 (df = n - 2), 再做 BH 多重检验校正
+n_sample = logcpm.shape[1]
+df_t = n_sample - 2
+with np.errstate(divide="ignore", invalid="ignore"):
+    tstat = R * np.sqrt(df_t) / np.sqrt(np.maximum(1.0 - R ** 2, 1e-12))
+try:
+    from scipy import stats as _stats
+    P = 2.0 * _stats.t.sf(np.abs(tstat), df_t)
+except Exception:                      # 无 scipy 时用正态近似, 仅作参考
+    P = 2.0 * 0.5 * (1.0 - np.math.erf(np.abs(tstat) / np.sqrt(2.0)))
+flat = P.ravel()
+order = np.argsort(flat)
+mtest = flat.size
+Q = np.empty(mtest)
+running = 1.0
+for rank, pos in enumerate(order[::-1]):
+    running = min(running, flat[pos] * mtest / (mtest - rank))
+    Q[pos] = running
+Q = Q.reshape(P.shape)
+
 csv_path = OUT_STEM + "_correlation_full.csv"
 with open(csv_path, "w", encoding="utf-8-sig") as fh:
-    fh.write("gene," + ",".join(marker_ids) + ",in_heatmap\n")
+    head = ["gene"]
+    for m in marker_ids:
+        head += ["r_" + m, "P_" + m, "BH_q_" + m]
+    head.append("in_heatmap")
+    fh.write(",".join(head) + "\n")
     for j, g in enumerate(other_genes):
-        fh.write(g + "," + ",".join("{:.4f}".format(R[i, j]) for i in range(n_row)))
-        fh.write(",{}\n".format("yes" if g in selected else "no"))
+        cells = [g]
+        for i in range(n_row):
+            cells += ["{:.4f}".format(R[i, j]), "{:.4g}".format(P[i, j]),
+                      "{:.4g}".format(Q[i, j])]
+        cells.append("yes" if g in selected else "no")
+        fh.write(",".join(cells) + "\n")
 print("saved:", csv_path)
 
 # ---------------- 6. 关键信息输出 ----------------
@@ -208,7 +236,9 @@ print("library size (raw counts):", counts.sum(axis=0).astype(int).tolist())
 print("genes in matrix:", len(genes), " markers:", len(marker_ids),
       " others:", len(other_genes))
 print("genes kept in heatmap:", n_col)
-print("n = 6 samples -> |r| > 0.811 corresponds to P < 0.05 (two-sided)")
+print("n = {} samples -> |r| > 0.811 corresponds to P < 0.05 (two-sided)".format(n_sample))
+print("pairs with P < 0.05: {} / {}".format(int((P < 0.05).sum()), P.size))
+print("pairs with BH q < 0.05: {} / {}".format(int((Q < 0.05).sum()), Q.size))
 print("\ntop 3 co-expressed genes per marker:")
 for i, m in enumerate(marker_ids):
     order = np.argsort(-np.abs(np.nan_to_num(R[i])))[:3]

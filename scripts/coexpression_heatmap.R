@@ -156,13 +156,22 @@ dev.off()
 cat("saved:", normalizePath(path_v), "\n")
 
 ## ---------------- 6. 导出完整相关系数表 ----------------
-out_tab <- data.frame(
-  gene = colnames(R),
-  t(R),
-  in_heatmap = ifelse(colnames(R) %in% selected, "yes", "no"),
-  check.names = FALSE,
-  stringsAsFactors = FALSE
-)
+## 相关系数 -> t 检验 P 值 (df = n - 2), 再做 BH 多重检验校正
+n_sample <- ncol(L)
+df_t <- n_sample - 2
+tstat <- R * sqrt(df_t) / sqrt(pmax(1 - R^2, 1e-12))
+P <- 2 * pt(abs(tstat), df = df_t, lower.tail = FALSE)
+Q <- matrix(p.adjust(as.vector(P), method = "BH"), nrow = nrow(P),
+            dimnames = dimnames(P))
+
+out_tab <- data.frame(gene = colnames(R), stringsAsFactors = FALSE)
+for (i in seq_len(nrow(R))) {
+  m <- rownames(R)[i]
+  out_tab[[paste0("r_", m)]] <- round(R[i, ], 4)
+  out_tab[[paste0("P_", m)]] <- signif(P[i, ], 4)
+  out_tab[[paste0("BH_q_", m)]] <- signif(Q[i, ], 4)
+}
+out_tab$in_heatmap <- ifelse(colnames(R) %in% selected, "yes", "no")
 csv_path <- file.path(OUT_DIR, "Fig_coexpression_heatmap_correlation_full.csv")
 write.csv(out_tab, csv_path, row.names = FALSE, fileEncoding = "UTF-8")
 cat("saved:", normalizePath(csv_path), "\n")
@@ -173,7 +182,10 @@ cat("library size (raw counts):", paste(colSums(expr), collapse = ", "), "\n")
 cat("genes in matrix:", nrow(expr), " markers:", length(marker_ids),
     " others:", length(other_ids), "\n")
 cat("genes kept in heatmap:", n_gene, "\n")
-cat("n = 6 samples -> |r| > 0.811 corresponds to P < 0.05 (two-sided)\n\n")
+cat(sprintf("n = %d samples -> |r| > 0.811 corresponds to P < 0.05 (two-sided)\n",
+            n_sample))
+cat(sprintf("pairs with P < 0.05: %d / %d\n", sum(P < 0.05), length(P)))
+cat(sprintf("pairs with BH q < 0.05: %d / %d\n\n", sum(Q < 0.05), length(Q)))
 cat("top 3 co-expressed genes per marker:\n")
 for (i in seq_len(nrow(R))) {
   ord <- order(abs(R[i, ]), decreasing = TRUE)[1:3]
