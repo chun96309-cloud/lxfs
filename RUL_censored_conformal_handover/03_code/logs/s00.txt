@@ -4,17 +4,14 @@
     numpy     2.4.6
     pandas    3.0.6
     sklearn   1.9.1
+    matplotlib 3.11.2
 
-[2] R
-    Rscript 不在 PATH 上。s04 需要它。把 R 的 bin 目录 (例如 C:\Program Files\R\R-4.5.0\bin) 加进 PATH,
-    或者在 run_all.bat 里把 Rscript 换成完整路径。
-
-[3] 字体文件 (s04 出图用; 缺宋体或 Times New Roman 则图不能用于论文)
+[2] 字体文件 (s04 出图用; 缺宋体或 Times New Roman 则图不能用于论文)
     宋体 SimSun              缺   C:\Windows\Fonts\simsun.ttc
     Times New Roman        缺   C:\Windows\Fonts\times.ttf
     Times New Roman Bold   缺   C:\Windows\Fonts\timesbd.ttf
 
-[4] 数据目录 /tmp/claude-0/-home-user-lxfs/490e2cf8-6489-5114-b498-81db3660a1bf/scratchpad/cmapss/data
+[3] 数据目录 /tmp/claude-0/-home-user-lxfs/490e2cf8-6489-5114-b498-81db3660a1bf/scratchpad/cmapss/data
     train_FD001.txt     3515356 bytes
     test_FD001.txt      2228855 bytes
     RUL_FD001.txt           429 bytes

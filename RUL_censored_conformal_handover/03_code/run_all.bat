@@ -17,7 +17,7 @@ if errorlevel 1 (echo s02 失败, 看 logs\s02.txt & exit /b 1)
 echo [3/5] s03_censoring.py  (几分钟)
 python s03_censoring.py %DATA% > logs\s03.txt 2>&1
 if errorlevel 1 (echo s03 失败, 看 logs\s03.txt & exit /b 1)
-echo [4/5] s04_figures.R
-Rscript s04_figures.R %DATA% > logs\s04.txt 2>&1
+echo [4/5] s04_figures.py
+python s04_figures.py %DATA% > logs\s04.txt 2>&1
 if errorlevel 1 (echo s04 失败, 看 logs\s04.txt & exit /b 1)
 echo 全部完成。结果在 results\, 图在 figures\, 日志在 logs\

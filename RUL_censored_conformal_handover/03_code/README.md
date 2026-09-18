@@ -5,11 +5,11 @@
 | 文件 | 作用 | 贴回什么 |
 |---|---|---|
 | `cmapss_common.py` | 公共函数，不直接运行 | 无 |
-| `s00_env.py` | 环境自检：Python 与包版本、Rscript、字体文件、数据文件 | 全部输出 |
+| `s00_env.py` | 环境自检：Python 与包版本、字体文件、数据文件 | 全部输出 |
 | `s01_inspect.py` | 结构探查，不建模 | 全部输出 |
 | `s02_baseline.py` | 无删失基线：点预测、两侧区间、一侧下界；结果写 `results/` | 全部输出 |
 | `s03_censoring.py` | 删失构造、样本量核算、六条线对比（E / A / B / Cu / Cw / Cw1）；结果写 `results/` | 全部输出 |
-| `s04_figures.R` | 读 `results/` 出 11 张图到 `figures/`，宋体五号 / Times New Roman 五号 | 图文件清单 |
+| `s04_figures.py` | matplotlib 读 `results/` 出 11 张图到 `figures/`，宋体五号 / Times New Roman 五号 | 图文件清单 |
 | `run_all.bat` | 按顺序跑完五步，日志写 `logs/` | 五个日志 |
 | `requirements.txt` | Python 依赖 | 无 |
 
@@ -24,17 +24,16 @@ python s00_env.py
 python s01_inspect.py
 python s02_baseline.py
 python s03_censoring.py
-Rscript s04_figures.R
+python s04_figures.py
 ```
 
-带目录参数的写法：`python s01_inspect.py E:\cmapss`，R 是 `Rscript s04_figures.R E:/cmapss`。
+带目录参数的写法：`python s01_inspect.py E:\cmapss`。
 
-或者双击 `run_all.bat`（也可以 `run_all.bat E:\cmapss`）。Python 依赖见 `requirements.txt`；R 4.5，缺的包 s04 会自动装（ggplot2、dplyr、tidyr、showtext）。`Rscript` 要在 PATH 上，s00 会检查。CPU 即可，s03 约几分钟。
+或者双击 `run_all.bat`（也可以 `run_all.bat E:\cmapss`）。Python 依赖见 `requirements.txt`（numpy、pandas、scikit-learn、matplotlib 3.6 以上）。CPU 即可，s03 约几分钟。
 
-## s00 输出要核对的三件事
+## s00 输出要核对的两件事
 
-- numpy、pandas、scikit-learn 三个都有版本号。
-- Rscript 找得到。找不到就把 R 的 bin 目录加进 PATH。
+- numpy、pandas、scikit-learn、matplotlib 四个都有版本号。
 - 宋体与 Times New Roman 两个字体文件都"有"。缺任一个，s04 的图不能用于论文。
 
 ## s01 输出要核对的四件事
@@ -77,7 +76,7 @@ Rscript s04_figures.R
 | F10 | 一台测试发动机的真实 RUL 与各方法下界随时间 | 直观展示 |
 | F11 | 测试机最后一循环按 RUL 排序，点预测与两侧区间 | 复现论文二 |
 
-每张图 PNG (300 dpi) 与 PDF 各一份。重点删失率与 c0 在 `s04_figures.R` 顶部的 `FOCUS_RATE`、`FOCUS_C0` 改。
+每张图 PNG (300 dpi) 与 PDF 各一份。重点删失率与 c0 在 `s04_figures.py` 顶部的 `FOCUS_RATE`、`FOCUS_C0` 改。字体按 `C:\Windows\Fonts\simsun.ttc` 与 `times.ttf` 路径加载，西文和数字走 Times New Roman，中文字形逐字回退到宋体（matplotlib 3.6 起支持）。
 
 ## 参数在哪改
 
@@ -86,11 +85,11 @@ Rscript s04_figures.R
 - 校准折比例：`CAL_FRAC`，两个脚本都是 0.40
 - 随机种子：`SEED`，两个脚本都是 2026。删失的种子是 `SEED + 删失率 × 100`。
 - 近零方差判据：`s01_inspect.py` 的 `LOW_STD`，默认 0.01。
-- 重点删失率与 c0（出图用）：`s04_figures.R` 的 `FOCUS_RATE`、`FOCUS_C0`。
+- 重点删失率与 c0（出图用）：`s04_figures.py` 的 `FOCUS_RATE`、`FOCUS_C0`。
 
 ## 仓库里已经带的一次运行
 
-`logs/`、`results/`、`figures/` 是在真实 FD001 上跑出来的（Linux，Python 3.11，R 4.3.3）。图是预览版：这台机器没有宋体和 Times New Roman，也装不上 showtext，s04 走了 ragg + systemfonts 的替代字体路径，日志里有"回退"警告。论文用图在 Windows 上重跑 s04 即可，结果 CSV 不用重跑。Linux 上跑 s04 要加 `LC_ALL=C.UTF-8`。
+`logs/`、`results/`、`figures/` 是在真实 FD001 上跑出来的（Linux，Python 3.11，matplotlib 3.11）。图是预览版：这台机器没有宋体和 Times New Roman，s04 退到了 Liberation Serif 与文泉驿，日志里有"回退"警告。论文用图在 Windows 上重跑 `python s04_figures.py` 即可，结果 CSV 不用重跑。
 
 ## 已知限制
 
