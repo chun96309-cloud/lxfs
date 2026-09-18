@@ -88,6 +88,10 @@ Rscript s04_figures.R
 - 近零方差判据：`s01_inspect.py` 的 `LOW_STD`，默认 0.01。
 - 重点删失率与 c0（出图用）：`s04_figures.R` 的 `FOCUS_RATE`、`FOCUS_C0`。
 
+## 仓库里已经带的一次运行
+
+`logs/`、`results/`、`figures/` 是在真实 FD001 上跑出来的（Linux，Python 3.11，R 4.3.3）。图是预览版：这台机器没有宋体和 Times New Roman，也装不上 showtext，s04 走了 ragg + systemfonts 的替代字体路径，日志里有"回退"警告。论文用图在 Windows 上重跑 s04 即可，结果 CSV 不用重跑。Linux 上跑 s04 要加 `LC_ALL=C.UTF-8`。
+
 ## 已知限制
 
 - 删失是人工构造的 Type-I 删失：每台机的下线时刻都记录，与寿命独立。依赖工况的删失要用 FD002 / FD004，下次课做。

@@ -1,0 +1,29 @@
+Installing package into ‘/usr/local/lib/R/site-library’
+(as ‘lib’ is unspecified)
+Warning: unable to access index for repository https://cloud.r-project.org/src/contrib:
+  cannot open URL 'https://cloud.r-project.org/src/contrib/PACKAGES'
+Warning message:
+package ‘showtext’ is not available for this version of R
+
+A version of this package for your version of R might be available elsewhere,
+see the ideas at
+https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages 
+警告: 未安装 showtext, 已回退到系统字体 (中文: WenQuanYi Zen Hei  西文: Liberation Serif )。此路径的图仅供预览, 论文用图请在 Windows 上用 showtext 重新生成。
+R 4.3.3   ggplot2 3.4.4   dplyr 1.1.4   tidyr 1.3.1   showtext 未安装   字体: 回退 (WenQuanYi Zen Hei / Liberation Serif)
+数据目录: /tmp/claude-0/-home-user-lxfs/490e2cf8-6489-5114-b498-81db3660a1bf/scratchpad/cmapss/data   结果目录: /home/user/lxfs/RUL_censored_conformal_handover/03_code/results 
+已保存 F01_lifetime_hist 
+已保存 F02_sensor_trajectories 
+已保存 F03_censoring_timeline 
+已保存 F04_sample_accounting 
+已保存 F05_weights_vs_t 
+已保存 F06_baseline_stratified_coverage 
+已保存 F11_twosided_intervals_sorted 
+已保存 F07_coverage_vs_censoring_rate 
+已保存 F08_stratified_coverage_by_method 
+已保存 F09_coverage_vs_tightness 
+已保存 F10_single_engine_trajectory 
+
+全部完成。图在: /home/user/lxfs/RUL_censored_conformal_handover/03_code/figures 
+F01 失效循环数分布  F02 传感器退化轨迹  F03 删失时间线  F04 样本量核算  F05 权重曲线
+F06 基线分段覆盖  F07 覆盖率随删失率  F08 分段覆盖柱状  F09 覆盖率与紧度  F10 单机轨迹  F11 两侧区间排序图
+s04 exit 0

@@ -7,12 +7,17 @@
 # 运行: Rscript s04_figures.R              (先跑完 s02, s03)
 #       Rscript s04_figures.R E:/cmapss    (命令行给数据目录, 覆盖下面的 DATA_DIR)
 # 只改下面的 DATA_DIR。R 4.5。缺包会自动安装。
+# Linux 上运行要用 UTF-8 locale (LC_ALL=C.UTF-8 Rscript s04_figures.R), 否则中文标签会变成点。Windows R 4.2 以上不用管。
 
 pkgs <- c("ggplot2", "dplyr", "tidyr", "showtext")
-for (p in pkgs) if (!requireNamespace(p, quietly = TRUE)) install.packages(p, repos = "https://cloud.r-project.org")
+for (p in pkgs) if (!requireNamespace(p, quietly = TRUE)) try(install.packages(p, repos = "https://cloud.r-project.org"), silent = TRUE)
 suppressPackageStartupMessages({
-  library(ggplot2); library(dplyr); library(tidyr); library(showtext)
+  library(ggplot2); library(dplyr); library(tidyr)
 })
+# showtext 是正式出图路径 (按文件路径加载宋体与 Times New Roman)。装不上 showtext 的机器 (例如无法访问 CRAN 的 Linux)
+# 退到 ragg + systemfonts, 按系统字体名出预览图; 这条路径出的图只供预览。
+HAS_SHOWTEXT <- requireNamespace("showtext", quietly = TRUE)
+if (HAS_SHOWTEXT) suppressPackageStartupMessages(library(showtext))
 
 # ============ 参数 ============
 DATA_DIR   <- "E:/cmapss"          # 原始数据目录 (与 s01-s03 一致)
@@ -34,35 +39,46 @@ dir.create(FIG_DIR, showWarnings = FALSE)
 # 论文用图必须是宋体 + Times New Roman (Windows 路径)。在没有这两个文件的机器 (例如 Linux) 上,
 # 退到下面列出的替代字体只为预览, 日志会打印"回退"警告, 回退的图不能用于论文。
 font_ok <- TRUE
+if (!HAS_SHOWTEXT) {
+  # ---- 无 showtext 的预览路径 ----
+  font_ok <- FALSE
+  fams <- if (requireNamespace("systemfonts", quietly = TRUE)) unique(systemfonts::system_fonts()$family) else character(0)
+  pick <- function(cands, default) { hit <- cands[cands %in% fams]; if (length(hit) > 0) hit[1] else default }
+  CN <- pick(c("SimSun", "宋体", "Noto Serif CJK SC", "Noto Sans CJK SC", "WenQuanYi Zen Hei"), "sans")
+  EN <- pick(c("Times New Roman", "Liberation Serif", "DejaVu Serif"), "serif")
+  cat("警告: 未安装 showtext, 已回退到系统字体 (中文:", CN, " 西文:", EN, ")。此路径的图仅供预览, 论文用图请在 Windows 上用 showtext 重新生成。\n")
+}
 f_simsun <- "C:/Windows/Fonts/simsun.ttc"
 f_times <- "C:/Windows/Fonts/times.ttf"
 f_timesbd <- "C:/Windows/Fonts/timesbd.ttf"
 cn_fallback <- c("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", "/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc",
                  "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc")
 en_fallback <- c("/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf")
-if (file.exists(f_simsun)) {
-  font_add("SimSun", regular = f_simsun)
-} else {
-  font_ok <- FALSE
-  alt <- cn_fallback[file.exists(cn_fallback)]
-  if (length(alt) > 0) font_add("SimSun", regular = alt[1])
+if (HAS_SHOWTEXT) {
+  if (file.exists(f_simsun)) {
+    font_add("SimSun", regular = f_simsun)
+  } else {
+    font_ok <- FALSE
+    alt <- cn_fallback[file.exists(cn_fallback)]
+    if (length(alt) > 0) font_add("SimSun", regular = alt[1])
+  }
+  if (file.exists(f_times)) {
+    font_add("Times New Roman", regular = f_times, bold = if (file.exists(f_timesbd)) f_timesbd else f_times)
+  } else {
+    font_ok <- FALSE
+    alt <- en_fallback[file.exists(en_fallback)]
+    if (length(alt) > 0) font_add("Times New Roman", regular = alt[1])
+  }
+  showtext_auto()
+  CN <- if ("SimSun" %in% font_families()) "SimSun" else "sans"
+  EN <- if ("Times New Roman" %in% font_families()) "Times New Roman" else "serif"
+  if (!font_ok) cat("警告: 未找到宋体或 Times New Roman 字体文件, 已回退到替代字体 (仅供预览)。论文用图请在 Windows 上重新生成。\n")
 }
-if (file.exists(f_times)) {
-  font_add("Times New Roman", regular = f_times, bold = if (file.exists(f_timesbd)) f_timesbd else f_times)
-} else {
-  font_ok <- FALSE
-  alt <- en_fallback[file.exists(en_fallback)]
-  if (length(alt) > 0) font_add("Times New Roman", regular = alt[1])
-}
-showtext_auto()
-CN <- if ("SimSun" %in% font_families()) "SimSun" else "sans"
-EN <- if ("Times New Roman" %in% font_families()) "Times New Roman" else "serif"
-if (!font_ok) cat("警告: 未找到宋体或 Times New Roman 字体文件, 已回退到替代字体 (仅供预览)。论文用图请在 Windows 上重新生成。\n")
 cat(sprintf("R %s   ggplot2 %s   dplyr %s   tidyr %s   showtext %s   字体: %s\n",
             paste(R.version$major, R.version$minor, sep = "."),
             as.character(packageVersion("ggplot2")), as.character(packageVersion("dplyr")),
-            as.character(packageVersion("tidyr")), as.character(packageVersion("showtext")),
-            if (font_ok) "宋体 + Times New Roman 已加载" else "回退"))
+            as.character(packageVersion("tidyr")), if (HAS_SHOWTEXT) as.character(packageVersion("showtext")) else "未安装",
+            if (font_ok) "宋体 + Times New Roman 已加载" else paste0("回退 (", CN, " / ", EN, ")")))
 cat("数据目录:", DATA_DIR, "  结果目录:", RESULTS_DIR, "\n")
 
 PT <- 10.5   # 五号
@@ -86,9 +102,9 @@ theme_paper <- function() {
 }
 
 save_fig <- function(p, name, w = 8.5, h = 6.5) {
-  showtext_opts(dpi = 300)
+  if (HAS_SHOWTEXT) showtext_opts(dpi = 300)
   ggsave(file.path(FIG_DIR, paste0(name, ".png")), p, width = w, height = h, units = "cm", dpi = 300, bg = "white")
-  showtext_opts(dpi = 72)
+  if (HAS_SHOWTEXT) showtext_opts(dpi = 72)
   ggsave(file.path(FIG_DIR, paste0(name, ".pdf")), p, width = w, height = h, units = "cm", device = cairo_pdf, bg = "white")
   cat("已保存", name, "\n")
 }
@@ -96,7 +112,10 @@ save_fig <- function(p, name, w = 8.5, h = 6.5) {
 rd <- function(name) {
   path <- file.path(RESULTS_DIR, name)
   if (!file.exists(path)) stop("缺文件: ", path, "  请先跑 s02 / s03")
-  read.csv(path, fileEncoding = "UTF-8-BOM", check.names = FALSE, stringsAsFactors = FALSE)
+  # 用 encoding 而不用 fileEncoding: 后者在非 UTF-8 locale 下读含中文的列会报 "invalid input"。BOM 手动去掉。
+  df <- read.csv(path, encoding = "UTF-8", check.names = FALSE, stringsAsFactors = FALSE)
+  names(df)[1] <- sub("^\ufeff", "", names(df)[1])
+  df
 }
 
 RATE_COLS <- c("#3D7A5A", "#2E4A6B", "#B23A48", "#E39B26", "#6E7A8A", "#000000")
@@ -253,9 +272,9 @@ p09 <- ggplot(m9, aes(mean_L, cov_dec, colour = method, shape = rate)) +
   scale_shape_manual(values = RATE_SHAPES[seq_along(levels(m9$rate))], name = "删失率") +
   labs(x = "平均下界 (循环)", y = sprintf("决策区覆盖率 (真实 RUL < %d)", FOCUS_C0),
        subtitle = sprintf("c0 = %d; 右上为好", FOCUS_C0)) +
-  theme_paper() + theme(plot.subtitle = element_text(family = CN, size = PT)) +
-  guides(colour = guide_legend(nrow = 2), shape = guide_legend(nrow = 1))
-save_fig(p09, "F09_coverage_vs_tightness", w = 12, h = 9)
+  theme_paper() + theme(plot.subtitle = element_text(family = CN, size = PT), legend.box = "vertical", legend.spacing.y = grid::unit(0, "cm")) +
+  guides(colour = guide_legend(nrow = 2, order = 1), shape = guide_legend(nrow = 1, order = 2))
+save_fig(p09, "F09_coverage_vs_tightness", w = 12, h = 9.5)
 
 # F10 一台测试发动机的下界轨迹
 pred <- rd(sprintf("s03_test_predictions_%s_%s.csv", rate_tag, c0_tag))
