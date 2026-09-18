@@ -31,16 +31,33 @@ FIG_DIR <- file.path(CODE_DIR, "figures")
 dir.create(FIG_DIR, showWarnings = FALSE)
 
 # ---------- 字体 ----------
+# 论文用图必须是宋体 + Times New Roman (Windows 路径)。在没有这两个文件的机器 (例如 Linux) 上,
+# 退到下面列出的替代字体只为预览, 日志会打印"回退"警告, 回退的图不能用于论文。
 font_ok <- TRUE
 f_simsun <- "C:/Windows/Fonts/simsun.ttc"
 f_times <- "C:/Windows/Fonts/times.ttf"
 f_timesbd <- "C:/Windows/Fonts/timesbd.ttf"
-if (file.exists(f_simsun)) font_add("SimSun", regular = f_simsun) else font_ok <- FALSE
-if (file.exists(f_times)) font_add("Times New Roman", regular = f_times, bold = if (file.exists(f_timesbd)) f_timesbd else f_times) else font_ok <- FALSE
+cn_fallback <- c("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", "/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc",
+                 "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc")
+en_fallback <- c("/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf")
+if (file.exists(f_simsun)) {
+  font_add("SimSun", regular = f_simsun)
+} else {
+  font_ok <- FALSE
+  alt <- cn_fallback[file.exists(cn_fallback)]
+  if (length(alt) > 0) font_add("SimSun", regular = alt[1])
+}
+if (file.exists(f_times)) {
+  font_add("Times New Roman", regular = f_times, bold = if (file.exists(f_timesbd)) f_timesbd else f_times)
+} else {
+  font_ok <- FALSE
+  alt <- en_fallback[file.exists(en_fallback)]
+  if (length(alt) > 0) font_add("Times New Roman", regular = alt[1])
+}
 showtext_auto()
-CN <- if (font_ok) "SimSun" else "sans"
-EN <- if (font_ok) "Times New Roman" else "serif"
-if (!font_ok) cat("警告: 未找到宋体或 Times New Roman 字体文件, 已回退到系统字体。请在 Windows 上运行。\n")
+CN <- if ("SimSun" %in% font_families()) "SimSun" else "sans"
+EN <- if ("Times New Roman" %in% font_families()) "Times New Roman" else "serif"
+if (!font_ok) cat("警告: 未找到宋体或 Times New Roman 字体文件, 已回退到替代字体 (仅供预览)。论文用图请在 Windows 上重新生成。\n")
 cat(sprintf("R %s   ggplot2 %s   dplyr %s   tidyr %s   showtext %s   字体: %s\n",
             paste(R.version$major, R.version$minor, sep = "."),
             as.character(packageVersion("ggplot2")), as.character(packageVersion("dplyr")),

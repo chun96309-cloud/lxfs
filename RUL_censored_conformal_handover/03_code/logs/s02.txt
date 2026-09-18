@@ -1,0 +1,29 @@
+数据集 FD001   窗口 30   校准折比例 0.40   alpha 0.10   seed 2026
+训练: 20631 行, 100 台   测试: 13096 行, 100 台
+特征维数: 43
+训练折 60 台 12570 行   校准折 40 台 8061 行
+
+[1] 点预测精度
+    RMSE test_last  (n=100): 17.168
+    RMSE test_all   (n=13096): 16.590
+    RMSE cal        (n=8061): 16.300
+
+[2] 两侧分裂共形区间 (得分 |y - yhat|, 校准折全部循环, n_cal=8061)
+    q = 28.841   区间宽度 = 57.682 (所有点等宽)
+    覆盖率 最后一循环: 0.8800   全部循环: 0.8962   名义: 0.90
+
+[3] 一侧下界 (无删失, 权重全为 1, 不封顶)   测试集全部循环 n=13096, 名义覆盖 0.90
+                        method     n  coverage  cov[0,15)  cov[15,30)  cov[30,60)  cov[60,125]  mean_L  trivial method_code
+       LPB 全部循环校准 (n_cal=8061) 13096    0.9343     1.0000      0.9572      0.7114       0.9502 85.8986   0.0000         all
+LPB 一机一点校准 均值 (n_cal=40, 20 次) 13096    0.9483     0.9990      0.9589      0.7837       0.9602 81.3537   0.0000    one_mean
+                LPB 一机一点校准 标准差          0.0296     0.0045      0.0486      0.1087       0.0235  7.6699   0.0000      one_sd
+
+分段边界: [(0, 15), (15, 30), (30, 60), (60, 126)]   RUL 封顶 125
+说明: 测试点来自 100 台机, 同机相关, 覆盖率的不确定性按发动机数衡量, 不按点数。
+
+[4] 写出结果
+  写出 /home/user/lxfs/RUL_censored_conformal_handover/03_code/results/s02_point_metrics.csv
+  写出 /home/user/lxfs/RUL_censored_conformal_handover/03_code/results/s02_twosided.csv
+  写出 /home/user/lxfs/RUL_censored_conformal_handover/03_code/results/s02_lpb_summary.csv
+  写出 /home/user/lxfs/RUL_censored_conformal_handover/03_code/results/s02_test_predictions.csv
+s02 exit 0
