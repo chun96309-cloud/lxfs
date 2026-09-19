@@ -220,6 +220,35 @@ children.push(body("由此可以判断：Chr02Bg000869、Chr02Bg005918、Chr02Bg
 children.push(image("Fig_coexpression_heatmap_vertical.png", 250, 749));
 children.push(caption("图 2  共表达热图（竖版）。内容与图 1 完全相同，仅做转置，基因名横排便于阅读。"));
 
+// ---- 3.4 进一步筛选 (由 coexpression_refined.py 输出的 JSON 读取) ----
+const refPath = path.join(FIG_DIR, "Fig_coexpression_refined.json");
+if (fs.existsSync(refPath)) {
+  const rf = JSON.parse(fs.readFileSync(refPath, "utf8"));
+  const mk = rf.marker_order;
+  const modA = rf.modules.A, modB = rf.modules.B;
+  const nA = modA ? modA.n : 0, nB = modB ? modB.n : 0;
+  const n3 = rf.genes.filter((g) => g.n_sig === 3).length;
+  const n4 = rf.genes.filter((g) => g.n_sig >= 4).length;
+  const hl = rf.genes.filter((g) => g.highlight);
+
+  children.push(h("3.4 进一步筛选：与至少 " + rf.min_markers + " 个 marker 显著正相关的基因", 2));
+  children.push(body("3.2 节的 99 个基因是每个 marker 各取 top 20 再合并得到的，名单偏大且依赖 top 20 这一人为截断。为得到更可靠的核心基因集，改为直接在全部 " + rf.n_background + " 个背景基因中筛选：保留与至少 " + rf.min_markers + " 个 marker 同时显著正相关的基因（Pearson r > " + rf.r_threshold + "，对应 n = 6 时双侧 P < 0.05）。该规则不依赖 top 20，且只保留同向共表达，负相关基因不再纳入。"));
+  children.push(body("按此规则共得到 " + rf.n_selected + " 个基因，其中与 3 个 marker 显著正相关的 " + n3 + " 个，与 4 个 marker 显著正相关的 " + n4 + " 个，没有基因同时与 5 个及以上 marker 显著正相关。将这些基因按相关谱做层次聚类并切成两类，得到两个模块（图 3）：模块 A 共 " + nA + " 个基因，与 " + mk[0] + "、" + mk[1] + "、" + mk[2] + "、" + mk[4] + " 的平均 r 分别为 " + (modA ? [modA.mean_r[0], modA.mean_r[1], modA.mean_r[2], modA.mean_r[4]].join("、") : "") + "，与 " + mk[3] + " 仅 " + (modA ? modA.mean_r[3] : "") + "；模块 B 共 " + nB + " 个基因，与 " + mk[3] + " 和 " + mk[2] + " 的平均 r 为 " + (modB ? modB.mean_r[3] + "、" + modB.mean_r[2] : "") + "，与 " + mk[4] + "、" + mk[5] + " 明显偏弱。两个模块对应 3.3 节热图上的两个红色区块。"));
+  if (hl.length) {
+    children.push(body("3.2 节中同时被 3 个 marker 选中的 " + hl.map((g) => g.gene).join(" 和 ") + " 均落在模块 A 内，与 " + mk[0] + "、" + mk[1] + "、" + mk[4] + " 的 r 均高于 0.89，可作为重点候选基因（图 3 中以红色基因名标出）。"));
+  }
+  children.push(image("Fig_coexpression_refined.png", 554, Math.round(554 * 1102 / 2406)));
+  children.push(caption("图 3  与至少 " + rf.min_markers + " 个 marker 显著正相关的 " + rf.n_selected + " 个基因的共表达热图。顶部色条为模块划分，红色基因名为重点候选基因。"));
+
+  const rows = [["基因", "模块", "显著 marker 数"].concat(mk.map((m) => m.replace("Chr", "")))];
+  for (const g of rf.genes) {
+    rows.push([g.gene + (g.highlight ? " *" : ""), g.module, String(g.n_sig)]
+      .concat(g.r.map((x) => x.toFixed(2))));
+  }
+  children.push(caption("表 3-4  " + rf.n_selected + " 个入选基因与各 marker 的 Pearson r（列名省略了 Chr 前缀；* 为重点候选基因；完整 r、P、BH q 见 CSV）"));
+  children.push(table(rows, [1500, 560, 840].concat(mk.map(() => 900))));
+}
+
 children.push(h("四、方法的局限与结果表述建议", 1));
 children.push(body("以下四点在撰写论文时需要注意，直接影响结论能写到什么程度。"));
 children.push(body("第一，样本量只有 6 个，自由度仅为 4，相关系数的统计功效很低。2 580 对组合中未校正 P < 0.05 的有 441 对（17.1%），但经 Benjamini-Hochberg 校正后 q < 0.05 的仅剩 4 对。因此热图呈现的是表达模式的趋势，单个基因对的显著性不足以单独下结论。"));
@@ -247,13 +276,16 @@ children.push(table([
   ["Fig_coexpression_heatmap_horizontal.pdf / .svg", "横版热图，marker 作行、基因作列"],
   ["Fig_coexpression_heatmap_vertical.pdf / .svg", "竖版热图，基因作行、marker 作列"],
   ["Fig_coexpression_heatmap_correlation_full.csv", "6 × 430 全部组合的 r 值、P 值与 BH 校正 q 值，并标注是否入选热图"],
+  ["Fig_coexpression_refined.pdf / .svg / .png", "进一步筛选后的热图（与至少 3 个 marker 显著正相关），带模块注释"],
+  ["Fig_coexpression_refined_genes.csv", "进一步筛选后每个基因的模块归属、显著 marker 数及与各 marker 的 r、P、BH q"],
   ["coexpression_heatmap.py", "Python 版分析与绘图脚本"],
   ["coexpression_heatmap.R", "R 版脚本（ComplexHeatmap + circlize）"],
+  ["coexpression_refined.py", "进一步筛选与模块热图脚本"],
 ], [3600, 4700]));
 
 children.push(h("七、方法学描述示例", 1));
 children.push(body("以下段落可直接用于论文的 Methods 部分，数字与本文档一致。"));
-children.push(body("Raw read counts of 436 genes across six samples (three biological replicates per group) were normalized to counts per million (CPM) and log2-transformed as log2(CPM + 1). For each of the six marker genes, Pearson correlation coefficients with the remaining 430 genes were calculated across the six samples. Statistical significance was assessed with a t-test (df = n - 2 = 4) and P values were adjusted for multiple testing using the Benjamini-Hochberg procedure. The 20 genes with the highest absolute correlation coefficient for each marker gene were retained, yielding a union of 99 genes. These genes were ordered by hierarchical clustering (correlation distance, average linkage) on their correlation profiles. The resulting matrix was visualized as a heat map with a diverging blue-white-red color scale fixed to the range -1 to 1.", { noIndent: true }));
+children.push(body("Raw read counts of 436 genes across six samples (three biological replicates per group) were normalized to counts per million (CPM) and log2-transformed as log2(CPM + 1). For each of the six marker genes, Pearson correlation coefficients with the remaining 430 genes were calculated across the six samples. Statistical significance was assessed with a t-test (df = n - 2 = 4) and P values were adjusted for multiple testing using the Benjamini-Hochberg procedure. The 20 genes with the highest absolute correlation coefficient for each marker gene were retained, yielding a union of 99 genes. These genes were ordered by hierarchical clustering (correlation distance, average linkage) on their correlation profiles. The resulting matrix was visualized as a heat map with a diverging blue-white-red color scale fixed to the range -1 to 1. To define a core co-expressed gene set independent of the top-20 cutoff, genes positively correlated with at least three marker genes (r > 0.811, P < 0.05) were retained from all 430 background genes (n = 38) and divided into two modules by hierarchical clustering of their correlation profiles.", { noIndent: true }));
 
 const doc = new Document({
   styles: {
