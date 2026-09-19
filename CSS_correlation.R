@@ -8,6 +8,10 @@
 ## ---------- 0. 路径与参数 (只改这里) ----------
 DATA_FILE <- "E:/20260908_人血清及细胞上清液测试.xlsx"   # 改成本机 xlsx 路径
 OUT_DIR   <- "E:/CSS_result"                              # 图片输出目录
+# 命令行覆盖: Rscript CSS_correlation.R <xlsx> <outdir>
+.args <- commandArgs(trailingOnly = TRUE)
+if (length(.args) >= 1) DATA_FILE <- .args[1]
+if (length(.args) >= 2) OUT_DIR   <- .args[2]
 
 COL_CTRCD     <- "#8F53AA"   # RGB(143,83,170) 你的配色
 COL_NONCTRCD  <- "#8F53AA"   # 想区分两组时改成别的色
@@ -15,17 +19,23 @@ LOG10_CSS     <- FALSE       # TRUE = 对 CSS 取 log10 后再做 Pearson 与作
 BASE_SIZE     <- 10.5        # 五号字
 
 ## ---------- 1. 依赖 ----------
-pkgs <- c("readxl", "dplyr", "tidyr", "ggplot2", "ggpubr", "patchwork", "showtext")
+pkgs <- c("readxl", "dplyr", "tidyr", "ggplot2", "ggpubr", "patchwork")
 miss <- pkgs[!pkgs %in% rownames(installed.packages())]
 if (length(miss)) install.packages(miss)
 invisible(lapply(pkgs, library, character.only = TRUE))
 
-font_add("song", regular = "C:/Windows/Fonts/simsun.ttc")
-font_add("TNR",  regular = "C:/Windows/Fonts/times.ttf",
-         bold = "C:/Windows/Fonts/timesbd.ttf",
-         italic = "C:/Windows/Fonts/timesi.ttf")
-showtext_auto()
-showtext_opts(dpi = 300)
+# 字体: Windows 下用 showtext 挂载 宋体 / Times New Roman (五号 = 10.5pt)
+FAM <- "serif"
+if (file.exists("C:/Windows/Fonts/times.ttf") &&
+    requireNamespace("showtext", quietly = TRUE)) {
+  library(showtext)
+  font_add("song", regular = "C:/Windows/Fonts/simsun.ttc")
+  font_add("TNR",  regular = "C:/Windows/Fonts/times.ttf",
+           bold   = "C:/Windows/Fonts/timesbd.ttf",
+           italic = "C:/Windows/Fonts/timesi.ttf")
+  showtext_auto(); showtext_opts(dpi = 300)
+  FAM <- "TNR"
+}
 
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
@@ -34,10 +44,17 @@ sheets <- excel_sheets(DATA_FILE)
 sh_c  <- grep("^CT",     sheets, value = TRUE)[1]   # CTCR
 sh_n  <- grep("^Non",    sheets, value = TRUE)[1]   # Non-CTCR
 
+# 按模式/位置改名, 避免中文列名在不同 locale 下匹配失败
 read_one <- function(sh, grp) {
-  read_excel(DATA_FILE, sheet = sh) %>%
-    rename(CSS = `终浓度ug/mL`, EF_C1 = `心功能1`, EF_C4 = `心功能4`) %>%
-    mutate(Group = grp)
+  raw <- read_excel(DATA_FILE, sheet = sh)
+  nm  <- names(raw)
+  i_css <- grep("ug/mL", nm, fixed = TRUE)
+  stopifnot(length(i_css) == 1)
+  names(raw)[i_css] <- "CSS"      # 终浓度 ug/mL
+  names(raw)[2]     <- "EF_C1"    # 心功能1
+  names(raw)[3]     <- "EF_C4"    # 心功能4
+  raw$Group <- grp
+  raw
 }
 dat <- bind_rows(read_one(sh_c, "CTRCD"), read_one(sh_n, "Non-CTRCD")) %>%
   mutate(Group = factor(Group, levels = c("CTRCD", "Non-CTRCD")),
@@ -120,7 +137,7 @@ if (nrow(sig)) print(as.data.frame(sig), row.names = FALSE) else cat("无\n")
 write.csv(res, file.path(OUT_DIR, "CSS_correlation_table.csv"), row.names = FALSE)
 
 ## ---------- 6. 作图 ----------
-theme_sci <- theme_classic(base_size = BASE_SIZE, base_family = "TNR") +
+theme_sci <- theme_classic(base_size = BASE_SIZE, base_family = FAM) +
   theme(axis.text    = element_text(colour = "black", size = BASE_SIZE),
         axis.title   = element_text(colour = "black", size = BASE_SIZE),
         axis.line    = element_line(colour = "black", linewidth = 0.4),
@@ -139,9 +156,9 @@ one_panel <- function(d, v, col) {
     geom_smooth(method = "lm", formula = y ~ x, se = TRUE,
                 colour = col, fill = col, alpha = 0.15, linewidth = 0.6) +
     geom_point(shape = 16, size = 1.8, colour = col, alpha = 0.85) +
-    annotate("text", x = Inf, y = Inf, label = lab, hjust = 1.05, vjust = 1.2,
-             size = BASE_SIZE / .pt, family = "TNR") +
-    scale_y_continuous(expand = expansion(mult = c(0.05, 0.18))) +
+    annotate("text", x = Inf, y = Inf, label = lab, hjust = 1.02, vjust = 1.1,
+             size = BASE_SIZE / .pt, family = FAM) +
+    scale_y_continuous(expand = expansion(mult = c(0.06, 0.26))) +
     labs(x = LAB[[v]], y = Y_LAB) +
     theme_sci
 }
@@ -151,7 +168,7 @@ make_fig <- function(grp, col) {
   pl <- lapply(VARS, function(v) one_panel(d, v, col))
   wrap_plots(pl, ncol = 4) +
     plot_annotation(title = sprintf("%s group (n = %d)", grp, nrow(d)),
-                    theme = theme(plot.title = element_text(family = "TNR",
+                    theme = theme(plot.title = element_text(family = FAM,
                                   size = BASE_SIZE + 1, hjust = 0.5)))
 }
 
