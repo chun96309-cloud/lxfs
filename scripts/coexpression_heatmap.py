@@ -211,11 +211,22 @@ _META = {"pdf": {"Creator": None, "Producer": None},
          "png": {"Software": None}}
 
 
+def _scrub_svg(path):
+    """去掉 SVG 内部分组 id 里的软件名 (只是标识符, 不影响显示)"""
+    with open(path, "r", encoding="utf-8") as fh:
+        txt = fh.read()
+    txt = txt.replace('id="matplotlib.', 'id="').replace("#matplotlib.", "#")
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(txt)
+
+
 def _save(fig, stem):
     for ext in ("pdf", "svg", "png"):
         path = "{}.{}".format(stem, ext)
         fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05,
                     metadata=_META[ext])
+        if ext == "svg":
+            _scrub_svg(path)
         print("saved:", path)
     plt.close(fig)
 
