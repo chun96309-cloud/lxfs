@@ -33,7 +33,7 @@ function body(text, opts = {}) {
     spacing: { line: 360, lineRule: "auto", before: 40, after: 40 },
     indent: opts.noIndent ? undefined : { firstLine: 420 },
     alignment: opts.align,
-    children: [new TextRun({ text, font, size: BODY, bold: true })],
+    children: [new TextRun({ text, font, size: BODY, bold: true, color: "000000" })],
   });
 }
 
@@ -43,7 +43,7 @@ function h(text, level) {
     heading: level === 1 ? HeadingLevel.HEADING_1
       : level === 2 ? HeadingLevel.HEADING_2 : HeadingLevel.HEADING_3,
     spacing: { before: 200, after: 100, line: 360, lineRule: "auto" },
-    children: [new TextRun({ text, font: fontHei, size: sizes[level], bold: true })],
+    children: [new TextRun({ text, font: fontHei, size: sizes[level], bold: true, color: "000000" })],
   });
 }
 
@@ -51,7 +51,7 @@ function caption(text) {
   return new Paragraph({
     spacing: { before: 60, after: 160, line: 300, lineRule: "auto" },
     alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text, font, size: 18, bold: true })],
+    children: [new TextRun({ text, font, size: 18, bold: true, color: "000000" })],
   });
 }
 
@@ -63,7 +63,7 @@ function cell(text, { head = false, widths, align } = {}) {
     children: [new Paragraph({
       alignment: align || (head ? AlignmentType.CENTER : AlignmentType.LEFT),
       spacing: { line: 280, lineRule: "auto" },
-      children: [new TextRun({ text, font, size: 19, bold: true })],
+      children: [new TextRun({ text, font, size: 19, bold: true, color: "000000" })],
     })],
   });
 }
@@ -107,7 +107,7 @@ children.push(new Paragraph({
   spacing: { after: 240, line: 360, lineRule: "auto" },
   children: [new TextRun({
     text: "6 个 marker 基因共表达热图：数据处理、分析原理与结果说明",
-    font: fontHei, size: 32, bold: true,
+    font: fontHei, size: 32, bold: true, color: "000000",
   })],
 }));
 
@@ -292,7 +292,12 @@ const doc = new Document({
   lastModifiedBy: "",
   styles: {
     default: {
-      document: { run: { font, size: BODY }, paragraph: { spacing: { line: 360, lineRule: "auto" } } },
+      document: { run: { font, size: BODY, color: "000000" }, paragraph: { spacing: { line: 360, lineRule: "auto" } } },
+      // 内置标题样式默认是蓝色, 这里统一改成黑色
+      heading1: { run: { color: "000000", bold: true, font: fontHei, size: 28 } },
+      heading2: { run: { color: "000000", bold: true, font: fontHei, size: 24 } },
+      heading3: { run: { color: "000000", bold: true, font: fontHei, size: 21 } },
+      hyperlink: { run: { color: "000000" } },
     },
   },
   sections: [{
