@@ -64,9 +64,9 @@ const cell = (text, o = {}) => new TableCell({
 const HDR = ['指标', 'n', 'Pearson r（95%CI）', 'P 值', 'P(FDR)', 'Spearman ρ', 'P 值'];
 const mkTable = grp => {
   const d = rows.filter(x => x.group === grp);
-  const head = new TableRow({tableHeader: true,
+  const head = new TableRow({tableHeader: true, cantSplit: true,
     children: HDR.map((t, i) => cell(t, {w: COLW[i], head: true}))});
-  const body = d.map(x => new TableRow({children: [
+  const body = d.map(x => new TableRow({cantSplit: true, children: [
     cell(CN[x.v], {w: COLW[0], left: true}),
     cell(String(x.n), {w: COLW[1]}),
     cell(`${f3(x.r)}（${f3(x.lo)}, ${f3(x.hi)}）`, {w: COLW[2]}),
@@ -132,12 +132,30 @@ const doc = new Document({
       P('未校正的 P 值下，仅 BMI 与 CSS 呈正相关，r = 0.482（95%CI 0.050～0.762），R² = 0.232，P = 0.031；Spearman ρ = 0.496，P = 0.026。另有两项接近但未达到检验水准：TG（r = 0.435，P = 0.055）与尿酸 UA（r = −0.397，P = 0.083）。经 BH 法 FDR 校正后，包括 BMI 在内的全部 16 项指标均无统计学意义（最小 P(FDR) = 0.441）。'),
       P('与心功能相关的三项指标与 CSS 均无线性相关：心功能1（r = −0.143，P = 0.549）、心功能4（r = −0.162，P = 0.494）、心功能下降值（r = −0.024，P = 0.922）。即在已发生心脏毒性的患者内部，CSS 的高低并不能反映心功能下降的幅度。'),
 
+      CAP('表 1　CTRCD 组血清 CSS 与临床指标的相关分析（n = 20）', {before: 160}),
+      mkTable('CTRCD'),
+      CAP('注：P(FDR) 为组内 16 项检验经 Benjamini-Hochberg 法校正后的 P 值。', {before: 60, note: true, after: 160}),
+
+      img(path + '/out/Fig_CTRCD_correlation.png', 15.5, 16.3),
+      CAP('图 1　CTRCD 组（n = 20）血清 CSS 与 16 项临床指标的散点图。实线为最小二乘回归线，阴影为 95% 置信带，r 与 P 为 Pearson 相关系数及其未校正 P 值。', {note: true, after: 160}),
+
       H('3.2 Non-CTRCD 组（n = 24）', 2),
       P('Non-CTRCD 组内 16 项指标的相关分析结果见表 2，散点图见图 2。'),
       P('该组 16 项指标与 CSS 的相关系数全部无统计学意义，绝对值最大的是 BMI（r = −0.340，P = 0.104）与尿酸 UA（r = 0.304，P = 0.159），FDR 校正后 P 值均在 0.8 以上。该组 CSS 全部集中在 4.41～9.68 μg/mL 的狭窄区间内，标准差仅 1.50 μg/mL，取值范围受限（restriction of range）本身就会使相关系数向 0 收缩，因此这一阴性结果更可能反映该组内 CSS 缺乏有效变异，而非可以据此断定两者确无关联。'),
 
+      CAP('表 2　Non-CTRCD 组血清 CSS 与临床指标的相关分析（n = 24）', {before: 160}),
+      mkTable('Non-CTRCD'),
+      CAP('注：P(FDR) 为组内 16 项检验经 Benjamini-Hochberg 法校正后的 P 值。', {before: 60, note: true, after: 160}),
+
+      img(path + '/out/Fig_NonCTRCD_correlation.png', 15.5, 16.3),
+      CAP('图 2　Non-CTRCD 组（n = 24）血清 CSS 与 16 项临床指标的散点图。图例含义同图 1。', {note: true, after: 160}),
+
       H('3.3 全样本合并分析（n = 44）', 2),
       P('全样本合并后，有 4 项指标与 CSS 的相关在 FDR 校正后仍有统计学意义：BMI（r = 0.608，P < 0.001，P(FDR) < 0.001）、心功能下降值（r = 0.547，P < 0.001，P(FDR) < 0.001）、TG（r = 0.494，P < 0.001，P(FDR) = 0.004）、心功能4（r = −0.460，P = 0.002，P(FDR) = 0.007）。详见表 3。'),
+
+      CAP('表 3　全样本合并后血清 CSS 与临床指标的相关分析（n = 44）', {before: 160}),
+      mkTable('All'),
+      CAP('注：合并结果主要由 CTRCD 与 Non-CTRCD 两组间的均值差异驱动，解释见 3.4。', {before: 60, note: true, after: 160}),
 
       H('3.4 关于合并分析结果的解释', 2),
       P('合并分析的这些相关系数不宜直接解读为“CSS 与该指标存在线性相关”。原因是两组 CSS 的取值几乎完全不重叠（CTRCD 组中位数 144.76 μg/mL，Non-CTRCD 组中位数 6.27 μg/mL），而心功能下降值等指标在两组间本身也存在显著差异（CTRCD 组中位数 11.0，Non-CTRCD 组中位数 5.0，Mann-Whitney U 检验 P < 0.001）。将两组混合后，散点实际上形成了分处坐标系两端的两团点，回归直线主要由“组与组之间的均值差”所决定，而非组内的连续剂量-反应关系。这在统计上属于典型的分组效应（生态学谬误的一种表现形式）。'),
@@ -152,26 +170,7 @@ const doc = new Document({
 
       H('5 附录：分析环境与脚本', 1),
       P('分析环境：R 4.5，扩展包 readxl（读取 xlsx）、dplyr、ggplot2、ggpubr、patchwork（绘图与拼图）。相关检验使用 stats 包的 cor.test，FDR 校正使用 p.adjust（method = "BH"）。'),
-      P('完整分析脚本为 CSS_correlation.R，随本报告一并提供。脚本开头 DATA_FILE 与 OUT_DIR 两个变量分别指定数据文件路径与输出目录，运行后在 console 打印全部统计结果，并输出本报告中的图 1、图 2（PDF 与 300 dpi PNG 两种格式）及相关系数表 CSS_correlation_table.csv。'),
-
-      H('附表与附图', 1, true),
-      CAP('表 1　CTRCD 组血清 CSS 与临床指标的相关分析（n = 20）'),
-      mkTable('CTRCD'),
-      CAP('注：P(FDR) 为组内 16 项检验经 Benjamini-Hochberg 法校正后的 P 值。', {before: 60, note: true}),
-
-      CAP('表 2　Non-CTRCD 组血清 CSS 与临床指标的相关分析（n = 24）', {brk: true}),
-      mkTable('Non-CTRCD'),
-      CAP('注：P(FDR) 为组内 16 项检验经 Benjamini-Hochberg 法校正后的 P 值。', {before: 60, note: true}),
-
-      CAP('表 3　全样本合并后血清 CSS 与临床指标的相关分析（n = 44）', {brk: true}),
-      mkTable('All'),
-      CAP('注：合并结果主要由 CTRCD 与 Non-CTRCD 两组间的均值差异驱动，解释见正文 3.4。', {before: 60, note: true}),
-
-      img(path + '/out/Fig_CTRCD_correlation.png', 15.5, 16.3, true),
-      CAP('图 1　CTRCD 组（n = 20）血清 CSS 与 16 项临床指标的散点图。实线为最小二乘回归线，阴影为 95% 置信带，r 与 P 为 Pearson 相关系数及其未校正 P 值。', {note: true}),
-
-      img(path + '/out/Fig_NonCTRCD_correlation.png', 15.5, 16.3, true),
-      CAP('图 2　Non-CTRCD 组（n = 24）血清 CSS 与 16 项临床指标的散点图。图例含义同图 1。', {note: true})
+      P('完整分析脚本为 CSS_correlation.R，随本报告一并提供。脚本开头 DATA_FILE 与 OUT_DIR 两个变量分别指定数据文件路径与输出目录，运行后在 console 打印全部统计结果，并输出本报告中的图 1、图 2（PDF 与 300 dpi PNG 两种格式）及相关系数表 CSS_correlation_table.csv。')
     ]
   }]
 });
