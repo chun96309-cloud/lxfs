@@ -242,9 +242,14 @@ for lab in cbar.ax.get_yticklabels():
     lab.set_fontweight("bold")
 cbar.outline.set_linewidth(0.8)
 
+# 输出文件不写入任何软件来源信息
+_META = {"pdf": {"Creator": None, "Producer": None},
+         "svg": {"Creator": None, "Date": None},
+         "png": {"Software": None}}
 for ext in ("pdf", "svg", "png"):
     path = "{}.{}".format(OUT_STEM, ext)
-    fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05)
+    fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05,
+                metadata=_META[ext])
     print("saved:", path)
 plt.close(fig)
 

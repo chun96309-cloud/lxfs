@@ -166,11 +166,17 @@ def plot_group(ax, x, data_dict, capsize=3.0):
                     capthick=1.3, label=name, clip_on=False, zorder=3 + i)
 
 
+# 输出文件不写入任何软件来源信息
+_META = {"pdf": {"Creator": None, "Producer": None},
+         "svg": {"Creator": None, "Date": None},
+         "png": {"Software": None}}
+
+
 def save(fig, stem):
     for ext in ("pdf", "svg", "png"):
         path = os.path.join(OUT_DIR, "{}.{}".format(stem, ext))
         fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05,
-                    transparent=False)
+                    transparent=False, metadata=_META[ext])
         print("saved:", path)
 
 

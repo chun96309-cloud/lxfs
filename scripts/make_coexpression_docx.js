@@ -288,6 +288,8 @@ children.push(body("以下段落可直接用于论文的 Methods 部分，数字
 children.push(body("Raw read counts of 436 genes across six samples (three biological replicates per group) were normalized to counts per million (CPM) and log2-transformed as log2(CPM + 1). For each of the six marker genes, Pearson correlation coefficients with the remaining 430 genes were calculated across the six samples. Statistical significance was assessed with a t-test (df = n - 2 = 4) and P values were adjusted for multiple testing using the Benjamini-Hochberg procedure. The 20 genes with the highest absolute correlation coefficient for each marker gene were retained, yielding a union of 99 genes. These genes were ordered by hierarchical clustering (correlation distance, average linkage) on their correlation profiles. The resulting matrix was visualized as a heat map with a diverging blue-white-red color scale fixed to the range -1 to 1. To define a core co-expressed gene set independent of the top-20 cutoff, genes positively correlated with at least three marker genes (r > 0.811, P < 0.05) were retained from all 430 background genes (n = 38) and divided into two modules by hierarchical clustering of their correlation profiles.", { noIndent: true }));
 
 const doc = new Document({
+  creator: "",
+  lastModifiedBy: "",
   styles: {
     default: {
       document: { run: { font, size: BODY }, paragraph: { spacing: { line: 360, lineRule: "auto" } } },

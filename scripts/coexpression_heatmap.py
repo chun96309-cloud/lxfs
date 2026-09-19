@@ -205,10 +205,17 @@ def _colorbar(fig, im, ax, frac):
     return cbar
 
 
+# 输出文件不写入任何软件来源信息
+_META = {"pdf": {"Creator": None, "Producer": None},
+         "svg": {"Creator": None, "Date": None},
+         "png": {"Software": None}}
+
+
 def _save(fig, stem):
     for ext in ("pdf", "svg", "png"):
         path = "{}.{}".format(stem, ext)
-        fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05)
+        fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05,
+                    metadata=_META[ext])
         print("saved:", path)
     plt.close(fig)
 
