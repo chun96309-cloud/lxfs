@@ -1,11 +1,14 @@
+// 用法: node make_report.js [结果目录]
+// 结果目录须包含 CSS_correlation.R 生成的 CSS_correlation_table.csv 与两张 PNG
 const fs = require('fs');
-const path = '/tmp/claude-0/-home-user-lxfs/1ff6149c-7b71-520d-ab43-bc57a4ddd335/scratchpad';
-const D = require(path + '/node_modules/docx');
+const nodePath = require('path');
+const WORK = process.argv[2] ? nodePath.resolve(process.argv[2]) : __dirname;
+const D = require('docx');
 const {Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow,
        TableCell, WidthType, ShadingType, BorderStyle, ImageRun, PageBreak, convertMillimetersToTwip} = D;
 
 // ---------- 读取相关分析结果 ----------
-const rows = fs.readFileSync(path + '/out/CSS_correlation_table.csv', 'utf8')
+const rows = fs.readFileSync(nodePath.join(WORK, 'CSS_correlation_table.csv'), 'utf8')
   .trim().split('\n').slice(1).map(l => {
     const c = l.split(',').map(s => s.replace(/^"|"$/g, ''));
     return {group: c[0], v: c[1], n: +c[2], r: +c[3], lo: +c[4], hi: +c[5],
@@ -136,7 +139,7 @@ const doc = new Document({
       mkTable('CTRCD'),
       CAP('注：P(FDR) 为组内 16 项检验经 Benjamini-Hochberg 法校正后的 P 值。', {before: 60, note: true, after: 160}),
 
-      img(path + '/out/Fig_CTRCD_correlation.png', 15.5, 16.3),
+      img(nodePath.join(WORK, 'Fig_CTRCD_correlation.png'), 15.5, 16.3),
       CAP('图 1　CTRCD 组（n = 20）血清 CSS 与 16 项临床指标的散点图。实线为最小二乘回归线，阴影为 95% 置信带，r 与 P 为 Pearson 相关系数及其未校正 P 值。', {note: true, after: 160}),
 
       H('3.2 Non-CTRCD 组（n = 24）', 2),
@@ -147,7 +150,7 @@ const doc = new Document({
       mkTable('Non-CTRCD'),
       CAP('注：P(FDR) 为组内 16 项检验经 Benjamini-Hochberg 法校正后的 P 值。', {before: 60, note: true, after: 160}),
 
-      img(path + '/out/Fig_NonCTRCD_correlation.png', 15.5, 16.3),
+      img(nodePath.join(WORK, 'Fig_NonCTRCD_correlation.png'), 15.5, 16.3),
       CAP('图 2　Non-CTRCD 组（n = 24）血清 CSS 与 16 项临床指标的散点图。图例含义同图 1。', {note: true, after: 160}),
 
       H('3.3 全样本合并分析（n = 44）', 2),
@@ -176,6 +179,6 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then(b => {
-  fs.writeFileSync(path + '/out/CSS相关分析报告.docx', b);
+  fs.writeFileSync(nodePath.join(WORK, 'CSS相关分析报告.docx'), b);
   console.log('written', b.length);
 });
