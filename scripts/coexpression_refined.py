@@ -265,6 +265,75 @@ for ext in ("pdf", "svg", "png"):
     print("saved:", path)
 plt.close(fig)
 
+# ---------------- 竖版: 基因作行, marker 作列 ----------------
+# 布局 (从左到右, 单位英寸): 纵轴标题 | 模块色条 | 基因名 | 热图 | 色条
+Rv = Rsel.T                                   # n_col (基因) x n_row (marker)
+W_TITLE, W_MOD, W_LABEL, W_HEAT, W_GAP, W_CBAR, W_CBTXT = 0.45, 0.26, 1.10, n_row * 0.42, 0.15, 0.18, 0.75
+H_TOP, H_BOT = 0.15, 1.15
+heat_h = max(2.5, n_col * 0.19)
+fig_w = W_TITLE + W_MOD + W_LABEL + W_HEAT + W_GAP + W_CBAR + W_CBTXT
+fig_h = H_TOP + heat_h + H_BOT
+fig = plt.figure(figsize=(fig_w, fig_h), dpi=300)
+
+def _ax(x0, w):   # 按英寸放置坐标轴
+    return fig.add_axes([x0 / fig_w, H_BOT / fig_h, w / fig_w, heat_h / fig_h])
+
+x = W_TITLE
+ax_mod = _ax(x, W_MOD); x += W_MOD + W_LABEL
+ax = _ax(x, W_HEAT);    x += W_HEAT + W_GAP
+ax_cb = _ax(x, W_CBAR)
+
+im = ax.imshow(Rv, cmap=cmap, norm=norm, aspect="auto", interpolation="nearest")
+ax.set_xticks(np.arange(n_row))
+ax.set_xticklabels(marker_ids, rotation=90, fontsize=8, fontweight="bold")
+ax.set_yticks(np.arange(n_col))
+ax.set_yticklabels(sel_names, fontsize=GENE_LABEL_SIZE, fontweight="bold")
+for lab in ax.get_yticklabels():
+    if lab.get_text() in HIGHLIGHT:
+        lab.set_color("#E64B35")
+ax.set_xticks(np.arange(-0.5, n_row, 1), minor=True)
+ax.set_yticks(np.arange(-0.5, n_col, 1), minor=True)
+ax.grid(which="minor", color="white", linewidth=0.4)
+ax.tick_params(which="minor", length=0)
+ax.tick_params(which="major", length=2.0, width=0.8)
+for side in ("left", "bottom", "right", "top"):
+    ax.spines[side].set_linewidth(0.8)
+ax.set_xlabel("Marker genes", fontsize=10.5, labelpad=6, fontweight="bold")
+
+ax_mod.set_ylim(n_col - 0.5, -0.5)
+ax_mod.set_xlim(0, 1)
+ax_mod.axis("off")
+start = 0
+for j in range(1, n_col + 1):
+    if j == n_col or modules[j] != modules[start]:
+        m = modules[start]
+        ax_mod.add_patch(Rectangle((0, start - 0.5), 1, j - start,
+                                   facecolor=MOD_COLOR.get(m, "#CCCCCC"),
+                                   edgecolor="white", linewidth=0.6))
+        ax_mod.text(0.5, (start + j - 1) / 2.0, "Module {} (n = {})".format(m, j - start),
+                    ha="center", va="center", rotation=90, fontsize=8, fontweight="bold")
+        start = j
+fig.text((W_TITLE * 0.35) / fig_w, (H_BOT + heat_h / 2.0) / fig_h,
+         "Genes positively correlated with >= {} markers (r > {}, n = {})".format(
+             MIN_MARKERS, R_THRESHOLD, n_col),
+         rotation=90, ha="center", va="center", fontsize=10.5, fontweight="bold")
+
+cbar = fig.colorbar(im, cax=ax_cb, ticks=[0.0, 0.25, 0.5, 0.75, 1.0])
+cbar.set_label("Pearson r", fontsize=10.5, fontweight="bold")
+cbar.ax.tick_params(labelsize=9)
+for lab in cbar.ax.get_yticklabels():
+    lab.set_fontweight("bold")
+cbar.outline.set_linewidth(0.8)
+
+for ext in ("pdf", "svg", "png"):
+    path = "{}_vertical.{}".format(OUT_STEM, ext)
+    fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05,
+                metadata=_META[ext])
+    if ext == "svg":
+        _scrub_svg(path)
+    print("saved:", path)
+plt.close(fig)
+
 # ---------------- 基因表 (CSV) ----------------
 csv_path = OUT_STEM + "_genes.csv"
 with open(csv_path, "w", encoding="utf-8-sig") as fh:

@@ -36,7 +36,8 @@
   Fig_coexpression_heatmap_vertical.*         共表达热图, 竖版
   Fig_coexpression_heatmap_correlation_full.csv   全部 r / P / BH q 值
   Fig_coexpression_heatmap_gene_lists.json        入选基因被哪些 marker 选中 (供 Word 文档用)
-  Fig_coexpression_refined.*                      进一步筛选后的模块热图 (38 个基因)
+  Fig_coexpression_refined.*                      进一步筛选后的模块热图, 横版 (38 个基因)
+  Fig_coexpression_refined_vertical.*             同上, 竖版
   Fig_coexpression_refined_genes.csv              38 个基因的模块、r、P、BH q
   Fig_coexpression_refined.json                   供 Word 文档用
   共表达热图分析说明.docx                      原理与结果说明文档
