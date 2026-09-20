@@ -238,7 +238,7 @@ if (fs.existsSync(refPath)) {
     children.push(body("3.2 节中同时被 3 个 marker 选中的 " + hl.map((g) => g.gene).join(" 和 ") + " 均落在模块 A 内，与 " + mk[0] + "、" + mk[1] + "、" + mk[4] + " 的 r 均高于 0.89，可作为重点候选基因（图 3 中以红色基因名标出）。"));
   }
   children.push(image("Fig_coexpression_refined.png", 554, Math.round(554 * 1102 / 2406)));
-  children.push(caption("图 3  与至少 " + rf.min_markers + " 个 marker 显著正相关的 " + rf.n_selected + " 个基因的共表达热图。顶部色条为模块划分，红色基因名为重点候选基因。"));
+  children.push(caption("图 3  与至少 " + rf.min_markers + " 个 marker 显著正相关的 " + rf.n_selected + " 个基因的共表达热图。顶部色条为模块划分，红色基因名为重点候选基因。筛选后不再有负相关，色标改为 0 到 1（0 蓝、0.5 白、1 红）。"));
 
   const rows = [["基因", "模块", "显著 marker 数"].concat(mk.map((m) => m.replace("Chr", "")))];
   for (const g of rf.genes) {

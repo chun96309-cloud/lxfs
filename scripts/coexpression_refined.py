@@ -187,9 +187,10 @@ modules = [modules[j] for j in col_order]
 keep = keep[col_order]
 
 # ---------------- 热图 ----------------
+# 筛选后只剩正相关, 色标改为 0 -> 1: 0 蓝, 0.5 白, 1 红 (不再用 -1 到 1)
 cmap = LinearSegmentedColormap.from_list(
     "npg_blue_white_red", ["#3C5488", "#FFFFFF", "#E64B35"])
-norm = TwoSlopeNorm(vmin=-1.0, vcenter=0.0, vmax=1.0)
+norm = TwoSlopeNorm(vmin=0.0, vcenter=0.5, vmax=1.0)
 MOD_COLOR = {"A": "#91ABD2", "B": "#FBD3A3"}
 
 fig_w = max(5.5, n_col * 0.19 + 2.2)
@@ -235,7 +236,7 @@ for j in range(1, n_col + 1):
         start = j
 
 cbar = fig.colorbar(im, ax=ax, fraction=0.035, pad=0.02,
-                    ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
+                    ticks=[0.0, 0.25, 0.5, 0.75, 1.0])
 cbar.set_label("Pearson r", fontsize=10.5, fontweight="bold")
 cbar.ax.tick_params(labelsize=9)
 for lab in cbar.ax.get_yticklabels():
