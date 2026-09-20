@@ -117,11 +117,26 @@ fig <- (A | B) / (C | D) +
   theme(legend.position = "bottom")
 
 ## ---------- 7. 输出 ----------
+## 7.1 四 panel 拼在一起
 ggsave(file.path(OUT_DIR, "Fig_main_4panel.pdf"), fig, width = 7.1, height = 6.8)
 ggsave(file.path(OUT_DIR, "Fig_main_4panel.png"), fig, width = 7.1, height = 6.8, dpi = 300)
+
+## 7.2 四个 panel 各自单独成图
+save_one <- function(p, file, w, h, legend = TRUE) {
+  p2 <- p + theme(legend.position = if (legend) "bottom" else "none")
+  ggsave(file.path(OUT_DIR, paste0(file, ".pdf")), p2, width = w, height = h)
+  ggsave(file.path(OUT_DIR, paste0(file, ".png")), p2, width = w, height = h, dpi = 300)
+}
+save_one(A, "Fig_A_group_CSS",   3.3, 3.6, legend = FALSE)
+save_one(B, "Fig_B_LVEFdecline", 3.5, 3.8, legend = TRUE)
+save_one(C, "Fig_C_BMI",         3.5, 3.8, legend = TRUE)
+save_one(D, "Fig_D_TG",          3.5, 3.8, legend = TRUE)
+
 print(fig)
 
-cat("\n主图已输出到: ", OUT_DIR, "\n", sep = "")
+cat("\n图已输出到: ", OUT_DIR, "\n", sep = "")
+cat("  拼图: Fig_main_4panel.pdf / .png\n")
+cat("  单图: Fig_A_group_CSS / Fig_B_LVEFdecline / Fig_C_BMI / Fig_D_TG (各 pdf + png)\n")
 cat("\n---------- 标注所用统计量 ----------\n")
 cat(sprintf("A  Mann-Whitney: W = %.1f, %s\n", w$statistic, pA))
 for (v in c("Chance", "BMI", "TG")) {
