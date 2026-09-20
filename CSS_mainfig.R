@@ -91,7 +91,7 @@ scat <- function(v, xlab) {
     z <- s[s$Group == g, ]
     suppressWarnings(cor(z[[v]], z$CSS, method = "spearman"))
   })
-  l1 <- sprintf("All: \u03c1 = %.2f, %s", rho_all$estimate,
+  l1 <- sprintf("All: rho = %.2f, %s", rho_all$estimate,
                 ifelse(rho_all$p.value < 0.001, "P < 0.001",
                        sprintf("P = %.3f", rho_all$p.value)))
   l2 <- sprintf("Within group: %.2f / %.2f", rin[1], rin[2])
