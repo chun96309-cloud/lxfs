@@ -6,12 +6,14 @@
   data\                     输入数据, txt 或 xlsx 都支持
       expression_matrix.txt     表达矩阵 436 基因 x 6 样本 (制表符分隔)
       marker_genes.txt          marker 基因名, 单列, 可以没有表头
+      fpkm_boxplot.xlsx         基因 FPKM 表 (样本列 N1_FPKM...P5_FPKM, 含 DESeq2 P 值列)
       (同名的 .xlsx 也可以, 两种都在时优先读 .txt)
   scripts\                  分析与绘图脚本
       plot_vector_figures.py        释放曲线与肿瘤体积折线图 (Python)
       coexpression_heatmap.py       共表达热图 (Python)
       coexpression_heatmap.R        共表达热图 (R, ComplexHeatmap)
       coexpression_refined.py       进一步筛选: 与 >=3 个 marker 显著正相关 + 模块热图 (Python)
+      fpkm_boxplot.py               每个基因一个小框的 FPKM 箱线图 + 显著性 (Python)
       make_coexpression_docx.js     分析说明 Word 文档生成 (Node)
   YYYY-MM-DD\               每天的输出, 脚本运行时按当天日期自动新建
 
@@ -19,6 +21,7 @@
   python plot_vector_figures.py
   python coexpression_heatmap.py
   python coexpression_refined.py
+  python fpkm_boxplot.py
   Rscript coexpression_heatmap.R
   node make_coexpression_docx.js
 
@@ -40,6 +43,7 @@
   Fig_coexpression_refined_vertical.*             同上, 竖版
   Fig_coexpression_refined_genes.csv              38 个基因的模块、r、P、BH q
   Fig_coexpression_refined.json                   供 Word 文档用
+  Fig_fpkm_boxplot.*                              每基因 FPKM 箱线图, 横排, 带显著性
   共表达热图分析说明.docx                      原理与结果说明文档
 
 注意
