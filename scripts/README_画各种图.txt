@@ -43,7 +43,8 @@
   Fig_coexpression_refined_vertical.*             同上, 竖版
   Fig_coexpression_refined_genes.csv              38 个基因的模块、r、P、BH q
   Fig_coexpression_refined.json                   供 Word 文档用
-  Fig_fpkm_boxplot.*                              每基因 FPKM 箱线图, 横排, 带显著性
+  Fig_fpkm_boxplot.*                              每基因 FPKM 箱线图, 横排合并版, 带显著性
+  fpkm_boxplot_single\                            同上, 每个基因单独一张
   共表达热图分析说明.docx                      原理与结果说明文档
 
 注意

@@ -158,20 +158,20 @@ if p_col is None:
 
 # ---------------- 绘图 ----------------
 n = len(genes)
-ncol = n if NCOL is None else int(NCOL)
-nrow = int(np.ceil(n / ncol))
-fig, axes = plt.subplots(nrow, ncol, figsize=(PANEL_W * ncol + 0.9, PANEL_H * nrow + 0.5),
-                         dpi=300, squeeze=False)
 rng = np.random.default_rng(SEED)
+jitters = [rng.uniform(-JITTER, JITTER, size=sum(len(v) for v in d.values())) for d in data]
 
-for k, gene in enumerate(genes):
-    ax = axes[k // ncol][k % ncol]
+
+def draw_panel(ax, k, show_ylabel):
+    """在 ax 上画第 k 个基因的小框"""
+    gene = genes[k]
     d = data[k]
     vals = [np.array(d[g]) for g in groups]
     pos = np.arange(len(groups))
     bp = ax.boxplot(vals, positions=pos, widths=0.55, patch_artist=True, showfliers=False,
                     medianprops=dict(color="none"), whiskerprops=dict(linewidth=1.2),
                     capprops=dict(linewidth=1.2), boxprops=dict(linewidth=1.2), zorder=2)
+    off = 0
     for i, g in enumerate(groups):
         c = colors[g]
         bp["boxes"][i].set_facecolor(c)
@@ -181,10 +181,10 @@ for k, gene in enumerate(genes):
             for art in bp[part][2 * i:2 * i + 2]:
                 art.set_color(c)
         ax.hlines(np.median(vals[i]), pos[i] - 0.275, pos[i] + 0.275, color=c, linewidth=2.0, zorder=3)
-        x = pos[i] + rng.uniform(-JITTER, JITTER, size=len(vals[i]))
+        x = pos[i] + jitters[k][off:off + len(vals[i])]
+        off += len(vals[i])
         ax.scatter(x, vals[i], s=POINT_SIZE, color=c, alpha=0.8, edgecolor="none", zorder=4)
 
-    # 显著性横线
     ymax = max(v.max() for v in vals)
     ymin = min(v.min() for v in vals)
     span = max(ymax - ymin, 1e-9)
@@ -207,25 +207,43 @@ for k, gene in enumerate(genes):
     ax.set_axisbelow(True)
     for side in ("left", "bottom", "right", "top"):
         ax.spines[side].set_linewidth(0.9)
-    if k % ncol == 0:
+    if show_ylabel:
         ax.set_ylabel(Y_LABEL, fontsize=10.5, fontweight="bold")
 
-# 多余的格子隐藏
+
+def save_fig(fig, stem):
+    for ext in ("pdf", "svg", "png"):
+        path = "{}.{}".format(stem, ext)
+        fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05, metadata=_META[ext])
+        if ext == "svg":
+            _scrub_svg(path)
+        print("saved:", path)
+    plt.close(fig)
+
+
+# ---- 合并图: 全部基因横排 ----
+ncol = n if NCOL is None else int(NCOL)
+nrow = int(np.ceil(n / ncol))
+fig, axes = plt.subplots(nrow, ncol, figsize=(PANEL_W * ncol + 0.9, PANEL_H * nrow + 0.5),
+                         dpi=300, squeeze=False)
+for k in range(n):
+    draw_panel(axes[k // ncol][k % ncol], k, show_ylabel=(k % ncol == 0))
 for k in range(n, nrow * ncol):
     axes[k // ncol][k % ncol].axis("off")
-
 handles = [Patch(facecolor=colors[g], edgecolor=colors[g], alpha=0.6, label=GROUP_LABELS.get(g, g)) for g in groups]
 fig.legend(handles=handles, loc="center right", frameon=False, fontsize=10.5,
            bbox_to_anchor=(1.0, 0.5), handlelength=1.2)
 fig.tight_layout(rect=(0, 0, 0.955, 1), w_pad=0.6)
+save_fig(fig, OUT_STEM)
 
-for ext in ("pdf", "svg", "png"):
-    path = "{}.{}".format(OUT_STEM, ext)
-    fig.savefig(path, format=ext, bbox_inches="tight", pad_inches=0.05, metadata=_META[ext])
-    if ext == "svg":
-        _scrub_svg(path)
-    print("saved:", path)
-plt.close(fig)
+# ---- 单独图: 每个基因各一张 ----
+single_dir = os.path.join(OUT_DIR, "fpkm_boxplot_single")
+os.makedirs(single_dir, exist_ok=True)
+for k in range(n):
+    fig, ax = plt.subplots(figsize=(PANEL_W + 0.55, PANEL_H + 0.3), dpi=300)
+    draw_panel(ax, k, show_ylabel=True)
+    fig.tight_layout()
+    save_fig(fig, os.path.join(single_dir, "Fig_fpkm_boxplot_" + genes[k]))
 
 # ---------------- 关键信息 ----------------
 print("\ninput:", IN_FILE)
