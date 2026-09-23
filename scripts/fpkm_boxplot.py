@@ -203,8 +203,7 @@ def draw_panel(ax, k, show_ylabel):
     ax.tick_params(axis="x", width=0.8, length=3)
     for lab in ax.get_yticklabels():
         lab.set_fontweight("bold")
-    ax.grid(True, axis="y", color="#E5E5E5", linewidth=0.6, zorder=0)
-    ax.set_axisbelow(True)
+    ax.grid(False)
     for side in ("left", "bottom", "right", "top"):
         ax.spines[side].set_linewidth(0.9)
     if show_ylabel:
