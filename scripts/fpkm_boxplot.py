@@ -135,10 +135,9 @@ from scipy import stats as _stats
 
 
 def stars(p):
+    """最多三颗星: *** P<0.001, ** P<0.01, * P<0.05"""
     if p is None or np.isnan(p):
         return "ns"
-    if p < 1e-4:
-        return "****"
     if p < 1e-3:
         return "***"
     if p < 1e-2:
