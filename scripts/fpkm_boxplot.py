@@ -44,6 +44,7 @@ OUT_STEM = os.path.join(OUT_DIR, "Fig_fpkm_boxplot")
 NCOL = None                 # 每行放几个小框; None = 全部一行
 PANEL_W, PANEL_H = 1.45, 2.4   # 单个小框尺寸 (英寸)
 GROUP_COLORS = {"N": "#7EA1C4", "P": "#6A6BB0"}   # 参考图左(浅蓝)与中(蓝紫)两色
+GROUP_LABELS = {"N": "NEC", "P": "EC"}            # 图上显示的分组名 (样本列前缀 -> 显示名)
 DEFAULT_COLORS = ["#7EA1C4", "#6A6BB0", "#6B5A8E", "#91ABD2"]
 Y_LABEL = "FPKM"
 POINT_SIZE = 16
@@ -196,7 +197,7 @@ for k, gene in enumerate(genes):
 
     ax.set_title(gene, fontsize=9, fontweight="bold", pad=4)
     ax.set_xticks(pos)
-    ax.set_xticklabels(groups, fontsize=10.5, fontweight="bold")
+    ax.set_xticklabels([GROUP_LABELS.get(g, g) for g in groups], fontsize=10.5, fontweight="bold")
     ax.set_xlim(-0.6, len(groups) - 0.4)
     ax.tick_params(axis="y", labelsize=8, width=0.8, length=3)
     ax.tick_params(axis="x", width=0.8, length=3)
@@ -213,7 +214,7 @@ for k, gene in enumerate(genes):
 for k in range(n, nrow * ncol):
     axes[k // ncol][k % ncol].axis("off")
 
-handles = [Patch(facecolor=colors[g], edgecolor=colors[g], alpha=0.6, label=g) for g in groups]
+handles = [Patch(facecolor=colors[g], edgecolor=colors[g], alpha=0.6, label=GROUP_LABELS.get(g, g)) for g in groups]
 fig.legend(handles=handles, loc="center right", frameon=False, fontsize=10.5,
            bbox_to_anchor=(1.0, 0.5), handlelength=1.2)
 fig.tight_layout(rect=(0, 0, 0.955, 1), w_pad=0.6)
@@ -232,4 +233,4 @@ print("groups:", {g: sum(1 for i in sample_cols if group_of(header[i]) == g) for
 print("significance source:", sig_source)
 for gene, d, p in zip(genes, data, pvals):
     print("  {}: {} | P = {:.3g} -> {}".format(
-        gene, " ".join("{} mean {:.2f}".format(g, np.mean(d[g])) for g in groups), p, stars(p)))
+        gene, " ".join("{} mean {:.2f}".format(GROUP_LABELS.get(g, g), np.mean(d[g])) for g in groups), p, stars(p)))
