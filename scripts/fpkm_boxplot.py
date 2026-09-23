@@ -199,13 +199,13 @@ def draw_panel(ax, k, show_ylabel):
     ax.set_xticks(pos)
     ax.set_xticklabels([GROUP_LABELS.get(g, g) for g in groups], fontsize=10.5, fontweight="bold")
     ax.set_xlim(-0.6, len(groups) - 0.4)
-    ax.tick_params(axis="y", labelsize=8, width=0.8, length=3)
-    ax.tick_params(axis="x", width=0.8, length=3)
+    ax.tick_params(axis="y", labelsize=8, width=0.5, length=3)
+    ax.tick_params(axis="x", width=0.5, length=3)
     for lab in ax.get_yticklabels():
         lab.set_fontweight("bold")
     ax.grid(False)
     for side in ("left", "bottom", "right", "top"):
-        ax.spines[side].set_linewidth(0.9)
+        ax.spines[side].set_linewidth(0.5)
     if show_ylabel:
         ax.set_ylabel(Y_LABEL, fontsize=10.5, fontweight="bold")
 
