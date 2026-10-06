@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{margin:0;padding:24px;background:#fff;font-family:"Liberation Serif","WenQuanYi Zen Hei";font-size:10.5pt;color:#000}
+h3{margin:0 0 8px 0;font-size:10.5pt;font-weight:bold}
+table{border-collapse:collapse;margin-bottom:22px}
+th,td{border:1px solid #000;padding:3px 8px;text-align:center;white-space:nowrap}
+td.l{text-align:left}
+p{margin:4px 0 0 0;font-size:9pt}
+</style></head><body>
+<h3>表3 预消融：松弛状态特征对图编码的作用（模仿 QP diving 标签，固定业务顺序，只学路径选择；训练 240 实例，开发 120 实例，业务数 10/20，LF 1.0/1.2/1.5，3 个训练种子）</h3>
+<table><tr><th>变体</th><th>说明</th><th>S（均值 ± 种子标准差）</th><th>J</th><th>标签准确率</th><th>相对 BPL 的 ΔS（p）</th><th>相对 BPL 的 ΔJ（p）</th></tr>
+<tr><td class="l">QP 取整（不学习）</td><td>一次词典序凸松弛后取整</td><td>0.9752</td><td>0.2675</td><td>——</td><td>——</td><td>——</td></tr>
+<tr><td class="l">QP diving（不学习）</td><td>逐业务重解松弛</td><td>0.9799</td><td>0.2739</td><td>——</td><td>——</td><td>——</td></tr>
+<tr><td class="l">BPL</td><td>原有特征</td><td>0.9617 ± 0.0007</td><td>0.2650 ± 0.0005</td><td>0.828</td><td>——</td><td>——</td></tr>
+<tr><td class="l">BPL + 松弛特征</td><td>加松弛解、对偶价格、分数程度</td><td>0.9741 ± 0.0003</td><td>0.2689 ± 0.0005</td><td>0.853</td><td>+0.0124（p &lt; 0.0001）</td><td>+0.0040（p = 0.33）</td></tr>
+<tr><td class="l">BPL + 随机特征</td><td>同维度随机数，排除维度本身的作用</td><td>0.9597 ± 0.0007</td><td>0.2646 ± 0.0013</td><td>0.822</td><td>−0.0020（p = 0.075）</td><td>−0.0003（p = 0.63）</td></tr>
+</table>
+<h3>表4 BPL + 松弛特征 相对 BPL 的分组增益，以及与不学习对照的配对检验</h3>
+<table><tr><th>业务数</th><th>LF</th><th>ΔS</th><th>ΔJ</th><th>QP diving S</th><th>BPL + 松弛特征 S</th></tr>
+<tr><td>10</td><td>1.0</td><td>0.0000</td><td>−0.0065</td><td>1.0000</td><td>0.9980</td></tr>
+<tr><td>10</td><td>1.2</td><td>+0.0104</td><td>+0.0007</td><td>0.9850</td><td>0.9754</td></tr>
+<tr><td>10</td><td>1.5</td><td>+0.0250</td><td>+0.0189</td><td>0.9537</td><td>0.9378</td></tr>
+<tr><td>20</td><td>1.0</td><td>+0.0037</td><td>−0.0081</td><td>1.0000</td><td>1.0000</td></tr>
+<tr><td>20</td><td>1.2</td><td>+0.0138</td><td>+0.0032</td><td>0.9870</td><td>0.9839</td></tr>
+<tr><td>20</td><td>1.5</td><td>+0.0215</td><td>+0.0157</td><td>0.9536</td><td>0.9496</td></tr>
+</table>
+<table><tr><th>配对比较（按实例配对，种子平均后）</th><th>ΔS（p）</th><th>ΔJ（p）</th></tr>
+<tr><td class="l">BPL + 松弛特征 相对 QP 取整</td><td>−0.0011（p = 0.38）</td><td>+0.0014（p = 0.003）</td></tr>
+<tr><td class="l">BPL + 松弛特征 相对 QP diving</td><td>−0.0057（p = 0.0002）</td><td>−0.0050（p = 0.072）</td></tr>
+</table>
+<p>S 高者为优，J 低者为优；S 不同时 J 的比较不构成词典序意义上的优劣。本预消融用独立实现的异构 GNN 与监督模仿，不是原工程的 SPO 训练；只解一次松弛（m = 0），未学习业务顺序，未做强化微调。</p>
+</body></html>
