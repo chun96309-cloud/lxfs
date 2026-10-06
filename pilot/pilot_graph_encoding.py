@@ -17,6 +17,7 @@ from scipy.optimize import minimize, Bounds, LinearConstraint
 torch.set_num_threads(8)
 BETA = 2.0  # 拥塞代价权重
 NODE_N, EDGE_M, N_BUS, K_PATH = 10, 18, 5, 3
+LOAD_LO, LOAD_HI = 0.0, 0.4
 
 
 # ---------------- 实例生成 ----------------
@@ -32,7 +33,7 @@ def gen_instance(rng):
         eid[(v, u)] = i
     E = len(edges)
     cap = rng.uniform(8, 16, E)
-    load = rng.uniform(0.0, 0.4, E) * cap
+    load = rng.uniform(LOAD_LO, LOAD_HI, E) * cap
     pairs = [(s, t) for s in range(NODE_N) for t in range(NODE_N) if s < t]
     rng.shuffle(pairs)
     paths, dem = [], []
@@ -285,7 +286,14 @@ def main():
     ap.add_argument("--epochs", type=int, default=400)
     ap.add_argument("--hid", type=int, default=64)
     ap.add_argument("--layers", type=int, default=3)
+    ap.add_argument("--nbus", type=int, default=5)
+    ap.add_argument("--k", type=int, default=3)
+    ap.add_argument("--load_lo", type=float, default=0.0)
+    ap.add_argument("--load_hi", type=float, default=0.4)
     args = ap.parse_args()
+    global N_BUS, K_PATH, LOAD_LO, LOAD_HI
+    N_BUS, K_PATH, LOAD_LO, LOAD_HI = args.nbus, args.k, args.load_lo, args.load_hi
+    print(f"配置 业务数 {N_BUS} 候选数 {K_PATH} 负载区间 [{LOAD_LO},{LOAD_HI}]")
 
     t0 = time.time()
     rng = np.random.default_rng(0)
@@ -306,6 +314,15 @@ def main():
     print(f"测试集 业务内重叠 中位数 {np.median(intra):.3f}，跨业务重叠 中位数 {np.median(cross):.3f}")
     print(f"最优目标值均值 {np.mean([x['opt_obj'] for x in test]):.3f}，随机选路 regret 均值 "
           f"{np.mean([(x['opt_obj'] - x['objs'].mean()) / abs(x['opt_obj']) for x in test]):.4f}")
+
+    rr = []
+    for inst in test:
+        sel = tuple(int(v) for v in inst["relax_f"].argmax(1))
+        idx = inst["combos"].index(sel)
+        rr.append((inst["opt_obj"] - inst["objs"][idx]) / (abs(inst["opt_obj"]) + 1e-9))
+    rr = np.array(rr)
+    print(f"不学习基线（松弛解取整）regret 均值 {rr.mean():.4f}，最优率 {np.mean(rr < 1e-9):.3f}，"
+          f"低内 {rr[~hi_intra].mean():.4f} 高内 {rr[hi_intra].mean():.4f} 低跨 {rr[~hi_cross].mean():.4f} 高跨 {rr[hi_cross].mean():.4f}")
 
     target = sum(p.numel() for p in make_model(train[:1], "minlp", True, args.hid, args.layers).parameters())
     hid_match = match_hid(train[:1], "bpl", True, args.layers, target)
@@ -351,6 +368,16 @@ def main():
         except ValueError:
             pval = 1.0
         print(f"{name:26s} 相对 BPL 的 regret 降低均值 {diff.mean():+.4f}，p = {pval:.4f}")
+    print("\n==== 配对比较（相对 BPL+relax 与松弛取整基线）====")
+    ref = np.stack([r["regret"] for r in results["BPL+relax"]]).mean(0)
+    for name, rs in results.items():
+        cur = np.stack([r["regret"] for r in rs]).mean(0)
+        def pv(x, y):
+            try:
+                return wilcoxon(x, y).pvalue if np.any(x != y) else 1.0
+            except ValueError:
+                return 1.0
+        print(f"{name:26s} 相对 BPL+relax {(ref - cur).mean():+.4f} p={pv(ref, cur):.4f}；相对松弛取整 {(rr - cur).mean():+.4f} p={pv(rr, cur):.4f}")
     print(f"\n总耗时 {time.time() - t0:.0f}s")
 
 
