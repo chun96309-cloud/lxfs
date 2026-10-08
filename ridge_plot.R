@@ -10,9 +10,9 @@ library(ggridges)
 library(showtext)
 
 # ---------- 1. 路径（按本机修改） ----------
-xlsx_path <- "E:/data/4b6f28b2-_______.xlsx"
-out_png   <- "E:/data/ridge_plot.png"
-out_pdf   <- "E:/data/ridge_plot.pdf"
+xlsx_path <- "data/fpkm_8genes.xlsx"
+out_png   <- "ridge_plot.png"
+out_pdf   <- "ridge_plot.pdf"
 
 # ---------- 2. 字体 ----------
 font_add("TNR", regular = "C:/Windows/Fonts/times.ttf",
