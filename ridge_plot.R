@@ -35,24 +35,30 @@ dat <- raw %>%
          expr = log2(FPKM + 1),
          ID   = factor(ID, levels = rev(unique(raw$ID))))
 
-# P 值标签：放在该基因两组数据最大值右侧
+# ---------- 4. P 值标签位置：该基因两条密度曲线尾部截止处 ----------
+xr <- range(dat$expr) + c(-1.5, 1.5)
 lab <- dat %>%
   group_by(ID) %>%
-  summarise(x = max(expr), Pvalue = first(Pvalue), .groups = "drop") %>%
+  group_modify(function(d, k) {
+    dN <- density(d$expr[d$Type == "N"], from = xr[1], to = xr[2], n = 800)
+    dP <- density(d$expr[d$Type == "P"], from = xr[1], to = xr[2], n = 800)
+    dm <- pmax(dN$y, dP$y) / max(dN$y, dP$y)
+    tibble(x = max(dN$x[dm > 0.01]), Pvalue = d$Pvalue[1])
+  }) %>%
+  ungroup() %>%
   mutate(label = paste0("P = ", signif(Pvalue, 3)))
 
-# ---------- 4. 作图 ----------
+# ---------- 5. 作图 ----------
 p <- ggplot(dat, aes(x = expr, y = ID, fill = Type)) +
   geom_density_ridges(aes(height = after_stat(density)),
                       stat = "density", trim = FALSE,
-                      scale = 1.4, alpha = 0.8, colour = "white", linewidth = 0.4) +
-  geom_text(data = lab, aes(x = x + 0.3, y = ID, label = label),
-            inherit.aes = FALSE, hjust = 0, vjust = -0.3,
+                      scale = 0.95, alpha = 0.8, colour = "white", linewidth = 0.4) +
+  geom_text(data = lab, aes(x = x + 0.15, y = ID, label = label),
+            inherit.aes = FALSE, hjust = 0, vjust = -0.4,
             family = "TNR", size = fs / .pt) +
-  scale_fill_manual(values = c(N = "#A8DADC", P = "#E76F51"),
-                    name = "Type") +
-  scale_x_continuous(expand = expansion(mult = c(0.02, 0.25))) +
-  scale_y_discrete(expand = expansion(add = c(0.2, 1.4))) +
+  scale_fill_manual(values = c(N = "#A8DADC", P = "#E76F51"), name = "Type") +
+  coord_cartesian(xlim = c(min(dat$expr) - 1, max(dat$expr) + 2.6)) +
+  scale_y_discrete(expand = expansion(add = c(0.2, 1.0))) +
   labs(x = expression(log[2](FPKM + 1)), y = NULL) +
   theme_ridges(grid = TRUE, center_axis_labels = TRUE) +
   theme(text = element_text(family = "TNR", size = fs),
