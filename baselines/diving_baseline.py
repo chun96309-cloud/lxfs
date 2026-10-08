@@ -124,15 +124,17 @@ def relax_qp(inst, fixed):
                   constraints=[{"type": "ineq", "fun": lambda u: rhs - B @ u, "jac": lambda u: -B}],
                   options={"ftol": 1e-12, "maxiter": 500})
     if not qp.success:
-        # 不回退：先加大迭代重试一次，仍失败则抛错并计数
-        qp = minimize(lambda u: float(np.mean((A @ u) ** 2)), lp.x, jac=lambda u: 2.0 * A.T @ (A @ u) / E,
-                      method="SLSQP", bounds=list(zip(np.zeros(len(cols)), ub)),
-                      constraints=[{"type": "ineq", "fun": lambda u: rhs - B @ u, "jac": lambda u: -B}],
-                      options={"ftol": 1e-10, "maxiter": 2000})
+        # 不回退 LP：SLSQP 失败时用 trust-constr 重解同一个阶段二 QP，并计数
+        from scipy.optimize import LinearConstraint, Bounds
         RELAX_QP_RETRY[0] += 1
-        if not qp.success:
+        qp = minimize(lambda u: float(np.mean((A @ u) ** 2)), lp.x, jac=lambda u: 2.0 * A.T @ (A @ u) / E,
+                      method="trust-constr", bounds=Bounds(np.zeros(len(cols)), ub),
+                      constraints=[LinearConstraint(B, -np.inf, rhs)],
+                      options={"maxiter": 2000, "gtol": 1e-9, "xtol": 1e-10})
+        viol = float(np.max(B @ qp.x - rhs))
+        if viol > 1e-6:
             RELAX_QP_FAIL[0] += 1
-            raise RuntimeError("relax_qp 阶段二 SLSQP 失败: " + qp.message)
+            raise RuntimeError(f"relax_qp 阶段二重解仍不可行，最大违反 {viol:.2e}")
     sol = qp.x
     u = [np.zeros(len(inst.path_links[b])) for b in range(K)]
     for (b, p), i in idx.items():
