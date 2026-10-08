@@ -93,6 +93,10 @@ def relax_lp(inst, fixed):
     return u, -res.fun
 
 
+RELAX_QP_RETRY = [0]
+RELAX_QP_FAIL = [0]
+
+
 def relax_qp(inst, fixed):
     """词典序凸松弛：先 LP 最大化 S，再在 S ≥ S* 下最小化 J（允许分流）。返回 u[b][p]。"""
     from scipy.optimize import minimize
@@ -119,7 +123,17 @@ def relax_qp(inst, fixed):
                   method="SLSQP", bounds=list(zip(np.zeros(len(cols)), ub)),
                   constraints=[{"type": "ineq", "fun": lambda u: rhs - B @ u, "jac": lambda u: -B}],
                   options={"ftol": 1e-12, "maxiter": 500})
-    sol = qp.x if qp.success else lp.x
+    if not qp.success:
+        # 不回退：先加大迭代重试一次，仍失败则抛错并计数
+        qp = minimize(lambda u: float(np.mean((A @ u) ** 2)), lp.x, jac=lambda u: 2.0 * A.T @ (A @ u) / E,
+                      method="SLSQP", bounds=list(zip(np.zeros(len(cols)), ub)),
+                      constraints=[{"type": "ineq", "fun": lambda u: rhs - B @ u, "jac": lambda u: -B}],
+                      options={"ftol": 1e-10, "maxiter": 2000})
+        RELAX_QP_RETRY[0] += 1
+        if not qp.success:
+            RELAX_QP_FAIL[0] += 1
+            raise RuntimeError("relax_qp 阶段二 SLSQP 失败: " + qp.message)
+    sol = qp.x
     u = [np.zeros(len(inst.path_links[b])) for b in range(K)]
     for (b, p), i in idx.items():
         u[b][p] = max(sol[i], 0.0)
@@ -293,6 +307,7 @@ def main():
                 print(f"{name:8s} 相对认证 S* 的平均相对 Gap {np.mean(gaps) * 100:.3f}%，达到 S* 的比例 {np.mean([g < 1e-6 for g in gaps]):.3f}，"
                       f"n={len(cert)}；S 持平且阶段二认证的 {len(hit)} 例上 J 相对 Gap {jg:.2f}%")
     print("对照：现有报告 wo_diff 开发集均值 S=0.9757，J=0.2923（不同实例种子，不是配对）")
+    print(f"relax_qp 阶段二重试次数 {RELAX_QP_RETRY[0]}，失败次数 {RELAX_QP_FAIL[0]}")
     print(f"结果已写入 {out}，总耗时 {time.time() - t0:.0f}s")
 
 
